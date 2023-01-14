@@ -1,6 +1,17 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import "styles/globals.css";
+import type { AppProps } from "next/app";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+import { AuthProvider } from "context/AuthContext";
+import ProtectedRoute from "components/common/ProtectedRoute";
+
+function App({ Component, pageProps }: AppProps) {
+	return (
+		<AuthProvider>
+			<ProtectedRoute>
+				<Component {...pageProps} />
+			</ProtectedRoute>
+		</AuthProvider>
+	);
 }
+
+export default App;

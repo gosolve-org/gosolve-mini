@@ -1,6 +1,8 @@
 import React, { ReactNode, useEffect } from "react";
 import { useRouter } from "next/router";
+
 import { useAuth } from "context/AuthContext";
+import Loader from "./Loader";
 
 interface ProtectedRouteProps {
 	children: ReactNode;
@@ -17,9 +19,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 		}
 	}, [router, routerPath, user]);
 
-	return (
-		<>{user || routerPath == "/login" ? children : <div>Loading...</div>}</>
-	);
+	return <>{user || routerPath == "/login" ? children : <Loader />}</>;
 };
 
 export default ProtectedRoute;

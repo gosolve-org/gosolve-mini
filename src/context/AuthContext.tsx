@@ -9,6 +9,11 @@ import {
 	createUserWithEmailAndPassword,
 	onAuthStateChanged,
 	signInWithEmailAndPassword,
+	GoogleAuthProvider,
+	signInWithPopup,
+	setPersistence,
+	browserLocalPersistence,
+	browserSessionPersistence,
 	signOut,
 	UserCredential,
 } from "@firebase/auth";
@@ -22,6 +27,8 @@ const AuthContext = createContext<{
 	} | null;
 	loading: boolean;
 	login: (email: string, password: string) => Promise<UserCredential>;
+	loginWithGoogle: () => Promise<void>;
+	setShouldRemember: (shouldRemember: boolean) => void;
 	logout: () => Promise<void>;
 	register: (email: string, password: string) => Promise<UserCredential>;
 }>({
@@ -29,6 +36,8 @@ const AuthContext = createContext<{
 	loading: true,
 	login: (email: string, password: string) =>
 		signInWithEmailAndPassword(auth, email, password),
+	loginWithGoogle: () => Promise.resolve(),
+	setShouldRemember: (shouldRemember: boolean) => {},
 	logout: () => Promise.resolve(),
 	register: (email, password) =>
 		createUserWithEmailAndPassword(auth, email, password),
@@ -64,6 +73,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		return signInWithEmailAndPassword(auth, email, password);
 	};
 
+	const loginWithGoogle = async () => {
+		const provider = new GoogleAuthProvider();
+		return await signInWithPopup(auth, provider)
+			.then((result) => {})
+			.catch((error) => {});
+	};
+
+	const setShouldRemember = async (setShouldRemember: boolean) => {
+		setShouldRemember
+			? await setPersistence(auth, browserLocalPersistence)
+			: await setPersistence(auth, browserSessionPersistence);
+	};
+
 	const logout = async () => {
 		setUser(null);
 
@@ -76,7 +98,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	return (
 		<AuthContext.Provider
-			value={{ loading, user, login, logout, register }}
+			value={{
+				loading,
+				user,
+				login,
+				loginWithGoogle,
+				setShouldRemember,
+				logout,
+				register,
+			}}
 		>
 			{loading ? null : children}
 		</AuthContext.Provider>

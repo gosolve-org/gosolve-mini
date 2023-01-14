@@ -4,13 +4,13 @@ import Image from "next/image";
 
 import { useAuth } from "context/AuthContext";
 
-function Login() {
+function Register() {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [shouldRememberCheckbox, setShouldRememberCheckbox] =
 		useState<boolean>(false);
 
-	const { login, loginWithGoogle, setShouldRemember } = useAuth();
+	const { register, loginWithGoogle, setShouldRemember } = useAuth();
 	const router = useRouter();
 
 	const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
@@ -18,7 +18,7 @@ function Login() {
 
 		try {
 			await setShouldRemember(shouldRememberCheckbox);
-			await login(email, password);
+			await register(email, password);
 			await router.push("/");
 		} catch (error) {
 			// TODO add error handling
@@ -49,18 +49,16 @@ function Login() {
 			<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 				<div className="sm:mx-auto sm:w-full sm:max-w-md">
 					<Image
-						className="mx-auto h-18 w-auto"
+						className="mx-auto h-12 w-auto"
 						src="/images/gosolve_logo.svg"
 						alt="goSolve Logo"
 						width={180}
 						height={37}
 						priority
 					/>
-					<h2 className="mt-6 px-4 py-2 text-center text-m font-small tracking-tight rounded-md text-black bg-gray-100">
-						goSolve mini is a limited test version of the goSolve
-						platform is currently invite only, or available for
-						active donors.
-					</h2>
+					<h1 className="mt-6 text-center text-xl font-normal tracking-tight text-black">
+						Create your account
+					</h1>
 				</div>
 
 				<div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -134,7 +132,7 @@ function Login() {
 									type="submit"
 									className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 								>
-									Sign in
+									Create your account
 								</button>
 							</div>
 						</form>
@@ -188,4 +186,4 @@ function Login() {
 	);
 }
 
-export default Login;
+export default Register;

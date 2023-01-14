@@ -27,7 +27,7 @@ const AuthContext = createContext<{
 	} | null;
 	loading: boolean;
 	login: (email: string, password: string) => Promise<UserCredential>;
-	loginWithGoogle: () => Promise<void>;
+	loginWithGoogle: () => Promise<UserCredential>;
 	setShouldRemember: (shouldRemember: boolean) => void;
 	logout: () => Promise<void>;
 	register: (email: string, password: string) => Promise<UserCredential>;
@@ -36,7 +36,7 @@ const AuthContext = createContext<{
 	loading: true,
 	login: (email: string, password: string) =>
 		signInWithEmailAndPassword(auth, email, password),
-	loginWithGoogle: () => Promise.resolve(),
+	loginWithGoogle: () => signInWithPopup(auth, new GoogleAuthProvider()),
 	setShouldRemember: (shouldRemember: boolean) => {},
 	logout: () => Promise.resolve(),
 	register: (email, password) =>
@@ -75,9 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	const loginWithGoogle = async () => {
 		const provider = new GoogleAuthProvider();
-		return await signInWithPopup(auth, provider)
-			.then((result) => {})
-			.catch((error) => {});
+		return await signInWithPopup(auth, provider);
 	};
 
 	const setShouldRemember = async (setShouldRemember: boolean) => {

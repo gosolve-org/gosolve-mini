@@ -62,13 +62,11 @@ function Navbar() {
 
 	const handleNavigate = () => {
 		if (selectedCategory && selectedLocation)
-			router.push({
-				pathname: "",
-				query: {
-					topic: selectedCategory.name.split(" ").join("-"),
-					location: selectedLocation.name.split(" ").join("-"),
-				},
-			});
+			router.push(
+				`/${selectedCategory.name
+					.split(" ")
+					.join("-")}/${selectedLocation.name.split(" ").join("-")}`
+			);
 	};
 	return (
 		<>

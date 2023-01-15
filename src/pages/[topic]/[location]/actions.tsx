@@ -43,8 +43,8 @@ function Actions() {
 	return (
 		<Layout>
 			<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
-				<div>
-					<div className="flex  items-center">
+				<div className="min-w-[75%]">
+					<div className="flex items-center">
 						<h2 className="text-2xl font-xl font-semibold leading-6 text-black">
 							Actions
 						</h2>
@@ -61,7 +61,8 @@ function Actions() {
 							</button>
 						</span>
 					</div>
-					<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+
+					<ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
 						{actions.map((item) => (
 							<li
 								key={item.name}
@@ -77,6 +78,7 @@ function Actions() {
 							</li>
 						))}
 					</ul>
+
 					<div className="flex items-center justify-between px-4 py-3 sm:px-6 mt-10">
 						<div className="flex flex-1 justify-between sm:hidden">
 							<a

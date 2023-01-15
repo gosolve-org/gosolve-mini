@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 	children: ReactNode;
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+function ProtectedRoute({ children }: ProtectedRouteProps) {
 	const { user } = useAuth();
 	const router = useRouter();
 	const routerPath = router.pathname;
@@ -29,6 +29,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 			)}
 		</>
 	);
-};
+}
 
 export default ProtectedRoute;

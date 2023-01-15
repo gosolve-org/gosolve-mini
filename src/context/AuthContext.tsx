@@ -24,6 +24,7 @@ const AuthContext = createContext<{
 		uid: string;
 		email: string | null;
 		displayName: string | null;
+		photoURL: string | null;
 	} | null;
 	loading: boolean;
 	login: (email: string, password: string) => Promise<UserCredential>;
@@ -49,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		uid: string;
 		email: string | null;
 		displayName: string | null;
+		photoURL: string | null;
 	} | null>(null);
 
 	useEffect(() => {
@@ -58,6 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 					uid: user.uid,
 					email: user.email,
 					displayName: user.displayName,
+					photoURL: user.photoURL,
 				});
 			} else {
 				setUser(null);

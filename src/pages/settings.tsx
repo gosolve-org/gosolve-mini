@@ -6,7 +6,7 @@ import { Layout } from "components/common";
 import { useAuth } from "context/AuthContext";
 
 function Settings() {
-	const { user } = useAuth();
+	const { user, logout } = useAuth();
 
 	const [name, setName] = useState<string>(user?.displayName || "");
 	const [username, setUsername] = useState<string>(user?.displayName || "");
@@ -30,6 +30,8 @@ function Settings() {
 
 	const handlePasswordChange = (e: FormEvent<HTMLInputElement>) =>
 		setPassword(e.currentTarget.value);
+
+	const handleLogoutClick = () => logout();
 
 	return (
 		<Layout>
@@ -132,10 +134,17 @@ function Settings() {
 									type="submit"
 									className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 								>
-									Submit
+									Save
 								</button>
 							</div>
 						</form>
+
+						<button
+							onClick={handleLogoutClick}
+							className="mt-5 w-full flex justify-center items-center rounded-md border border-transparent bg-indigo-100 px-3 py-2 text-sm font-medium leading-4 text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+						>
+							Logout
+						</button>
 					</div>
 				</div>
 			</div>

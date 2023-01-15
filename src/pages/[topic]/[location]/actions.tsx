@@ -45,7 +45,7 @@ function Actions() {
 			<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 				<div className="min-w-[75%]">
 					<div className="flex items-center">
-						<h2 className="text-2xl font-xl font-semibold leading-6 text-black">
+						<h2 className="text-2xl font-semibold leading-6 text-black">
 							Actions
 						</h2>
 						<span className="mx-3.5">

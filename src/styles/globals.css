@@ -9,4 +9,30 @@
 	body {
 		@apply h-full;
 	}
+	h1 {
+		@apply text-2xl;
+	}
+	h2 {
+		@apply text-lg;
+	}
+	h3 {
+		@apply text-base;
+	}
+	h4 {
+		@apply text-base;
+	}
+	h5 {
+		@apply text-base;
+	}
+	h6 {
+		@apply text-base;
+	}
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		@apply font-bold;
+	}
 }

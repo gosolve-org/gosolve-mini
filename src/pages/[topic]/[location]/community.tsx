@@ -33,10 +33,6 @@ const communities = [
 	},
 ];
 
-function classNames(...classes: string[]) {
-	return classes.filter(Boolean).join(" ");
-}
-
 function Community() {
 	const router = useRouter();
 	const routerPathname = router.pathname;

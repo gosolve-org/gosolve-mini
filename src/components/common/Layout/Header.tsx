@@ -45,7 +45,7 @@ function Header() {
 					{`${readableTopic} in ${readableLocation}`}
 				</h1>
 			</div>
-			<div className="mt-5 w-1/2">
+			<div className="mt-5 w-[68%] md:max-xl:w-[68%] md:max-lg:w-[78%] md:max-sm:w-[88%]">
 				<div className="sm:hidden">
 					<label htmlFor="tabs" className="sr-only">
 						Select a tab

@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Link from "next/link";
 import {
 	ChevronLeftIcon,
 	ChevronRightIcon,
@@ -64,18 +65,17 @@ function Actions() {
 
 					<ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
 						{actions.map((item) => (
-							<li
-								key={item.name}
-								className="rounded-lg bg-white px-4 py-5 shadow sm:p-6"
-							>
-								<div className="text-xl font-medium text-black">
-									{item.name}
-								</div>
+							<Link key={item.name} href={`/`}>
+								<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
+									<div className="text-xl font-medium text-black">
+										{item.name}
+									</div>
 
-								<div className="mt-16 truncate text-sm font-light text-gray-400">
-									{item.location}
-								</div>
-							</li>
+									<div className="mt-10 truncate text-sm font-light text-gray-400">
+										{item.location}
+									</div>
+								</li>
+							</Link>
 						))}
 					</ul>
 

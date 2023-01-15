@@ -1,18 +1,18 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, Popover, Transition, Listbox } from "@headlessui/react";
+import { Transition, Listbox } from "@headlessui/react";
 import {
 	MagnifyingGlassIcon,
 	CheckIcon,
 	ArrowRightIcon,
 } from "@heroicons/react/20/solid";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import { useAuth } from "context/AuthContext";
 
 const categories = [
-	{ id: 1, name: "Covid-19" },
+	{ id: 1, name: "Covid19" },
 	{ id: 2, name: "Climate Change" },
 	{ id: 3, name: "Inequality" },
 	{ id: 4, name: "Education" },
@@ -33,16 +33,43 @@ function classNames(...classes: string[]) {
 
 function Navbar() {
 	const { user } = useAuth();
+	const router = useRouter();
+
+	const readableTopicId = router?.query?.topic
+		? router?.query?.topic.toString().split("-").join(" ")
+		: "...";
+	const readableLocationId = router?.query?.location
+		? router?.query?.location.toString().split("-").join(" ")
+		: "...";
+
 	const [selectedCategory, setSelectedCategory] = useState<{
-		id: string;
+		id: number;
 		name: string;
 	}>();
 	const [selectedLocation, setSelectedLocation] = useState<{
-		id: string;
+		id: number;
 		name: string;
 	}>();
 
-	const handleNavigate = () => {};
+	useEffect(() => {
+		setSelectedCategory(
+			categories.find((category) => category.name === readableTopicId)
+		);
+		setSelectedLocation(
+			locations.find((location) => location.name === readableLocationId)
+		);
+	}, [readableTopicId, readableLocationId]);
+
+	const handleNavigate = () => {
+		if (selectedCategory && selectedLocation)
+			router.push({
+				pathname: "",
+				query: {
+					topic: selectedCategory.name.split(" ").join("-"),
+					location: selectedLocation.name.split(" ").join("-"),
+				},
+			});
+	};
 	return (
 		<>
 			<div className="mx-auto  px-1 sm:px-2 lg:px-4 bg-white shadow-sm lg:static lg:overflow-y-visible">
@@ -86,7 +113,7 @@ function Navbar() {
 						<span className="w-0.5 h-5 mx-5 bg-gray-200"></span>
 						<span>
 							<Listbox
-								value={selectedCategory}
+								value={selectedCategory || {}}
 								onChange={setSelectedCategory}
 							>
 								{({ open }) => (
@@ -110,7 +137,7 @@ function Navbar() {
 												leaveFrom="opacity-100"
 												leaveTo="opacity-0"
 											>
-												<Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+												<Listbox.Options className="absolute z-10 mt-1 max-h-60 w-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
 													{categories.map(
 														(category) => (
 															<Listbox.Option
@@ -179,7 +206,7 @@ function Navbar() {
 						</span>
 						<span>
 							<Listbox
-								value={selectedLocation}
+								value={selectedLocation || {}}
 								onChange={setSelectedLocation}
 							>
 								{({ open }) => (
@@ -203,7 +230,7 @@ function Navbar() {
 												leaveFrom="opacity-100"
 												leaveTo="opacity-0"
 											>
-												<Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+												<Listbox.Options className="absolute z-10 mt-1 max-h-60 w-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
 													{locations.map(
 														(location) => (
 															<Listbox.Option

@@ -163,7 +163,7 @@ function Topic() {
 						</div>
 					</div>
 
-					<div className="mt-6">
+					<div className="mt-10">
 						<EditorJs />
 					</div>
 

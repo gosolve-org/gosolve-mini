@@ -12,7 +12,6 @@ const addUser = async ({ uid, details }: { uid: string; details?: User }) => {
 			updatedAt: new Date().getTime(),
 		}).then(() => Promise.resolve());
 	} catch (err) {
-		console.log(err);
 		throw new Error("Not allowed");
 	}
 };

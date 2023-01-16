@@ -48,7 +48,6 @@ const AuthContext = createContext<{
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-	const router = useRouter();
 	const [loading, setLoading] = useState<boolean>(true);
 	const [user, setUser] = useState<{
 		uid: string;

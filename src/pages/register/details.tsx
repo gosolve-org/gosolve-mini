@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 
 import { useAuth } from "context/AuthContext";
+import { updateUser } from "pages/api/user";
 
 function Details() {
 	const { user } = useAuth();
@@ -15,6 +16,17 @@ function Details() {
 
 	const handleSubmitDetails = async (e: SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		if (user?.uid) {
+			await updateUser({
+				docId: user.uid,
+				details: {
+					name,
+					username,
+					birthYear,
+				},
+			}).then(() => router.push("/"));
+		}
 	};
 
 	const handleNameChange = (e: FormEvent<HTMLInputElement>) =>

@@ -52,7 +52,7 @@ function Navbar() {
 		: "...";
 	const readableSearchQuery = router?.query?.q
 		? router?.query?.q.toString().split("+").join(" ")
-		: "...";
+		: "";
 
 	const [selectedCategory, setSelectedCategory] = useState<{
 		id: number;

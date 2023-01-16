@@ -1,15 +1,22 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "styles/Home.module.css";
 
-import { Layout } from "components/common";
+import { Layout, Loader } from "components/common";
 import { useAuth } from "context/AuthContext";
+import { DEFAULT_SEARCH } from "constants/defaultSearches";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-	const { logout } = useAuth();
+	const { logout, user } = useAuth();
+	const router = useRouter();
+
+	useEffect(() => {
+		if (user) router.push(DEFAULT_SEARCH);
+	});
 
 	const handleLogoutClick = () => logout();
 
@@ -26,23 +33,7 @@ export default function Home() {
 			</Head>
 			<Layout>
 				<main className={styles.main}>
-					<div className={styles.center}>
-						<Image
-							src="/images/gosolve_logo.svg"
-							alt="goSolve Logo"
-							width={180}
-							height={37}
-							priority
-						/>
-					</div>
-					<div>
-						<button
-							onClick={handleLogoutClick}
-							className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-						>
-							Logout
-						</button>
-					</div>
+					<Loader />
 				</main>
 			</Layout>
 		</>

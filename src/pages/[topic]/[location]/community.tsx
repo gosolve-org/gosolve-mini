@@ -1,13 +1,13 @@
+import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-
 import {
 	ChevronLeftIcon,
 	ChevronRightIcon,
 	PlusIcon,
 } from "@heroicons/react/20/solid";
 
-import { Layout } from "components/common";
+import { Layout, AddCommunityPostModal } from "components/common";
 
 const communities = [
 	{
@@ -34,10 +34,13 @@ const communities = [
 ];
 
 function Community() {
+	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
+		useState(false);
+
 	const router = useRouter();
 	const routerPathname = router.pathname;
 
-	const handleAddCommunityClick = () => {};
+	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
 	return (
 		<Layout>
@@ -191,6 +194,11 @@ function Community() {
 					</div>
 				</div>
 			</div>
+
+			<AddCommunityPostModal
+				open={addCommunityPostModalOpen}
+				setOpen={setAddCommunityPostModalOpen}
+			/>
 		</Layout>
 	);
 }

@@ -1,12 +1,10 @@
+import { useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import {
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	ArrowRightIcon,
-	PlusIcon,
-} from "@heroicons/react/20/solid";
+import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
+
+import { AddCommunityPostModal } from "components/common";
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
 	ssr: false,
@@ -54,6 +52,9 @@ const communities = [
 ];
 
 function Topic() {
+	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
+		useState(false);
+
 	const router = useRouter();
 
 	const topicId = router?.query?.topic
@@ -63,7 +64,10 @@ function Topic() {
 		? router?.query?.location.toString()
 		: "...";
 
-	const handleAddCommunityClick = () => {};
+	const readableTopicId = topicId.split("-").join(" ");
+	const readableLocationId = locationId.split("-").join(" ");
+
+	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
 	const handleSaveClick = () => {};
 
@@ -178,6 +182,11 @@ function Topic() {
 					</div>
 				</div>
 			</div>
+
+			<AddCommunityPostModal
+				open={addCommunityPostModalOpen}
+				setOpen={setAddCommunityPostModalOpen}
+			/>
 		</Layout>
 	);
 }

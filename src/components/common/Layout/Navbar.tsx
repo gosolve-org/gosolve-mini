@@ -1,4 +1,11 @@
-import { useState, Fragment, useEffect } from "react";
+import {
+	useState,
+	Fragment,
+	useEffect,
+	FormEvent,
+	KeyboardEvent,
+	FormControl,
+} from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
@@ -35,11 +42,16 @@ function Navbar() {
 	const { user } = useAuth();
 	const router = useRouter();
 
+	const [searchQuery, setSearchQuery] = useState("");
+
 	const readableTopicId = router?.query?.topic
 		? router?.query?.topic.toString().split("-").join(" ")
 		: "...";
 	const readableLocationId = router?.query?.location
 		? router?.query?.location.toString().split("-").join(" ")
+		: "...";
+	const readableSearchQuery = router?.query?.q
+		? router?.query?.q.toString().split("+").join(" ")
 		: "...";
 
 	const [selectedCategory, setSelectedCategory] = useState<{
@@ -58,7 +70,17 @@ function Navbar() {
 		setSelectedLocation(
 			locations.find((location) => location.name === readableLocationId)
 		);
-	}, [readableTopicId, readableLocationId]);
+		setSearchQuery(readableSearchQuery);
+	}, [readableTopicId, readableLocationId, readableSearchQuery]);
+
+	const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
+		setSearchQuery(e.currentTarget.value);
+
+	const handleSearchKeyPress = (e: KeyboardEvent<FormControl>) => {
+		if (e.key === "Enter" && searchQuery) {
+			router.push(`/search?q=${searchQuery.split(" ").join("+")}`);
+		}
+	};
 
 	const handleNavigate = () => {
 		if (selectedCategory && selectedLocation)
@@ -68,6 +90,7 @@ function Navbar() {
 					.join("-")}/${selectedLocation.name.split(" ").join("-")}`
 			);
 	};
+
 	return (
 		<>
 			<div className="mx-auto  px-1 sm:px-2 lg:px-4 bg-white shadow-sm lg:static lg:overflow-y-visible">
@@ -98,6 +121,9 @@ function Navbar() {
 										name="search"
 										className="block w-full rounded-3xl border border-gray-300 bg-white py-2 pl-4 pr-3 text-sm placeholder-gray-500 focus:border-indigo-500 focus:text-gray-900 focus:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
 										type="search"
+										value={searchQuery}
+										onChange={handleSearchQueryChange}
+										onKeyPress={handleSearchKeyPress}
 									/>
 									<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
 										<MagnifyingGlassIcon

@@ -17,7 +17,7 @@ import {
 	signOut,
 	UserCredential,
 } from "@firebase/auth";
-import { auth } from "utils/auth/initializeApp";
+import { auth } from "utils/firebase";
 
 const AuthContext = createContext<{
 	user: {

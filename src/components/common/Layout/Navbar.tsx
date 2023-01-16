@@ -1,11 +1,4 @@
-import {
-	useState,
-	Fragment,
-	useEffect,
-	FormEvent,
-	KeyboardEvent,
-	FormControl,
-} from "react";
+import { useState, Fragment, useEffect, FormEvent, KeyboardEvent } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
@@ -76,7 +69,7 @@ function Navbar() {
 	const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
 		setSearchQuery(e.currentTarget.value);
 
-	const handleSearchKeyPress = (e: KeyboardEvent<FormControl>) => {
+	const handleSearchKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter" && searchQuery) {
 			router.push(`/search?q=${searchQuery.split(" ").join("+")}`);
 		}

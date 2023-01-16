@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 
 import { useAuth } from "context/AuthContext";
+import { addUser } from "pages/api/user";
 
 function Register() {
 	const [email, setEmail] = useState<string>("");
@@ -10,29 +11,39 @@ function Register() {
 	const [shouldRememberCheckbox, setShouldRememberCheckbox] =
 		useState<boolean>(false);
 
-	const { register, loginWithGoogle, setShouldRemember } = useAuth();
+	const { register, loginWithGoogle, setShouldRemember, logout } = useAuth();
 	const router = useRouter();
 
 	const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		try {
-			await setShouldRemember(shouldRememberCheckbox);
-			await register(email, password);
-			await router.push("/");
-		} catch (error) {
-			// TODO add error handling
-		}
+		await setShouldRemember(shouldRememberCheckbox);
+		await register(email, password)
+			.then(async (credentials) => {
+				await addUser({
+					uid: credentials.user.uid,
+					details: { email: credentials.user.email || "" },
+				}).then(() => router.push("/register/details"));
+			})
+			.catch(async () => {
+				await logout();
+				router.push("/register/waitlist");
+			});
 	};
 
 	const handleGmailLogin = async () => {
-		try {
-			await setShouldRemember(shouldRememberCheckbox);
-			await loginWithGoogle();
-			await router.push("/");
-		} catch (error) {
-			// TODO add error handling
-		}
+		await setShouldRemember(shouldRememberCheckbox);
+		await loginWithGoogle()
+			.then(async (credentials) => {
+				await addUser({
+					uid: credentials.user.uid,
+					details: { email: credentials.user.email || "" },
+				}).then(() => router.push("/register/details"));
+			})
+			.catch(async () => {
+				await logout();
+				router.push("/register/waitlist");
+			});
 	};
 
 	const handleEmailChange = (e: FormEvent<HTMLInputElement>) =>
@@ -163,11 +174,11 @@ function Register() {
 											width="24"
 											height="24"
 											viewBox="0 0 24 24"
-											stroke-width="2"
+											strokeWidth="2"
 											stroke="currentColor"
 											fill="none"
-											stroke-linecap="round"
-											stroke-linejoin="round"
+											strokeLinecap="round"
+											strokeLinejoin="round"
 										>
 											<path
 												stroke="none"

@@ -5,6 +5,7 @@ import {
 	useState,
 	useEffect,
 } from "react";
+import { useRouter } from "next/router";
 import {
 	createUserWithEmailAndPassword,
 	onAuthStateChanged,
@@ -17,7 +18,9 @@ import {
 	signOut,
 	UserCredential,
 } from "@firebase/auth";
+
 import { auth } from "utils/firebase";
+import { updateUser } from "pages/api/user";
 
 const AuthContext = createContext<{
 	user: {
@@ -45,6 +48,7 @@ const AuthContext = createContext<{
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+	const router = useRouter();
 	const [loading, setLoading] = useState<boolean>(true);
 	const [user, setUser] = useState<{
 		uid: string;
@@ -72,13 +76,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		return () => unsubscribe();
 	}, []);
 
-	const login = (email: string, password: string) => {
-		return signInWithEmailAndPassword(auth, email, password);
+	const validateUser = async (credentials: UserCredential) => {
+		return await updateUser({
+			docId: credentials.user.uid,
+			details: { email: credentials.user.email || "" },
+		})
+			.then(() => credentials)
+			.catch(() => {
+				throw new Error("Not allowed");
+			});
+	};
+
+	const login = async (email: string, password: string) => {
+		const credentials = await signInWithEmailAndPassword(
+			auth,
+			email,
+			password
+		);
+
+		return await validateUser(credentials);
 	};
 
 	const loginWithGoogle = async () => {
 		const provider = new GoogleAuthProvider();
-		return await signInWithPopup(auth, provider);
+		const credentials = await signInWithPopup(auth, provider);
+
+		return await validateUser(credentials);
 	};
 
 	const setShouldRemember = async (setShouldRemember: boolean) => {

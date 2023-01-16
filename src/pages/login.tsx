@@ -10,29 +10,29 @@ function Login() {
 	const [shouldRememberCheckbox, setShouldRememberCheckbox] =
 		useState<boolean>(false);
 
-	const { login, loginWithGoogle, setShouldRemember } = useAuth();
+	const { login, loginWithGoogle, setShouldRemember, logout } = useAuth();
 	const router = useRouter();
 
 	const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		try {
-			await setShouldRemember(shouldRememberCheckbox);
-			await login(email, password);
-			await router.push("/");
-		} catch (error) {
-			// TODO add error handling
-		}
+		await setShouldRemember(shouldRememberCheckbox);
+		await login(email, password)
+			.then(() => router.push("/"))
+			.catch(async () => {
+				await logout();
+				router.push("/register/waitlist");
+			});
 	};
 
 	const handleGmailLogin = async () => {
-		try {
-			await setShouldRemember(shouldRememberCheckbox);
-			await loginWithGoogle();
-			await router.push("/");
-		} catch (error) {
-			// TODO add error handling
-		}
+		await setShouldRemember(shouldRememberCheckbox);
+		await loginWithGoogle()
+			.then(() => router.push("/"))
+			.catch(async () => {
+				await logout();
+				router.push("/register/waitlist");
+			});
 	};
 
 	const handleEmailChange = (e: FormEvent<HTMLInputElement>) =>
@@ -165,11 +165,11 @@ function Login() {
 											width="24"
 											height="24"
 											viewBox="0 0 24 24"
-											stroke-width="2"
+											strokeWidth="2"
 											stroke="currentColor"
 											fill="none"
-											stroke-linecap="round"
-											stroke-linejoin="round"
+											strokeLinecap="round"
+											strokeLinejoin="round"
 										>
 											<path
 												stroke="none"

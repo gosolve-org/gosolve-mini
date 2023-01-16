@@ -7,6 +7,7 @@ import { useAuth } from "context/AuthContext";
 
 function Settings() {
 	const { user, logout } = useAuth();
+	console.log("user", user);
 
 	const [name, setName] = useState<string>(user?.displayName || "");
 	const [username, setUsername] = useState<string>(user?.displayName || "");

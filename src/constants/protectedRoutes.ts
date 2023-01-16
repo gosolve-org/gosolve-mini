@@ -1,8 +1,3 @@
-const UNPROTECTED_ROUTES = [
-	"/login",
-	"/register",
-	"/register/waitlist",
-	"/register/details",
-];
+const UNPROTECTED_ROUTES = ["/login", "/register", "/register/waitlist"];
 
 export { UNPROTECTED_ROUTES };

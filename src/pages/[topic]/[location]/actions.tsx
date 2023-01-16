@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
@@ -6,7 +7,7 @@ import {
 	PlusIcon,
 } from "@heroicons/react/20/solid";
 
-import { Layout } from "components/common";
+import { AddActionModal, Layout } from "components/common";
 
 const actions = [
 	{
@@ -36,10 +37,12 @@ const actions = [
 ];
 
 function Actions() {
+	const [addActionModalOpen, setActionModalOpen] = useState(false);
+
 	const router = useRouter();
 	const routerPathname = router.pathname;
 
-	const handleAddActionClick = () => {};
+	const handleAddActionClick = () => setActionModalOpen(true);
 
 	return (
 		<Layout>
@@ -178,6 +181,11 @@ function Actions() {
 					</div>
 				</div>
 			</div>
+
+			<AddActionModal
+				open={addActionModalOpen}
+				setOpen={setActionModalOpen}
+			/>
 		</Layout>
 	);
 }

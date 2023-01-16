@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
 
-import { AddCommunityPostModal } from "components/common";
+import { AddActionModal, AddCommunityPostModal } from "components/common";
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
 	ssr: false,
@@ -52,6 +52,7 @@ const communities = [
 ];
 
 function Topic() {
+	const [addActionModalOpen, setActionModalOpen] = useState(false);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
 		useState(false);
 
@@ -67,6 +68,7 @@ function Topic() {
 	const readableTopicId = topicId.split("-").join(" ");
 	const readableLocationId = locationId.split("-").join(" ");
 
+	const handleAddActionClick = () => setActionModalOpen(true);
 	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
 	const handleSaveClick = () => {};
@@ -81,6 +83,18 @@ function Topic() {
 								<h2 className="text-xl font-medium leading-6 text-black">
 									Actions
 								</h2>
+								<span className="mx-3.5">
+									<button
+										onClick={handleAddActionClick}
+										type="button"
+										className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+									>
+										<PlusIcon
+											className="h-4 w-4"
+											aria-hidden="true"
+										/>
+									</button>
+								</span>
 								<span className="mx-3.5">
 									<Link
 										href={`/${topicId}/${locationId}/actions`}
@@ -182,6 +196,11 @@ function Topic() {
 					</div>
 				</div>
 			</div>
+
+			<AddActionModal
+				open={addActionModalOpen}
+				setOpen={setActionModalOpen}
+			/>
 
 			<AddCommunityPostModal
 				open={addCommunityPostModalOpen}

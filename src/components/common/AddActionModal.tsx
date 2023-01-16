@@ -1,14 +1,19 @@
 import { Fragment } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-interface AddCommunityPostProps {
+const EditorJs = dynamic(() => import("components/common/Editor"), {
+	ssr: false,
+});
+
+interface AddActionModalProps {
 	open: boolean;
 	setOpen: (open: boolean) => void;
 }
 
-function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
+function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	const router = useRouter();
 	const topicId = router?.query?.topic
 		? router?.query?.topic.toString()
@@ -20,7 +25,7 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 	const readableTopicId = topicId.split("-").join(" ");
 	const readableLocationId = locationId.split("-").join(" ");
 
-	const handleAddCommuntyPostSubmit = () => {};
+	const handleAddActionSubmit = () => {};
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -68,13 +73,13 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 											as="h3"
 											className="text-xs text-gray-500 font-normal truncate"
 										>
-											{`You're creating a post in the community for "${readableTopicId} in ${readableLocationId}"`}
+											{`You're creating an action for "${readableTopicId} in ${readableLocationId}"`}
 										</Dialog.Title>
 									</div>
 								</div>
 								<form
 									className="mt-8"
-									onSubmit={handleAddCommuntyPostSubmit}
+									onSubmit={handleAddActionSubmit}
 								>
 									<div>
 										<label
@@ -93,24 +98,11 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 											/>
 										</div>
 									</div>
-									<div className="mt-6">
-										<label
-											htmlFor="comment"
-											className="block text-m font-medium text-black"
-										>
-											Add your comment
-										</label>
-										<div className="mt-1">
-											<textarea
-												rows={4}
-												name="comment"
-												id="comment"
-												className="p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-												defaultValue={""}
-												placeholder="Write a comment..."
-											/>
-										</div>
+
+									<div className="mt-10">
+										<EditorJs />
 									</div>
+
 									<div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
 										<button
 											type="submit"
@@ -130,4 +122,4 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 	);
 }
 
-export default AddCommunityPost;
+export default AddActionModal;

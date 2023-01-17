@@ -1,5 +1,7 @@
 import { useState, Fragment, useEffect, FormEvent, KeyboardEvent } from "react";
 import { useRouter } from "next/router";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { collection } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
 import { Transition, Listbox } from "@headlessui/react";
@@ -9,6 +11,9 @@ import {
 	ArrowRightIcon,
 } from "@heroicons/react/20/solid";
 
+import { Category } from "models/Category";
+import { Location } from "models/Location";
+import { db } from "utils/firebase";
 import { useAuth } from "context/AuthContext";
 
 const categories = [
@@ -35,7 +40,25 @@ function Navbar() {
 	const { user } = useAuth();
 	const router = useRouter();
 
+	const [categoriesCollection] = useCollection(collection(db, "categories"), {
+		snapshotListenOptions: { includeMetadataChanges: true },
+	});
+
+	const [locationsCollection] = useCollection(collection(db, "locations"), {
+		snapshotListenOptions: { includeMetadataChanges: true },
+	});
+
 	const [searchQuery, setSearchQuery] = useState("");
+	const [categories, setCategories] = useState<Category[]>([
+		{ id: "", category: "" },
+	]);
+	const [locations, setLocations] = useState<Location[]>([
+		{ id: "", location: "" },
+	]);
+
+	const [selectedCategory, setSelectedCategory] = useState<Category>();
+
+	const [selectedLocation, setSelectedLocation] = useState<Location>();
 
 	const readableCategoryId = router?.query?.category
 		? router?.query?.category.toString().split("-").join(" ")
@@ -47,24 +70,47 @@ function Navbar() {
 		? router?.query?.q.toString().split("+").join(" ")
 		: "";
 
-	const [selectedCategory, setSelectedCategory] = useState<{
-		id: number;
-		name: string;
-	}>();
-	const [selectedLocation, setSelectedLocation] = useState<{
-		id: number;
-		name: string;
-	}>();
+	useEffect(() => {
+		setCategories(
+			categoriesCollection
+				? categoriesCollection.docs.map((doc) => ({
+						id: doc.id,
+						category: doc.data().category,
+				  }))
+				: [{ id: "", category: "" }]
+		);
+	}, [categoriesCollection]);
+
+	useEffect(() => {
+		setLocations(
+			locationsCollection
+				? locationsCollection.docs.map((doc) => ({
+						id: doc.id,
+						location: doc.data().location,
+				  }))
+				: [{ id: "", location: "" }]
+		);
+	}, [locationsCollection]);
 
 	useEffect(() => {
 		setSelectedCategory(
-			categories.find((category) => category.name === readableCategoryId)
+			categories.find(
+				(category) => category.category === readableCategoryId
+			)
 		);
 		setSelectedLocation(
-			locations.find((location) => location.name === readableLocationId)
+			locations.find(
+				(location) => location.location === readableLocationId
+			)
 		);
 		setSearchQuery(readableSearchQuery);
-	}, [readableCategoryId, readableLocationId, readableSearchQuery]);
+	}, [
+		readableCategoryId,
+		readableLocationId,
+		readableSearchQuery,
+		categories,
+		locations,
+	]);
 
 	const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
 		setSearchQuery(e.currentTarget.value);
@@ -78,9 +124,11 @@ function Navbar() {
 	const handleNavigate = () => {
 		if (selectedCategory && selectedLocation)
 			router.push(
-				`/${selectedCategory.name
+				`/${selectedCategory.category
 					.split(" ")
-					.join("-")}/${selectedLocation.name.split(" ").join("-")}`
+					.join("-")}/${selectedLocation.location
+					.split(" ")
+					.join("-")}`
 			);
 	};
 
@@ -116,7 +164,7 @@ function Navbar() {
 										type="search"
 										value={searchQuery}
 										onChange={handleSearchQueryChange}
-										onKeyPress={handleSearchKeyPress}
+										onKeyUp={handleSearchKeyPress}
 									/>
 									<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
 										<MagnifyingGlassIcon
@@ -142,7 +190,7 @@ function Navbar() {
 											<Listbox.Button className="relative  cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
 												<span className="block truncate">
 													{selectedCategory
-														? selectedCategory.name
+														? selectedCategory.category
 														: "Enter the category name"}
 												</span>
 											</Listbox.Button>
@@ -187,7 +235,7 @@ function Navbar() {
 																			)}
 																		>
 																			{
-																				category.name
+																				category.category
 																			}
 																		</span>
 
@@ -235,7 +283,7 @@ function Navbar() {
 											<Listbox.Button className="relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
 												<span className="block truncate">
 													{selectedLocation
-														? selectedLocation.name
+														? selectedLocation.location
 														: "Enter the location name"}
 												</span>
 											</Listbox.Button>
@@ -280,7 +328,7 @@ function Navbar() {
 																			)}
 																		>
 																			{
-																				location.name
+																				location.location
 																			}
 																		</span>
 

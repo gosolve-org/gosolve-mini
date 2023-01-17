@@ -1,4 +1,5 @@
 import { useState, useEffect, SyntheticEvent, FormEvent } from "react";
+import { useRouter } from "next/router";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 import { updatePassword } from "@firebase/auth";
@@ -11,7 +12,8 @@ import { useAuth } from "context/AuthContext";
 import { updateUser } from "./api/user";
 
 function Settings() {
-	const { user, logout, login } = useAuth();
+	const { user, logout } = useAuth();
+	const router = useRouter();
 
 	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
 		snapshotListenOptions: { includeMetadataChanges: true },
@@ -60,7 +62,10 @@ function Settings() {
 		// TODO add modal, to retype password, reauthenticate, and call updatePassword(newPassword)
 	};
 
-	const handleLogoutClick = () => logout();
+	const handleLogoutClick = async () => {
+		await logout();
+		router.push("/login");
+	};
 
 	return (
 		<Layout>

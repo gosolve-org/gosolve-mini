@@ -32,6 +32,7 @@ const actions = [
 
 const communities = [
 	{
+		id: "ASdsadjihasDsa",
 		title: "Fundraiser for Cancer Research",
 		createdBy: "Barack Obama",
 		createdAt: "December 9 at 11:43 AM",
@@ -39,6 +40,7 @@ const communities = [
 			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
 	},
 	{
+		id: "jklhAsdjGFdssdf",
 		title: "Fundraiser for Cancer Research",
 		createdBy: "Barack Obama",
 		createdAt: "December 9 at 11:43 AM",
@@ -46,6 +48,7 @@ const communities = [
 			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
 	},
 	{
+		id: "kjldsaERtsfdsad",
 		title: "Fundraiser for Cancer Research",
 		createdBy: "Barack Obama",
 		createdAt: "December 9 at 11:43 AM",
@@ -54,7 +57,7 @@ const communities = [
 	},
 ];
 
-function Category() {
+function Topic() {
 	const [addActionModalOpen, setActionModalOpen] = useState(false);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
 		useState(false);
@@ -166,8 +169,8 @@ function Category() {
 							<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
 								{communities.map((item) => (
 									<Link
-										key={item.title}
-										href={`/${categoryId}/${locationId}/community`}
+										key={item.id}
+										href={`/${categoryId}/${locationId}/community?post=${item.id}`}
 									>
 										<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 											<div className="text-xl font-medium text-black">
@@ -213,4 +216,4 @@ function Category() {
 	);
 }
 
-export default Category;
+export default Topic;

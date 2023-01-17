@@ -4,6 +4,7 @@ import React, { ReactNode } from "react";
 import Navbar from "./Navbar";
 import Header from "./Header";
 import ActionHeader from "./ActionHeader";
+import PostHeader from "./PostHeader";
 
 interface LayoutProps {
 	children: ReactNode;
@@ -21,10 +22,12 @@ function Layout({ children }: LayoutProps) {
 	const actionId = router?.query?.action
 		? router?.query?.action.toString()
 		: "";
+	const postId = router?.query?.post ? router?.query?.post.toString() : "";
 
 	const renderHeader = () => {
 		if (categoryId && locationId) {
-			if (actionId) return <ActionHeader />;
+			if (postId) return <PostHeader />;
+			else if (actionId) return <ActionHeader />;
 
 			return <Header />;
 		}

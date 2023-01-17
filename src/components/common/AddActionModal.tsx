@@ -15,14 +15,14 @@ interface AddActionModalProps {
 
 function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	const router = useRouter();
-	const topicId = router?.query?.topic
-		? router?.query?.topic.toString()
+	const categoryId = router?.query?.category
+		? router?.query?.category.toString()
 		: "...";
 	const locationId = router?.query?.location
 		? router?.query?.location.toString()
 		: "...";
 
-	const readableTopicId = topicId.split("-").join(" ");
+	const readableCategoryId = categoryId.split("-").join(" ");
 	const readableLocationId = locationId.split("-").join(" ");
 
 	const handleAddActionSubmit = () => {};
@@ -73,7 +73,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 											as="h3"
 											className="text-xs text-gray-500 font-normal truncate"
 										>
-											{`You're creating an action for "${readableTopicId} in ${readableLocationId}"`}
+											{`You're creating an action for "${readableCategoryId} in ${readableLocationId}"`}
 										</Dialog.Title>
 									</div>
 								</div>

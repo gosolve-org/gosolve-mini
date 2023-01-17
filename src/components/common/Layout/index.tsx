@@ -11,7 +11,9 @@ interface LayoutProps {
 function Layout({ children }: LayoutProps) {
 	const router = useRouter();
 
-	const topicId = router?.query?.topic ? router?.query?.topic.toString() : "";
+	const categoryId = router?.query?.category
+		? router?.query?.category.toString()
+		: "";
 	const locationId = router?.query?.location
 		? router?.query?.location.toString()
 		: "";
@@ -19,7 +21,7 @@ function Layout({ children }: LayoutProps) {
 	return (
 		<div>
 			<Navbar />
-			{topicId && locationId ? <Header /> : null}
+			{categoryId && locationId ? <Header /> : null}
 			<main>{children}</main>
 		</div>
 	);

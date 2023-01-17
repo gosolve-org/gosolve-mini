@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 const tabs = [
-	{ name: "Topic", href: "" },
+	{ name: "Category", href: "" },
 	{ name: "Actions", href: "/actions" },
 	{ name: "Community", href: "/community" },
 ];
@@ -15,24 +15,24 @@ function classNames(...classes: string[]) {
 function Header() {
 	const router = useRouter();
 	const pathname = router.pathname;
-	const [currentTab, setCurrentTab] = useState("Topic");
+	const [currentTab, setCurrentTab] = useState("Category");
 
 	useEffect(() => {
 		const lastPath = pathname.substring(pathname.lastIndexOf("/") + 1);
 
 		if (lastPath === "actions") setCurrentTab("Actions");
 		else if (lastPath === "community") setCurrentTab("Community");
-		else setCurrentTab("Topic");
+		else setCurrentTab("Category");
 	}, [pathname]);
 
-	const topicId = router?.query?.topic
-		? router?.query?.topic.toString()
+	const categoryId = router?.query?.category
+		? router?.query?.category.toString()
 		: "...";
 	const locationId = router?.query?.location
 		? router?.query?.location.toString()
 		: "...";
 
-	const readableTopic = topicId.split("-").join(" ");
+	const readableCategory = categoryId.split("-").join(" ");
 	const readableLocation = locationId.split("-").join(" ");
 
 	const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
@@ -42,7 +42,7 @@ function Header() {
 		<div className="flex flex-col justify-center h-52 items-center bg-sky-100">
 			<div className="mt-5 sm:mx-auto sm:w-full sm:max-w-md">
 				<h1 className=" px-4 py-2 text-center text-3xl font-small tracking-tight text-black ">
-					{`${readableTopic} in ${readableLocation}`}
+					{`${readableCategory} in ${readableLocation}`}
 				</h1>
 			</div>
 			<div className="mt-5 w-[68%] md:max-xl:w-[68%] md:max-lg:w-[78%] md:max-sm:w-[88%]">
@@ -71,7 +71,7 @@ function Header() {
 						{tabs.map((tab, tabIdx) => (
 							<Link
 								key={tab.name}
-								href={`/${topicId}/${locationId}${tab.href}`}
+								href={`/${categoryId}/${locationId}${tab.href}`}
 								className={classNames(
 									tab.name === currentTab
 										? "text-gray-900"

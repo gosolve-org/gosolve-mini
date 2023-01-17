@@ -5,16 +5,16 @@ import { useAuth } from "context/AuthContext";
 import { Layout, Loader } from "components/common";
 import { DEFAULT_LOCATION } from "constants/defaultSearches";
 
-function Topic() {
+function Category() {
 	const { user } = useAuth();
 	const router = useRouter();
 
-	const readableTopicId = router?.query?.topic
-		? router?.query?.topic.toString().split("-").join(" ")
+	const readableCategoryId = router?.query?.category
+		? router?.query?.category.toString().split("-").join(" ")
 		: "";
 
 	useEffect(() => {
-		if (user) router.push(`/${readableTopicId}${DEFAULT_LOCATION}`);
+		if (user) router.push(`/${readableCategoryId}${DEFAULT_LOCATION}`);
 	});
 
 	return (
@@ -26,4 +26,4 @@ function Topic() {
 	);
 }
 
-export default Topic;
+export default Category;

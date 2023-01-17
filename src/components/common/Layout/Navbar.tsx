@@ -37,8 +37,8 @@ function Navbar() {
 
 	const [searchQuery, setSearchQuery] = useState("");
 
-	const readableTopicId = router?.query?.topic
-		? router?.query?.topic.toString().split("-").join(" ")
+	const readableCategoryId = router?.query?.category
+		? router?.query?.category.toString().split("-").join(" ")
 		: "...";
 	const readableLocationId = router?.query?.location
 		? router?.query?.location.toString().split("-").join(" ")
@@ -58,13 +58,13 @@ function Navbar() {
 
 	useEffect(() => {
 		setSelectedCategory(
-			categories.find((category) => category.name === readableTopicId)
+			categories.find((category) => category.name === readableCategoryId)
 		);
 		setSelectedLocation(
 			locations.find((location) => location.name === readableLocationId)
 		);
 		setSearchQuery(readableSearchQuery);
-	}, [readableTopicId, readableLocationId, readableSearchQuery]);
+	}, [readableCategoryId, readableLocationId, readableSearchQuery]);
 
 	const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
 		setSearchQuery(e.currentTarget.value);

@@ -26,7 +26,7 @@ const searchResults = [
 		title: "Fundraiser for Cancer Research",
 		createdBy: "Barack Obama",
 		createdAt: "December 9 at 11:43 AM",
-		type: "Topic",
+		type: "Category",
 	},
 ];
 

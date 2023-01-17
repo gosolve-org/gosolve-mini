@@ -51,21 +51,21 @@ const communities = [
 	},
 ];
 
-function Topic() {
+function Category() {
 	const [addActionModalOpen, setActionModalOpen] = useState(false);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
 		useState(false);
 
 	const router = useRouter();
 
-	const topicId = router?.query?.topic
-		? router?.query?.topic.toString()
+	const categoryId = router?.query?.category
+		? router?.query?.category.toString()
 		: "...";
 	const locationId = router?.query?.location
 		? router?.query?.location.toString()
 		: "...";
 
-	const readableTopicId = topicId.split("-").join(" ");
+	const readableCategoryId = categoryId.split("-").join(" ");
 	const readableLocationId = locationId.split("-").join(" ");
 
 	const handleAddActionClick = () => setActionModalOpen(true);
@@ -97,7 +97,7 @@ function Topic() {
 								</span>
 								<span className="mx-3.5">
 									<Link
-										href={`/${topicId}/${locationId}/actions`}
+										href={`/${categoryId}/${locationId}/actions`}
 										type="button"
 										className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 									>
@@ -113,7 +113,7 @@ function Topic() {
 								{actions.map((item) => (
 									<Link
 										key={item.name}
-										href={`/${topicId}/${locationId}/actions`}
+										href={`/${categoryId}/${locationId}/actions`}
 									>
 										<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 											<div className="text-xl font-medium text-black">
@@ -148,7 +148,7 @@ function Topic() {
 								</span>
 								<span className="mr-3.5">
 									<Link
-										href={`/${topicId}/${locationId}/community`}
+										href={`/${categoryId}/${locationId}/community`}
 										type="button"
 										className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 									>
@@ -164,7 +164,7 @@ function Topic() {
 								{communities.map((item) => (
 									<Link
 										key={item.title}
-										href={`/${topicId}/${locationId}/community`}
+										href={`/${categoryId}/${locationId}/community`}
 									>
 										<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 											<div className="text-xl font-medium text-black">
@@ -210,4 +210,4 @@ function Topic() {
 	);
 }
 
-export default Topic;
+export default Category;

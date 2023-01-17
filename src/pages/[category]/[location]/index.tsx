@@ -14,14 +14,17 @@ import { Layout } from "components/common";
 
 const actions = [
 	{
+		id: "ASdsadjihasDsa",
 		name: "Fundraiser for Cancer Research",
 		location: "Los Angeles Children’s Hospital",
 	},
 	{
+		id: "jklhAsdjGFdssdf",
 		name: "Fundraiser for Cancer Research",
 		location: "Los Angeles Children’s Hospital",
 	},
 	{
+		id: "kjldsaERtsfdsad",
 		name: "Fundraiser for Cancer Research",
 		location: "Los Angeles Children’s Hospital",
 	},
@@ -76,7 +79,7 @@ function Category() {
 	return (
 		<Layout>
 			<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
-				<div className="min-w-[75%]">
+				<div className="w-full max-w-4xl">
 					<div className="bg-gray-100 p-6 rounded-lg">
 						<div>
 							<div className="flex items-center">
@@ -112,8 +115,8 @@ function Category() {
 							<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
 								{actions.map((item) => (
 									<Link
-										key={item.name}
-										href={`/${categoryId}/${locationId}/actions`}
+										key={item.id}
+										href={`/${categoryId}/${locationId}/actions?action=${item.id}&tab=action`}
 									>
 										<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 											<div className="text-xl font-medium text-black">

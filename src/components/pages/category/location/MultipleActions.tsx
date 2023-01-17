@@ -7,52 +7,66 @@ import {
 	PlusIcon,
 } from "@heroicons/react/20/solid";
 
-import { Layout, AddCommunityPostModal } from "components/common";
+import { AddActionModal, Layout } from "components/common";
 
-const communities = [
+const actions = [
 	{
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
+		id: "gghsdfjihasDsa",
+		name: "Fundraiser for Cancer Research",
+		location: "Los Angeles Children’s Hospital",
 	},
 	{
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
+		id: "ASdsadjihasDsa",
+		name: "Fundraiser for Cancer Research",
+		location: "Los Angeles Children’s Hospital",
 	},
 	{
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
+		id: "wqeasddjihasDsa",
+		name: "Fundraiser for Cancer Research",
+		location: "Los Angeles Children’s Hospital",
+	},
+	{
+		id: "SdsadjihasDsa",
+		name: "Fundraiser for Cancer Research",
+		location: "Los Angeles Children’s Hospital",
+	},
+	{
+		id: "qwedjihasDsa",
+		name: "Fundraiser for Cancer Research",
+		location: "Los Angeles Children’s Hospital",
+	},
+	{
+		id: "dadajihasDsa",
+		name: "Fundraiser for Cancer Research",
+		location: "Los Angeles Children’s Hospital",
 	},
 ];
 
-function Community() {
-	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
-		useState(false);
+function MultipleActions() {
+	const [addActionModalOpen, setActionModalOpen] = useState(false);
 
 	const router = useRouter();
-	const routerPathname = router.pathname;
 
-	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
+	const categoryId = router?.query?.category
+		? router?.query?.category.toString()
+		: "...";
+	const locationId = router?.query?.location
+		? router?.query?.location.toString()
+		: "...";
+
+	const handleAddActionClick = () => setActionModalOpen(true);
 
 	return (
 		<Layout>
-			<div className="flex min-h-full flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
-				<div className="min-w-[75%]">
+			<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
+				<div className="w-full max-w-4xl">
 					<div className="flex items-center">
-						<h2 className="text-2xl font-xl font-semibold leading-6 text-black">
-							Community
+						<h2 className="text-2xl font-semibold leading-6 text-black">
+							Actions
 						</h2>
 						<span className="mx-3.5">
 							<button
-								onClick={handleAddCommunityClick}
+								onClick={handleAddActionClick}
 								type="button"
 								className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 							>
@@ -64,37 +78,25 @@ function Community() {
 						</span>
 					</div>
 
-					<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
-						{communities.map((item) => (
+					<ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
+						{actions.map((item) => (
 							<Link
-								href="/"
-								className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb w-full"
-								key={item.title}
+								key={item.id}
+								href={`/${categoryId}/${locationId}/actions?action=${item.id}&tab=action`}
 							>
-								<h4 className="text-2xl mb-4">{item.title}</h4>
-								<div className="flex space-x-3 justify-center items-center  mb-4">
-									<div className="flex-shrink-0">
-										<img
-											className="h-7 w-7 rounded-full"
-											src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-											alt=""
-										/>
+								<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
+									<div className="text-xl font-medium text-black">
+										{item.name}
 									</div>
-									<div className="min-w-0 flex-1">
-										<span className="text-sm font-medium text-gray-900">
-											{item.createdBy}
-										</span>
-										<span className="text-sm text-gray-500 ml-4">
-											{item.createdAt}
-										</span>
+
+									<div className="mt-10 truncate text-sm font-light text-gray-400">
+										{item.location}
 									</div>
-								</div>
-								<p className="text-sm text-gray-500 mb-1">
-									{item.description}
-								</p>
+								</li>
 							</Link>
 						))}
-					</dl>
+					</ul>
+
 					<div className="flex items-center justify-between px-4 py-3 sm:px-6 mt-10">
 						<div className="flex flex-1 justify-between sm:hidden">
 							<a
@@ -195,12 +197,12 @@ function Community() {
 				</div>
 			</div>
 
-			<AddCommunityPostModal
-				open={addCommunityPostModalOpen}
-				setOpen={setAddCommunityPostModalOpen}
+			<AddActionModal
+				open={addActionModalOpen}
+				setOpen={setActionModalOpen}
 			/>
 		</Layout>
 	);
 }
 
-export default Community;
+export default MultipleActions;

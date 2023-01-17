@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 const tabs = [
-	{ name: "Category", href: "" },
+	{ name: "Topic", href: "" },
 	{ name: "Actions", href: "/actions" },
 	{ name: "Community", href: "/community" },
 ];
@@ -15,14 +15,14 @@ function classNames(...classes: string[]) {
 function Header() {
 	const router = useRouter();
 	const pathname = router.pathname;
-	const [currentTab, setCurrentTab] = useState("Category");
+	const [currentTab, setCurrentTab] = useState("Topic");
 
 	useEffect(() => {
 		const lastPath = pathname.substring(pathname.lastIndexOf("/") + 1);
 
 		if (lastPath === "actions") setCurrentTab("Actions");
 		else if (lastPath === "community") setCurrentTab("Community");
-		else setCurrentTab("Category");
+		else setCurrentTab("Topic");
 	}, [pathname]);
 
 	const categoryId = router?.query?.category

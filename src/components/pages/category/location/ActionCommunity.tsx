@@ -33,7 +33,7 @@ const communities = [
 	},
 ];
 
-function Community() {
+function ActionCommunity() {
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
 		useState(false);
 
@@ -72,7 +72,7 @@ function Community() {
 								key={item.title}
 							>
 								<h4 className="text-2xl mb-4">{item.title}</h4>
-								<div className="flex space-x-3 justify-center items-center  mb-4">
+								<div className="flex space-x-3 justify-center items-center mb-4">
 									<div className="flex-shrink-0">
 										<img
 											className="h-7 w-7 rounded-full"
@@ -203,4 +203,4 @@ function Community() {
 	);
 }
 
-export default Community;
+export default ActionCommunity;

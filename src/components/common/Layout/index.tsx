@@ -3,6 +3,7 @@ import React, { ReactNode } from "react";
 
 import Navbar from "./Navbar";
 import Header from "./Header";
+import ActionHeader from "./ActionHeader";
 
 interface LayoutProps {
 	children: ReactNode;
@@ -17,11 +18,23 @@ function Layout({ children }: LayoutProps) {
 	const locationId = router?.query?.location
 		? router?.query?.location.toString()
 		: "";
+	const actionId = router?.query?.action
+		? router?.query?.action.toString()
+		: "";
+
+	const renderHeader = () => {
+		if (categoryId && locationId) {
+			if (actionId) return <ActionHeader />;
+
+			return <Header />;
+		}
+		return null;
+	};
 
 	return (
 		<div>
 			<Navbar />
-			{categoryId && locationId ? <Header /> : null}
+			{renderHeader()}
 			<main>{children}</main>
 		</div>
 	);

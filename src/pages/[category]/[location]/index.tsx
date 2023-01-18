@@ -1,7 +1,14 @@
 import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
-import { collection, query, where, doc, limit } from "firebase/firestore";
+import {
+	collection,
+	query,
+	where,
+	doc,
+	limit,
+	orderBy,
+} from "firebase/firestore";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
@@ -18,33 +25,6 @@ const EditorJs = dynamic(() => import("components/common/Editor"), {
 });
 
 import { Layout } from "components/common";
-
-const communities = [
-	{
-		id: "ASdsadjihasDsa",
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
-	},
-	{
-		id: "jklhAsdjGFdssdf",
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
-	},
-	{
-		id: "kjldsaERtsfdsad",
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
-	},
-];
 
 function Topic() {
 	const { user } = useAuth();
@@ -94,6 +74,7 @@ function Topic() {
 		query(
 			collection(db, "actions"),
 			where("topicId", "==", topicId),
+			orderBy("updatedAt", "desc"),
 			limit(3)
 		),
 		{
@@ -105,6 +86,7 @@ function Topic() {
 		query(
 			collection(db, "posts"),
 			where("topicId", "==", topicId),
+			orderBy("updatedAt", "desc"),
 			limit(3)
 		),
 		{
@@ -245,7 +227,9 @@ function Topic() {
 													</div>
 
 													<div className="mt-10 truncate text-sm font-light text-gray-400">
-														{itemData.createdBy}
+														{
+															itemData.authorUsername
+														}
 													</div>
 												</li>
 											</Link>

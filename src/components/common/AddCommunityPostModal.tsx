@@ -79,7 +79,9 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 			},
 		}).then((docId) => {
 			setOpen(false);
-			router.push(`/${categoryQuery}/${locationQuery}?post=${docId}`);
+			router.push(
+				`/${categoryQuery}/${locationQuery}/community?post=${docId}`
+			);
 		});
 	};
 

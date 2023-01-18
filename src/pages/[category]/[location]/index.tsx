@@ -101,6 +101,17 @@ function Topic() {
 		}
 	);
 
+	const [postsCollection, postsLoading] = useCollection(
+		query(
+			collection(db, "posts"),
+			where("topicId", "==", topicId),
+			limit(3)
+		),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
+
 	const canUserEdit =
 		userProfile?.data()?.role === "admin" ||
 		userProfile?.data()?.role === "editor";
@@ -167,8 +178,8 @@ function Topic() {
 										const itemData = item.data();
 										return (
 											<Link
-												key={itemData.id}
-												href={`/${categoryQuery}/${locationQuery}/actions?action=${itemData.id}&tab=action`}
+												key={item.id}
+												href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
 											>
 												<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 													<div className="text-xl font-medium text-black">
@@ -221,24 +232,29 @@ function Topic() {
 									</Link>
 								</span>
 							</div>
-							<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-								{communities.map((item) => (
-									<Link
-										key={item.id}
-										href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
-									>
-										<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
-											<div className="text-xl font-medium text-black">
-												{item.title}
-											</div>
+							{!postsLoading ? (
+								<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+									{postsCollection?.docs?.map((item) => {
+										const itemData = item.data();
+										return (
+											<Link
+												key={item.id}
+												href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
+											>
+												<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
+													<div className="text-xl font-medium text-black">
+														{itemData.title}
+													</div>
 
-											<div className="mt-10 truncate text-sm font-light text-gray-400">
-												{item.createdBy}
-											</div>
-										</li>
-									</Link>
-								))}
-							</ul>
+													<div className="mt-10 truncate text-sm font-light text-gray-400">
+														{itemData.createdBy}
+													</div>
+												</li>
+											</Link>
+										);
+									})}
+								</ul>
+							) : null}
 						</div>
 					</div>
 

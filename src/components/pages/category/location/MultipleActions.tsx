@@ -14,39 +14,6 @@ import { AddActionModal, Layout } from "components/common";
 import { useAuth } from "context/AuthContext";
 import { DataContext } from "pages/_app";
 
-const actions = [
-	{
-		id: "gghsdfjihasDsa",
-		name: "Fundraiser for Cancer Research",
-		location: "Los Angeles Children’s Hospital",
-	},
-	{
-		id: "ASdsadjihasDsa",
-		name: "Fundraiser for Cancer Research",
-		location: "Los Angeles Children’s Hospital",
-	},
-	{
-		id: "wqeasddjihasDsa",
-		name: "Fundraiser for Cancer Research",
-		location: "Los Angeles Children’s Hospital",
-	},
-	{
-		id: "SdsadjihasDsa",
-		name: "Fundraiser for Cancer Research",
-		location: "Los Angeles Children’s Hospital",
-	},
-	{
-		id: "qwedjihasDsa",
-		name: "Fundraiser for Cancer Research",
-		location: "Los Angeles Children’s Hospital",
-	},
-	{
-		id: "dadajihasDsa",
-		name: "Fundraiser for Cancer Research",
-		location: "Los Angeles Children’s Hospital",
-	},
-];
-
 function MultipleActions() {
 	const { user } = useAuth();
 	const router = useRouter();
@@ -120,7 +87,7 @@ function MultipleActions() {
 								return (
 									<Link
 										key={itemData.id}
-										href={`/${categoryQuery}/${locationQuery}/actions?action=${itemData.id}&tab=action`}
+										href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
 									>
 										<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 											<div className="text-xl font-medium text-black">

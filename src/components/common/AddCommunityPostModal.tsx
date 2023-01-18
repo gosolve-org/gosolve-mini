@@ -1,7 +1,20 @@
-import { Fragment } from "react";
+import {
+	Fragment,
+	useState,
+	FormEvent,
+	useContext,
+	SyntheticEvent,
+} from "react";
 import { useRouter } from "next/router";
+import { useCollection, useDocument } from "react-firebase-hooks/firestore";
+import { collection, query, where, doc } from "firebase/firestore";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+
+import { useAuth } from "context/AuthContext";
+import { db } from "utils/firebase";
+import { DataContext } from "pages/_app";
+import { addPost } from "pages/api/post";
 
 interface AddCommunityPostProps {
 	open: boolean;
@@ -9,7 +22,28 @@ interface AddCommunityPostProps {
 }
 
 function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
+	const { user } = useAuth();
 	const router = useRouter();
+	const { currentCategoryId, currentLocationId } = useContext(DataContext);
+
+	const [title, setTitle] = useState("");
+	const [description, setDescription] = useState("");
+
+	const [topicsCollection] = useCollection(
+		query(
+			collection(db, "topics"),
+			where("categoryId", "==", currentCategoryId),
+			where("locationId", "==", currentLocationId)
+		),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
+
+	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
+		snapshotListenOptions: { includeMetadataChanges: true },
+	});
+
 	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
 		: "...";
@@ -20,7 +54,34 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 	const readableCategoryId = categoryQuery.split("-").join(" ");
 	const readableLocationId = locationQuery.split("-").join(" ");
 
-	const handleAddCommuntyPostSubmit = () => {};
+	const handleTitleChange = (e: FormEvent<HTMLInputElement>) =>
+		setTitle(e.currentTarget.value);
+
+	const handleDescriptionChange = (e: FormEvent<HTMLTextAreaElement>) =>
+		setDescription(e.currentTarget.value);
+
+	const hasChanges = () => !!title && !!location;
+
+	const handleAddCommuntyPostSubmit = async (
+		e: SyntheticEvent<HTMLFormElement>
+	) => {
+		e.preventDefault();
+
+		const topicId = topicsCollection?.docs?.[0]?.id || "";
+
+		await addPost({
+			details: {
+				authorId: user?.uid || "",
+				title,
+				content: description,
+				topicId,
+				authorUsername: userProfile?.data()?.username,
+			},
+		}).then((docId) => {
+			setOpen(false);
+			router.push(`/${categoryQuery}/${locationQuery}?post=${docId}`);
+		});
+	};
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -73,6 +134,8 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 									</div>
 								</div>
 								<form
+									action="#"
+									method="POST"
 									className="mt-8"
 									onSubmit={handleAddCommuntyPostSubmit}
 								>
@@ -85,6 +148,7 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 										</label>
 										<div className="mt-1">
 											<input
+												onChange={handleTitleChange}
 												type="title"
 												name="title"
 												id="title"
@@ -95,16 +159,19 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 									</div>
 									<div className="mt-6">
 										<label
-											htmlFor="comment"
+											htmlFor="description"
 											className="block text-m font-medium text-black"
 										>
-											Add your comment
+											Description
 										</label>
 										<div className="mt-1">
 											<textarea
+												onChange={
+													handleDescriptionChange
+												}
 												rows={4}
-												name="comment"
-												id="comment"
+												name="description"
+												id="description"
 												className="p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
 												defaultValue={""}
 												placeholder="Write a comment..."
@@ -113,9 +180,9 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 									</div>
 									<div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
 										<button
+											disabled={!hasChanges()}
 											type="submit"
-											className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-											onClick={() => setOpen(false)}
+											className="inline-flex w-full justify-center rounded-md disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-indigo-600 border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
 										>
 											Submit
 										</button>

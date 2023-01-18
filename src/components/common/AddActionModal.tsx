@@ -72,11 +72,12 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 				location,
 				topicId,
 			},
-		}).then((docId) =>
+		}).then((docId) => {
+			setOpen(false);
 			router.push(
 				`/${categoryQuery}/${locationQuery}/actions?action=${docId}&tab=action`
-			)
-		);
+			);
+		});
 	};
 
 	return (

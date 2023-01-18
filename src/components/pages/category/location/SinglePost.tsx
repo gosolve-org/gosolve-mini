@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
+import { useDocument } from "react-firebase-hooks/firestore";
+import { doc } from "firebase/firestore";
 
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
 
-import { Layout, AddCommunityPostModal } from "components/common";
+import { db } from "utils/firebase";
+import { Layout } from "components/common";
 
 const post = {
 	id: "ASdsadjihasDsa",
@@ -17,36 +19,50 @@ const post = {
 
 function SinglePost() {
 	const router = useRouter();
-	const routerPathname = router.pathname;
+	const postId = router?.query?.post ? router?.query?.post.toString() : "";
+
+	const [postData, postLoading] = useDocument(doc(db, "posts", postId), {
+		snapshotListenOptions: { includeMetadataChanges: true },
+	});
+
+	const postDoc = postData?.data();
 
 	return (
 		<Layout>
 			<div className="flex min-h-full flex-col justify-center items-center pb-20 pt-4 px-4 sm:px-6 lg:px-8">
-				<div className="w-full max-w-4xl">
-					<div className="bg-white px-4 py-5 sm:px-6 rounded-lg shadow mb w-full">
-						<h4 className="text-2xl mb-4">{post.title}</h4>
-						<div className="flex space-x-3 justify-center items-center  mb-4">
-							<div className="flex-shrink-0">
-								<img
-									className="h-7 w-7 rounded-full"
-									src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-									alt=""
-								/>
+				{!postLoading ? (
+					<div className="w-full max-w-4xl">
+						<div className="bg-white px-4 py-5 sm:px-6 rounded-lg shadow mb w-full">
+							<h4 className="text-2xl mb-4">{postDoc?.title}</h4>
+							<div className="flex space-x-3 justify-center items-center  mb-4">
+								<div className="flex-shrink-0">
+									<span className=" inline-block h-7 w-7 overflow-hidden rounded-full bg-gray-100">
+										<svg
+											className="h-full w-full text-gray-300"
+											fill="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+										</svg>
+									</span>
+								</div>
+								<div className="min-w-0 flex-1">
+									<span className="text-sm font-medium text-gray-900">
+										{postDoc?.authorUsername || "Anonymous"}
+									</span>
+									<span className="text-sm text-gray-500 ml-4">
+										{new Date(
+											postDoc?.createdAt
+										).toUTCString()}
+									</span>
+								</div>
 							</div>
-							<div className="min-w-0 flex-1">
-								<span className="text-sm font-medium text-gray-900">
-									{post.createdBy}
-								</span>
-								<span className="text-sm text-gray-500 ml-4">
-									{post.createdAt}
-								</span>
-							</div>
+							<p className="text-sm text-gray-500 mb-1">
+								{postDoc?.content}
+							</p>
 						</div>
-						<p className="text-sm text-gray-500 mb-1">
-							{post.description}
-						</p>
 					</div>
-				</div>
+				) : null}
 
 				<div className="flex flex-col w-full max-w-2xl mt-20">
 					<h4 className="text-xl">{`Discussion (${"3"})`}</h4>
@@ -83,12 +99,16 @@ function SinglePost() {
 								<div className="flex flex-col">
 									<div>
 										<div className="flex space-x-3 justify-center items-center  mb-4">
-											<div className="flex-shrink-0">
-												<img
-													className="h-7 w-7 rounded-full"
-													src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-													alt=""
-												/>
+											<div className="flex-shrink-0 flex justify-center">
+												<span className=" inline-block h-7 w-7 overflow-hidden rounded-full bg-gray-100">
+													<svg
+														className="h-full w-full text-gray-300"
+														fill="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+													</svg>
+												</span>
 											</div>
 											<div className="min-w-0 flex-1">
 												<span className="text-sm font-medium text-gray-900">
@@ -126,12 +146,16 @@ function SinglePost() {
 								<div className="flex flex-col">
 									<div>
 										<div className="flex space-x-3 justify-center items-center  mb-4">
-											<div className="flex-shrink-0">
-												<img
-													className="h-7 w-7 rounded-full"
-													src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-													alt=""
-												/>
+											<div className="flex-shrink-0 flex justify-center">
+												<span className=" inline-block h-7 w-7 overflow-hidden rounded-full bg-gray-100">
+													<svg
+														className="h-full w-full text-gray-300"
+														fill="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+													</svg>
+												</span>
 											</div>
 											<div className="min-w-0 flex-1">
 												<span className="text-sm font-medium text-gray-900">
@@ -171,12 +195,16 @@ function SinglePost() {
 									<div className="flex-shrink-0 w-12"></div>
 									<div>
 										<div className="flex space-x-3 justify-center items-center  mb-4">
-											<div className="flex-shrink-0">
-												<img
-													className="h-7 w-7 rounded-full"
-													src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-													alt=""
-												/>
+											<div className="flex-shrink-0 flex justify-center">
+												<span className=" inline-block h-7 w-7 overflow-hidden rounded-full bg-gray-100">
+													<svg
+														className="h-full w-full text-gray-300"
+														fill="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+													</svg>
+												</span>
 											</div>
 											<div className="min-w-0 flex-1">
 												<span className="text-sm font-medium text-gray-900">

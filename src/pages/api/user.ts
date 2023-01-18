@@ -42,4 +42,19 @@ const updateUser = async ({
 	}
 };
 
-export { addUser, updateUser };
+const getUsername = async ({ docId }: { docId: string }) => {
+	try {
+		const userRef = doc(db, "user", docId);
+		const docSnap = await getDoc(userRef);
+
+		if (docSnap.exists()) {
+			return docSnap.data().name;
+		}
+
+		Promise.resolve();
+	} catch (err) {
+		throw new Error("Not allowed");
+	}
+};
+
+export { addUser, updateUser, getUsername };

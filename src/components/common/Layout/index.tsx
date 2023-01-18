@@ -13,10 +13,10 @@ interface LayoutProps {
 function Layout({ children }: LayoutProps) {
 	const router = useRouter();
 
-	const categoryId = router?.query?.category
+	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
 		: "";
-	const locationId = router?.query?.location
+	const locationQuery = router?.query?.location
 		? router?.query?.location.toString()
 		: "";
 	const actionId = router?.query?.action
@@ -25,7 +25,7 @@ function Layout({ children }: LayoutProps) {
 	const postId = router?.query?.post ? router?.query?.post.toString() : "";
 
 	const renderHeader = () => {
-		if (categoryId && locationId) {
+		if (categoryQuery && locationQuery) {
 			if (postId) return <PostHeader />;
 			else if (actionId) return <ActionHeader />;
 

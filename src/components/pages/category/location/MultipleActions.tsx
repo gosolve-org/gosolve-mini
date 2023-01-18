@@ -47,10 +47,10 @@ function MultipleActions() {
 
 	const router = useRouter();
 
-	const categoryId = router?.query?.category
+	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
 		: "...";
-	const locationId = router?.query?.location
+	const locationQuery = router?.query?.location
 		? router?.query?.location.toString()
 		: "...";
 
@@ -82,7 +82,7 @@ function MultipleActions() {
 						{actions.map((item) => (
 							<Link
 								key={item.id}
-								href={`/${categoryId}/${locationId}/actions?action=${item.id}&tab=action`}
+								href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
 							>
 								<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 									<div className="text-xl font-medium text-black">

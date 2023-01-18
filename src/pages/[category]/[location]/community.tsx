@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import SinglePost from "components/pages/category/location/SinglePost";
-import MultiplePosts from "components/pages/category/location/MultipllePosts";
+import MultiplePosts from "components/pages/category/location/MultiplePosts";
 
 function Community() {
 	const router = useRouter();

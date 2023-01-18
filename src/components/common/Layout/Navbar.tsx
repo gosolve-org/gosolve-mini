@@ -1,4 +1,11 @@
-import { useState, Fragment, useEffect, FormEvent, KeyboardEvent } from "react";
+import {
+	useState,
+	Fragment,
+	useEffect,
+	FormEvent,
+	KeyboardEvent,
+	useContext,
+} from "react";
 import { useRouter } from "next/router";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { collection } from "firebase/firestore";
@@ -15,22 +22,7 @@ import { Category } from "models/Category";
 import { Location } from "models/Location";
 import { db } from "utils/firebase";
 import { useAuth } from "context/AuthContext";
-
-const categories = [
-	{ id: 1, name: "Covid19" },
-	{ id: 2, name: "Climate Change" },
-	{ id: 3, name: "Inequality" },
-	{ id: 4, name: "Education" },
-	{ id: 5, name: "Poverty" },
-	{ id: 6, name: "Human Trafficking" },
-];
-
-const locations = [
-	{ id: 1, name: "UK" },
-	{ id: 2, name: "United States" },
-	{ id: 3, name: "Canada" },
-	{ id: 4, name: "Belgium" },
-];
+import { DataContext } from "pages/_app";
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -39,6 +31,8 @@ function classNames(...classes: string[]) {
 function Navbar() {
 	const { user } = useAuth();
 	const router = useRouter();
+	const { handleCurrentCategoryIdChange, handleCurrentLocationIdChange } =
+		useContext(DataContext);
 
 	const [categoriesCollection] = useCollection(collection(db, "categories"), {
 		snapshotListenOptions: { includeMetadataChanges: true },
@@ -93,16 +87,16 @@ function Navbar() {
 	}, [locationsCollection]);
 
 	useEffect(() => {
-		setSelectedCategory(
-			categories.find(
-				(category) => category.category === readableCategoryId
-			)
+		const category = categories.find(
+			(category) => category.category === readableCategoryId
 		);
-		setSelectedLocation(
-			locations.find(
-				(location) => location.location === readableLocationId
-			)
+		const location = locations.find(
+			(location) => location.location === readableLocationId
 		);
+		handleCurrentCategoryIdChange(category?.id || "");
+		handleCurrentLocationIdChange(location?.id || "");
+		setSelectedCategory(category);
+		setSelectedLocation(location);
 		setSearchQuery(readableSearchQuery);
 	}, [
 		readableCategoryId,
@@ -110,6 +104,8 @@ function Navbar() {
 		readableSearchQuery,
 		categories,
 		locations,
+		handleCurrentCategoryIdChange,
+		handleCurrentLocationIdChange,
 	]);
 
 	const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
@@ -122,7 +118,10 @@ function Navbar() {
 	};
 
 	const handleNavigate = () => {
-		if (selectedCategory && selectedLocation)
+		if (selectedCategory && selectedLocation) {
+			handleCurrentCategoryIdChange(selectedCategory.id);
+			handleCurrentLocationIdChange(selectedLocation.id);
+
 			router.push(
 				`/${selectedCategory.category
 					.split(" ")
@@ -130,6 +129,7 @@ function Navbar() {
 					.split(" ")
 					.join("-")}`
 			);
+		}
 	};
 
 	return (

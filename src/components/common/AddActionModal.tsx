@@ -15,15 +15,15 @@ interface AddActionModalProps {
 
 function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	const router = useRouter();
-	const categoryId = router?.query?.category
+	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
 		: "...";
-	const locationId = router?.query?.location
+	const locationQuery = router?.query?.location
 		? router?.query?.location.toString()
 		: "...";
 
-	const readableCategoryId = categoryId.split("-").join(" ");
-	const readableLocationId = locationId.split("-").join(" ");
+	const readableCategoryId = categoryQuery.split("-").join(" ");
+	const readableLocationId = locationQuery.split("-").join(" ");
 
 	const handleAddActionSubmit = () => {};
 

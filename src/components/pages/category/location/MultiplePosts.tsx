@@ -42,10 +42,10 @@ function MultiplePosts() {
 
 	const router = useRouter();
 
-	const categoryId = router?.query?.category
+	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
 		: "...";
-	const locationId = router?.query?.location
+	const locationQuery = router?.query?.location
 		? router?.query?.location.toString()
 		: "...";
 
@@ -76,7 +76,7 @@ function MultiplePosts() {
 					<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
 						{communities.map((item) => (
 							<Link
-								href={`/${categoryId}/${locationId}/community?post=${item.id}`}
+								href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
 								className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb w-full"
 								key={item.id}
 							>

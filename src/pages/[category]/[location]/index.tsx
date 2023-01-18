@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/router";
+import { useCollection, useDocument } from "react-firebase-hooks/firestore";
+import { collection, query, where, doc } from "firebase/firestore";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
 
+import { ToastContainer, toast } from "react-toastify";
 import { AddActionModal, AddCommunityPostModal } from "components/common";
+import { updateTopic } from "pages/api/topic";
+import { db } from "utils/firebase";
+import { useAuth } from "context/AuthContext";
+import { DataContext } from "pages/_app";
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
 	ssr: false,
@@ -58,26 +65,58 @@ const communities = [
 ];
 
 function Topic() {
+	const { user } = useAuth();
+	const { currentCategoryId, currentLocationId } = useContext(DataContext);
+
 	const [addActionModalOpen, setActionModalOpen] = useState(false);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
 		useState(false);
 
 	const router = useRouter();
 
-	const categoryId = router?.query?.category
+	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
 		: "...";
-	const locationId = router?.query?.location
+	const locationQuery = router?.query?.location
 		? router?.query?.location.toString()
 		: "...";
 
-	const readableCategoryId = categoryId.split("-").join(" ");
-	const readableLocationId = locationId.split("-").join(" ");
+	const [topicsCollection] = useCollection(
+		query(
+			collection(db, "topics"),
+			where("categoryId", "==", currentCategoryId),
+			where("locationId", "==", currentLocationId)
+		),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
+
+	const topicContent = topicsCollection?.docs?.[0]?.data()?.content || "";
+
+	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
+		snapshotListenOptions: { includeMetadataChanges: true },
+	});
+
+	const canUserEdit =
+		userProfile?.data()?.role === "admin" || userProfile?.data()?.editor;
 
 	const handleAddActionClick = () => setActionModalOpen(true);
 	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
-	const handleSaveClick = () => {};
+	const handleSaveData = async (savedData: string) => {
+		const topicId = topicsCollection?.docs?.[0]?.id || "";
+		await updateTopic({
+			docId: topicId,
+			details: {
+				content: savedData,
+				categoryId: currentCategoryId,
+				locationId: currentLocationId,
+			},
+		})
+			.then(() => toast.success("Saved!"))
+			.catch(() => toast.error("Something went wrong"));
+	};
 
 	return (
 		<Layout>
@@ -103,7 +142,7 @@ function Topic() {
 								</span>
 								<span className="mx-3.5">
 									<Link
-										href={`/${categoryId}/${locationId}/actions`}
+										href={`/${categoryQuery}/${locationQuery}/actions`}
 										type="button"
 										className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 									>
@@ -119,7 +158,7 @@ function Topic() {
 								{actions.map((item) => (
 									<Link
 										key={item.id}
-										href={`/${categoryId}/${locationId}/actions?action=${item.id}&tab=action`}
+										href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
 									>
 										<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 											<div className="text-xl font-medium text-black">
@@ -154,7 +193,7 @@ function Topic() {
 								</span>
 								<span className="mr-3.5">
 									<Link
-										href={`/${categoryId}/${locationId}/community`}
+										href={`/${categoryQuery}/${locationQuery}/community`}
 										type="button"
 										className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 									>
@@ -170,7 +209,7 @@ function Topic() {
 								{communities.map((item) => (
 									<Link
 										key={item.id}
-										href={`/${categoryId}/${locationId}/community?post=${item.id}`}
+										href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
 									>
 										<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 											<div className="text-xl font-medium text-black">
@@ -188,17 +227,13 @@ function Topic() {
 					</div>
 
 					<div className="mt-10">
-						<EditorJs />
-					</div>
-
-					<div className="mt-6 flex justify-center items-center w-full gap-4">
-						<button
-							onClick={handleSaveClick}
-							type="button"
-							className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-						>
-							Save changes
-						</button>
+						{topicContent && (
+							<EditorJs
+								readOnly={!canUserEdit}
+								saveData={handleSaveData}
+								defaultValue={topicContent}
+							/>
+						)}
 					</div>
 				</div>
 			</div>
@@ -211,6 +246,19 @@ function Topic() {
 			<AddCommunityPostModal
 				open={addCommunityPostModalOpen}
 				setOpen={setAddCommunityPostModalOpen}
+			/>
+
+			<ToastContainer
+				position="bottom-center"
+				autoClose={3000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="light"
 			/>
 		</Layout>
 	);

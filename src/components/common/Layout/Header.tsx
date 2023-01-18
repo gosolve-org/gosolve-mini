@@ -25,15 +25,15 @@ function Header() {
 		else setCurrentTab("Topic");
 	}, [pathname]);
 
-	const categoryId = router?.query?.category
+	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
 		: "...";
-	const locationId = router?.query?.location
+	const locationQuery = router?.query?.location
 		? router?.query?.location.toString()
 		: "...";
 
-	const readableCategory = categoryId.split("-").join(" ");
-	const readableLocation = locationId.split("-").join(" ");
+	const readableCategory = categoryQuery.split("-").join(" ");
+	const readableLocation = locationQuery.split("-").join(" ");
 
 	const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
 		setCurrentTab(e.currentTarget.value);
@@ -71,7 +71,7 @@ function Header() {
 						{tabs.map((tab, tabIdx) => (
 							<Link
 								key={tab.name}
-								href={`/${categoryId}/${locationId}${tab.href}`}
+								href={`/${categoryQuery}/${locationQuery}${tab.href}`}
 								className={classNames(
 									tab.name === currentTab
 										? "text-gray-900"

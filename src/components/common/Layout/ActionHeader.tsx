@@ -28,15 +28,15 @@ function ActionHeader() {
 		else setCurrentTab("Action");
 	}, [tabId]);
 
-	const categoryId = router?.query?.category
+	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
 		: "...";
-	const locationId = router?.query?.location
+	const locationQuery = router?.query?.location
 		? router?.query?.location.toString()
 		: "...";
 
-	const readableCategory = categoryId.split("-").join(" ");
-	const readableLocation = locationId.split("-").join(" ");
+	const readableCategory = categoryQuery.split("-").join(" ");
+	const readableLocation = locationQuery.split("-").join(" ");
 
 	const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
 		setCurrentTab(e.currentTarget.value);
@@ -45,7 +45,7 @@ function ActionHeader() {
 		<div className="flex flex-col justify-center items-center ">
 			<div className="w-[68%] md:max-xl:w-[68%] md:max-lg:w-[78%] md:max-sm:w-[88%]">
 				<div className="mt-6 w-full flex justify-start items-center text-gray-500 text-sm">
-					<Link href={`/${categoryId}/${locationId}`}>
+					<Link href={`/${categoryQuery}/${locationQuery}`}>
 						<ArrowLeftIcon
 							className="h-4 w-4 inline-block items-center mr-1"
 							aria-hidden="true"
@@ -85,7 +85,7 @@ function ActionHeader() {
 								{tabs.map((tab, tabIdx) => (
 									<Link
 										key={tab.name}
-										href={`/${categoryId}/${locationId}/actions?action=${actionId}&tab=${tab.href}`}
+										href={`/${categoryQuery}/${locationQuery}/actions?action=${actionId}&tab=${tab.href}`}
 										className={classNames(
 											tab.name === currentTab
 												? "text-gray-900"

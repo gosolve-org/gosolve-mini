@@ -29,8 +29,9 @@ function SingleAction() {
 	);
 
 	const canUserEdit =
-		userProfile?.data()?.role === "admin" ||
-		userProfile?.data()?.role === "editor";
+		userProfile?.id === user?.uid &&
+		(userProfile?.data()?.role === "admin" ||
+			userProfile?.data()?.role === "editor");
 
 	const [actionsCollection, actionsLoading] = useDocument(
 		doc(db, "actions", actionId),

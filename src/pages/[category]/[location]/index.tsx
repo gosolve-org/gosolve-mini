@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
-import { collection, query, where, doc } from "firebase/firestore";
+import { collection, query, where, doc, limit } from "firebase/firestore";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
@@ -18,24 +18,6 @@ const EditorJs = dynamic(() => import("components/common/Editor"), {
 });
 
 import { Layout } from "components/common";
-
-const actions = [
-	{
-		id: "ASdsadjihasDsa",
-		name: "Fundraiser for Cancer Research",
-		location: "Los Angeles Children’s Hospital",
-	},
-	{
-		id: "jklhAsdjGFdssdf",
-		name: "Fundraiser for Cancer Research",
-		location: "Los Angeles Children’s Hospital",
-	},
-	{
-		id: "kjldsaERtsfdsad",
-		name: "Fundraiser for Cancer Research",
-		location: "Los Angeles Children’s Hospital",
-	},
-];
 
 const communities = [
 	{
@@ -81,7 +63,10 @@ function Topic() {
 		? router?.query?.location.toString()
 		: "...";
 
-	const [topicsCollection] = useCollection(
+	const readableCategory = categoryQuery.split("-").join(" ");
+	const readableLocation = locationQuery.split("-").join(" ");
+
+	const [topicsCollection, topicsLoading] = useCollection(
 		query(
 			collection(db, "topics"),
 			where("categoryId", "==", currentCategoryId),
@@ -92,20 +77,38 @@ function Topic() {
 		}
 	);
 
-	const topicContent = topicsCollection?.docs?.[0]?.data()?.content || "";
+	// TODO Seems like error with library if there are no blocks so set default block
+	const topicContent =
+		topicsCollection?.docs?.[0]?.data()?.content ||
+		`{"time":1674009351098,"blocks":[{"id":"lLg8bWk7VH","type":"header","data":{"text": "${readableCategory} in ${readableLocation}","level":1}}],"version":"2.26.4"}`;
+	const topicId = topicsCollection?.docs?.[0]?.id || "";
 
-	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [userProfile, userLoading] = useDocument(
+		doc(db, `user`, user?.uid || ""),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
+
+	const [actionsCollection, actionsLoading] = useCollection(
+		query(
+			collection(db, "actions"),
+			where("topicId", "==", topicId),
+			limit(3)
+		),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
 
 	const canUserEdit =
-		userProfile?.data()?.role === "admin" || userProfile?.data()?.editor;
+		userProfile?.data()?.role === "admin" ||
+		userProfile?.data()?.role === "editor";
 
 	const handleAddActionClick = () => setActionModalOpen(true);
 	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
 	const handleSaveData = async (savedData: string) => {
-		const topicId = topicsCollection?.docs?.[0]?.id || "";
 		await updateTopic({
 			docId: topicId,
 			details: {
@@ -128,18 +131,22 @@ function Topic() {
 								<h2 className="text-xl font-medium leading-6 text-black">
 									Actions
 								</h2>
-								<span className="mx-3.5">
-									<button
-										onClick={handleAddActionClick}
-										type="button"
-										className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-									>
-										<PlusIcon
-											className="h-4 w-4"
-											aria-hidden="true"
-										/>
-									</button>
-								</span>
+
+								{canUserEdit ? (
+									<span className="ml-3.5">
+										<button
+											onClick={handleAddActionClick}
+											type="button"
+											className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+										>
+											<PlusIcon
+												className="h-4 w-4"
+												aria-hidden="true"
+											/>
+										</button>
+									</span>
+								) : null}
+
 								<span className="mx-3.5">
 									<Link
 										href={`/${categoryQuery}/${locationQuery}/actions`}
@@ -154,24 +161,29 @@ function Topic() {
 									</Link>
 								</span>
 							</div>
-							<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-								{actions.map((item) => (
-									<Link
-										key={item.id}
-										href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
-									>
-										<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
-											<div className="text-xl font-medium text-black">
-												{item.name}
-											</div>
+							{!actionsLoading ? (
+								<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+									{actionsCollection?.docs?.map((item) => {
+										const itemData = item.data();
+										return (
+											<Link
+												key={itemData.id}
+												href={`/${categoryQuery}/${locationQuery}/actions?action=${itemData.id}&tab=action`}
+											>
+												<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
+													<div className="text-xl font-medium text-black">
+														{itemData.title}
+													</div>
 
-											<div className="mt-10 truncate text-sm font-light text-gray-400">
-												{item.location}
-											</div>
-										</li>
-									</Link>
-								))}
-							</ul>
+													<div className="mt-10 truncate text-sm font-light text-gray-400">
+														{itemData.location}
+													</div>
+												</li>
+											</Link>
+										);
+									})}
+								</ul>
+							) : null}
 						</div>
 
 						<div className="mt-10">
@@ -179,19 +191,23 @@ function Topic() {
 								<h2 className="text-xl font-medium leading-6 text-black">
 									Community
 								</h2>
+
+								{canUserEdit ? (
+									<span className="ml-3.5">
+										<button
+											onClick={handleAddCommunityClick}
+											type="button"
+											className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+										>
+											<PlusIcon
+												className="h-4 w-4"
+												aria-hidden="true"
+											/>
+										</button>
+									</span>
+								) : null}
+
 								<span className="mx-3.5">
-									<button
-										onClick={handleAddCommunityClick}
-										type="button"
-										className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-									>
-										<PlusIcon
-											className="h-4 w-4"
-											aria-hidden="true"
-										/>
-									</button>
-								</span>
-								<span className="mr-3.5">
 									<Link
 										href={`/${categoryQuery}/${locationQuery}/community`}
 										type="button"
@@ -227,13 +243,13 @@ function Topic() {
 					</div>
 
 					<div className="mt-10">
-						{topicContent && (
+						{!topicsLoading && !userLoading ? (
 							<EditorJs
 								readOnly={!canUserEdit}
 								saveData={handleSaveData}
 								defaultValue={topicContent}
 							/>
-						)}
+						) : null}
 					</div>
 				</div>
 			</div>

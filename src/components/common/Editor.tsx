@@ -1,28 +1,55 @@
 //@ts-nocheck
 // https://github.com/Jungwoo-An/react-editor-js/issues/193
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createReactEditorJS } from "react-editor-js";
 import { EDITOR_JS_TOOLS } from "constants/editorTools";
 
 interface EditorProps {
 	defaultValue?: string;
 	saveData?: (savedData: string) => void;
+	onChange?: (savedData: string) => void;
 	readOnly?: boolean;
 }
 
-const Editor = ({ defaultValue, saveData, readOnly = true }: EditorProps) => {
+const Editor = ({
+	defaultValue,
+	saveData,
+	onChange,
+	readOnly = true,
+}: EditorProps) => {
 	const ReactEditorJS = createReactEditorJS();
 
 	const editorJS = useRef(null);
 
-	const handleInitialize = useCallback((instance) => {
+	const [data, setData] = useState(
+		`{"time":1674009351098,"blocks":[{"id":"lLg8bWk7VH","type":"header","data":{"text":"Start typing...","level":1}}],"version":"2.26.4"}`
+	);
+
+	useEffect(() => {
+		defaultValue && setData(JSON.parse(defaultValue));
+	}, [defaultValue]);
+
+	const handleInitialize = useCallback(async (instance) => {
 		editorJS.current = instance;
 	}, []);
 
 	const handleSave = useCallback(async () => {
 		const savedData = await editorJS?.current?.save();
-		(await saveData) && saveData(JSON.stringify(savedData));
+		saveData && saveData(JSON.stringify(savedData));
 	}, [saveData]);
+
+	const handleChange = useCallback(async () => {
+		const savedData = await editorJS?.current?.save();
+		onChange && onChange(JSON.stringify(savedData));
+		setData(savedData);
+	}, [onChange]);
+
+	// https://github.com/Jungwoo-An/react-editor-js/issues/200
+	const updateValue = (data) => {
+		editorJS?.current?._editorJS.isReady.then(() => {
+			editorJS.current._editorJS.render(data);
+		});
+	};
 
 	return (
 		<div className="content">
@@ -31,7 +58,7 @@ const Editor = ({ defaultValue, saveData, readOnly = true }: EditorProps) => {
 				enableReInitialize={true}
 				onInitialize={handleInitialize}
 				tools={EDITOR_JS_TOOLS}
-				defaultValue={JSON.parse(defaultValue)}
+				value={updateValue(data)}
 			/>
 			{!readOnly ? (
 				<div className="mt-6 flex justify-center items-center w-full gap-4">

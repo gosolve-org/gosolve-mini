@@ -1,11 +1,11 @@
 import { db } from "utils/firebase";
-import { setDoc, updateDoc, doc, getDoc } from "firebase/firestore";
+import { collection, updateDoc, doc, getDoc, addDoc } from "firebase/firestore";
 
 import { Topic } from "models/Topic";
 
-const addTopic = async ({ uid, details }: { uid: string; details?: Topic }) => {
+const addTopic = async ({ details }: { details?: Topic }) => {
 	try {
-		await setDoc(doc(db, "topics", uid), {
+		await addDoc(collection(db, "topics"), {
 			...details,
 			createdAt: new Date().getTime(),
 			updatedAt: new Date().getTime(),
@@ -23,16 +23,19 @@ const updateTopic = async ({
 	details?: Topic;
 }) => {
 	try {
-		const userRef = doc(db, "topics", docId);
-		const docSnap = await getDoc(userRef);
+		if (!docId) await addTopic({ details });
+		else {
+			const userRef = doc(db, "topics", docId);
+			const docSnap = await getDoc(userRef);
 
-		if (docSnap.exists()) {
-			await updateDoc(userRef, {
-				...details,
-				updatedAt: new Date().getTime(),
-			});
-		} else {
-			await addTopic({ uid: docId, details });
+			if (docSnap.exists()) {
+				await updateDoc(userRef, {
+					...details,
+					updatedAt: new Date().getTime(),
+				});
+			} else {
+				await addTopic({ details });
+			}
 		}
 
 		Promise.resolve();

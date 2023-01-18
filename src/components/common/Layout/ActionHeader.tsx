@@ -2,6 +2,10 @@ import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
+import { useDocument } from "react-firebase-hooks/firestore";
+import { collection, query, where, doc } from "firebase/firestore";
+
+import { db } from "utils/firebase";
 
 const tabs = [
 	{ name: "Action", href: "action" },
@@ -23,6 +27,10 @@ function ActionHeader() {
 
 	const tabId = router?.query?.tab ? router?.query?.tab.toString() : "action";
 
+	const [actionsCollection] = useDocument(doc(db, "actions", actionId), {
+		snapshotListenOptions: { includeMetadataChanges: true },
+	});
+
 	useEffect(() => {
 		if (tabId === "community") setCurrentTab("Community");
 		else setCurrentTab("Action");
@@ -37,6 +45,10 @@ function ActionHeader() {
 
 	const readableCategory = categoryQuery.split("-").join(" ");
 	const readableLocation = locationQuery.split("-").join(" ");
+
+	const renderTitle = () =>
+		actionsCollection?.data()?.title ||
+		`${readableCategory} in ${readableLocation}`;
 
 	const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
 		setCurrentTab(e.currentTarget.value);
@@ -56,7 +68,7 @@ function ActionHeader() {
 				<div className="flex flex-col justify-center h-52 mt-2 items-center rounded-md bg-sky-100">
 					<div className="mt-5 sm:mx-auto sm:w-full sm:max-w-md">
 						<h1 className=" px-4 py-2 text-center text-3xl font-small tracking-tight text-black ">
-							{`${readableCategory} in ${readableLocation}`}
+							{renderTitle()}
 						</h1>
 					</div>
 					<div className="mt-5 w-[68%] md:max-xl:w-[68%] md:max-lg:w-[78%] md:max-sm:w-[88%]">

@@ -1,12 +1,20 @@
-import { Fragment } from "react";
-import dynamic from "next/dynamic";
+import {
+	Fragment,
+	useState,
+	FormEvent,
+	useContext,
+	SyntheticEvent,
+} from "react";
 import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { collection, query, where } from "firebase/firestore";
 
-const EditorJs = dynamic(() => import("components/common/Editor"), {
-	ssr: false,
-});
+import { addAction } from "pages/api/action";
+import { useAuth } from "context/AuthContext";
+import { db } from "utils/firebase";
+import { DataContext } from "pages/_app";
 
 interface AddActionModalProps {
 	open: boolean;
@@ -14,7 +22,24 @@ interface AddActionModalProps {
 }
 
 function AddActionModal({ open, setOpen }: AddActionModalProps) {
+	const { user } = useAuth();
 	const router = useRouter();
+	const { currentCategoryId, currentLocationId } = useContext(DataContext);
+
+	const [title, setTitle] = useState("");
+	const [location, setLocation] = useState("");
+
+	const [topicsCollection] = useCollection(
+		query(
+			collection(db, "topics"),
+			where("categoryId", "==", currentCategoryId),
+			where("locationId", "==", currentLocationId)
+		),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
+
 	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
 		: "...";
@@ -25,7 +50,34 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	const readableCategoryId = categoryQuery.split("-").join(" ");
 	const readableLocationId = locationQuery.split("-").join(" ");
 
-	const handleAddActionSubmit = () => {};
+	const handleTitleChange = (e: FormEvent<HTMLInputElement>) =>
+		setTitle(e.currentTarget.value);
+
+	const handleLocationChange = (e: FormEvent<HTMLInputElement>) =>
+		setLocation(e.currentTarget.value);
+
+	const hasChanges = () => !!title && !!location;
+
+	const handleAddActionSubmit = async (
+		e: SyntheticEvent<HTMLFormElement>
+	) => {
+		e.preventDefault();
+
+		const topicId = topicsCollection?.docs?.[0]?.id || "";
+
+		await addAction({
+			details: {
+				authorId: user?.uid || "",
+				title,
+				location,
+				topicId,
+			},
+		}).then((docId) =>
+			router.push(
+				`/${categoryQuery}/${locationQuery}/actions?action=${docId}&tab=action`
+			)
+		);
+	};
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -79,6 +131,8 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 								</div>
 								<form
 									className="mt-8"
+									action="#"
+									method="POST"
 									onSubmit={handleAddActionSubmit}
 								>
 									<div>
@@ -90,6 +144,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 										</label>
 										<div className="mt-1">
 											<input
+												onChange={handleTitleChange}
 												type="title"
 												name="title"
 												id="title"
@@ -99,15 +154,30 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 										</div>
 									</div>
 
-									<div className="mt-10">
-										<EditorJs />
+									<div className="mt-5">
+										<label
+											htmlFor="location"
+											className="block text-m font-medium text-black"
+										>
+											Location
+										</label>
+										<div className="mt-1">
+											<input
+												onChange={handleLocationChange}
+												type="location"
+												name="location"
+												id="location"
+												className="p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+												placeholder="Write a location..."
+											/>
+										</div>
 									</div>
 
 									<div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
 										<button
+											disabled={!hasChanges()}
 											type="submit"
-											className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-											onClick={() => setOpen(false)}
+											className="inline-flex w-full justify-center rounded-md disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-indigo-600 border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
 										>
 											Submit
 										</button>

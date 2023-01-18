@@ -55,10 +55,6 @@ function MultiplePosts() {
 		snapshotListenOptions: { includeMetadataChanges: true },
 	});
 
-	const canUserEdit =
-		userProfile?.data()?.role === "admin" ||
-		userProfile?.data()?.role === "editor";
-
 	return (
 		<Layout>
 			<div className="flex min-h-full flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
@@ -67,20 +63,19 @@ function MultiplePosts() {
 						<h2 className="text-2xl font-xl font-semibold leading-6 text-black">
 							Community
 						</h2>
-						{canUserEdit ? (
-							<span className="mx-3.5">
-								<button
-									onClick={handleAddCommunityClick}
-									type="button"
-									className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-								>
-									<PlusIcon
-										className="h-4 w-4"
-										aria-hidden="true"
-									/>
-								</button>
-							</span>
-						) : null}
+
+						<span className="mx-3.5">
+							<button
+								onClick={handleAddCommunityClick}
+								type="button"
+								className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+							>
+								<PlusIcon
+									className="h-4 w-4"
+									aria-hidden="true"
+								/>
+							</button>
+						</span>
 					</div>
 					{!postsLoading && !topicsLoading ? (
 						<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">

@@ -31,6 +31,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Firebase notes
 
+-   Setting up a new database requires going through the authentication and firestore database setups
+    -   For authorisation, add authorised domains under authentication -> settings
+    -   Add env variables to deploy/local which can be found in project settings -> general -> your apps (search for `process.env` to see which ones are needed)
 -   To get started, add locations and categories to the db under `/categories/{autoID}/{category: Covid19}`, `/locations/{autoID}/{location: Belgium}`
     -   Create a `topicId` by visiting the dynamic page and saving some content, some functionality may not work without this id
 -   Some text sanitization may need to be added for locations/categories with `-` due to dynamic URLs

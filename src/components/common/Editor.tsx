@@ -21,16 +21,17 @@ const Editor = ({
 
 	const editorJS = useRef(null);
 
-	const [data, setData] = useState(
-		`{"time":1674009351098,"blocks":[{"id":"lLg8bWk7VH","type":"header","data":{"text":"Start typing...","level":1}}],"version":"2.26.4"}`
-	);
+	const [data, setData] = useState("");
+
+	// Dummy data
+	//`{"time":1674009351098,"blocks":[{"id":"lLg8bWk7VH","type":"header","data":{"text":"Start typing...","level":1}}],"version":"2.26.4"}`
 
 	useEffect(() => {
-		defaultValue && setData(JSON.parse(defaultValue));
-	}, [defaultValue]);
+		defaultValue && !data && setData(JSON.parse(defaultValue));
+	}, [data, defaultValue]);
 
 	const handleInitialize = useCallback(async (instance) => {
-		editorJS.current = instance;
+		if (!editorJS.current) editorJS.current = instance;
 	}, []);
 
 	const handleSave = useCallback(async () => {
@@ -45,11 +46,12 @@ const Editor = ({
 	}, [onChange]);
 
 	// https://github.com/Jungwoo-An/react-editor-js/issues/200
-	const updateValue = (data) => {
-		editorJS?.current?._editorJS.isReady.then(() => {
+	const updateValue = useCallback((data) => {
+		console.log("updating value...");
+		editorJS?.current?._editorJS?.isReady.then(() => {
 			editorJS.current._editorJS.render(data);
 		});
-	};
+	}, []);
 
 	return (
 		<div className="content">
@@ -58,7 +60,7 @@ const Editor = ({
 				enableReInitialize={true}
 				onInitialize={handleInitialize}
 				tools={EDITOR_JS_TOOLS}
-				value={updateValue(data)}
+				defaultValue={JSON.parse(defaultValue)}
 			/>
 			{!readOnly ? (
 				<div className="mt-6 flex justify-center items-center w-full gap-4">

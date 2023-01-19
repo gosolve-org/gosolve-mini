@@ -4,7 +4,6 @@ import { useDocument } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 import { updatePassword } from "@firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 import { db } from "utils/firebase";
 import { Layout } from "components/common";

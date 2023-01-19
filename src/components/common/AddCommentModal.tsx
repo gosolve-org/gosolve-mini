@@ -1,82 +1,54 @@
-import {
-	Fragment,
-	useState,
-	FormEvent,
-	useContext,
-	SyntheticEvent,
-} from "react";
-import { useRouter } from "next/router";
+import { Fragment, useState, FormEvent, SyntheticEvent } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useCollection, useDocument } from "react-firebase-hooks/firestore";
-import { collection, query, where, doc } from "firebase/firestore";
+import { useDocument } from "react-firebase-hooks/firestore";
+import { doc } from "firebase/firestore";
 
-import { addAction } from "pages/api/action";
 import { useAuth } from "context/AuthContext";
 import { db } from "utils/firebase";
-import { DataContext } from "pages/_app";
+import { addComment } from "pages/api/comment";
 
-interface AddActionModalProps {
+interface AddCommentModalProps {
 	open: boolean;
 	setOpen: (open: boolean) => void;
+	postId: string;
+	parentId: string;
 }
 
-function AddActionModal({ open, setOpen }: AddActionModalProps) {
+function AddCommentModal({
+	open,
+	setOpen,
+	postId,
+	parentId,
+}: AddCommentModalProps) {
 	const { user } = useAuth();
-	const router = useRouter();
-	const { currentCategoryId, currentLocationId } = useContext(DataContext);
 
-	const [title, setTitle] = useState("");
-
-	const [topicsCollection] = useCollection(
-		query(
-			collection(db, "topics"),
-			where("categoryId", "==", currentCategoryId),
-			where("locationId", "==", currentLocationId)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
+	const [comment, setComment] = useState("");
 
 	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
 		snapshotListenOptions: { includeMetadataChanges: true },
 	});
 
-	const categoryQuery = router?.query?.category
-		? router?.query?.category.toString()
-		: "...";
-	const locationQuery = router?.query?.location
-		? router?.query?.location.toString()
-		: "...";
+	const handleCommentChange = (e: FormEvent<HTMLInputElement>) =>
+		setComment(e.currentTarget.value);
 
-	const readableCategoryId = categoryQuery.split("-").join(" ");
-	const readableLocationId = locationQuery.split("-").join(" ");
+	const hasChanges = () => !!comment;
 
-	const handleTitleChange = (e: FormEvent<HTMLInputElement>) =>
-		setTitle(e.currentTarget.value);
-
-	const hasChanges = () => !!title;
-
-	const handleAddActionSubmit = async (
+	const handleAddCommentSubmit = async (
 		e: SyntheticEvent<HTMLFormElement>
 	) => {
 		e.preventDefault();
 
-		const topicId = topicsCollection?.docs?.[0]?.id || "";
-
-		await addAction({
+		await addComment({
 			details: {
 				authorId: user?.uid || "",
-				title,
-				topicId,
+				content: comment,
+				postId,
+				parentId,
 				authorUsername: userProfile?.data()?.username,
 			},
-		}).then((docId) => {
+		}).then(() => {
 			setOpen(false);
-			router.push(
-				`/${categoryQuery}/${locationQuery}/actions?action=${docId}&tab=action`
-			);
 		});
 	};
 
@@ -120,37 +92,27 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 										/>
 									</button>
 								</div>
-								<div className="sm:flex sm:items-start">
-									<div className="mt-3 text-left sm:mt-0 ">
-										<Dialog.Title
-											as="h3"
-											className="text-xs text-gray-500 font-normal truncate"
-										>
-											{`You're creating an action for "${readableCategoryId} in ${readableLocationId}"`}
-										</Dialog.Title>
-									</div>
-								</div>
 								<form
 									className="mt-8"
 									action="#"
 									method="POST"
-									onSubmit={handleAddActionSubmit}
+									onSubmit={handleAddCommentSubmit}
 								>
 									<div>
 										<label
-											htmlFor="title"
+											htmlFor="comment"
 											className="block text-m font-medium text-black"
 										>
-											Title
+											Comment
 										</label>
 										<div className="mt-1">
 											<input
-												onChange={handleTitleChange}
-												type="title"
-												name="title"
-												id="title"
+												onChange={handleCommentChange}
+												type="comment"
+												name="comment"
+												id="comment"
 												className="p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-												placeholder="Write a title..."
+												placeholder="Write a comment..."
 											/>
 										</div>
 									</div>
@@ -174,4 +136,4 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	);
 }
 
-export default AddActionModal;
+export default AddCommentModal;

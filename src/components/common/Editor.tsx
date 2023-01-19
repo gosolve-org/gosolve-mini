@@ -91,7 +91,7 @@ const Editor = ({
 				) : null}
 			</div>
 			<ReactEditorJS
-				readOnly={readOnly && !editMode}
+				readOnly={readOnly || !editMode}
 				enableReInitialize={true}
 				onInitialize={handleInitialize}
 				tools={EDITOR_JS_TOOLS}

@@ -1,6 +1,7 @@
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import Link from "next/link";
 
 import { useAuth } from "context/AuthContext";
 import { addUser } from "pages/api/user";
@@ -136,6 +137,15 @@ function Register() {
 										Remember me
 									</label>
 								</div>
+							</div>
+
+							<div className="block text-sm font-normal text-gray-400">
+								By creating an account, you accept
+								goSolve&apos;s{" "}
+								<Link href="/privacy" className="underline">
+									Terms & Privacy Policy
+								</Link>
+								.
 							</div>
 
 							<div>

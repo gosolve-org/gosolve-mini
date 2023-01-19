@@ -48,7 +48,7 @@ function Comment({
 					<p className="mt-1 text-gray-500">{content}</p>
 				</div>
 
-				{handleReplyButtonClick ? (
+				{handleReplyButtonClick && !isChild ? (
 					<button
 						onClick={() => handleReplyButtonClick(id)}
 						type="button"

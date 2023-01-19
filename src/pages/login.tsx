@@ -57,7 +57,7 @@ function Login() {
 						height={37}
 						priority
 					/>
-					<h2 className="mt-6 px-4 py-2 text-center text-m font-small tracking-tight rounded-md text-black bg-gray-100">
+					<h2 className="mt-6 px-4 py-2 text-center text-m font-normal tracking-tight rounded-md text-black bg-gray-100">
 						goSolve mini is a limited test version of the goSolve
 						platform is currently invite only, or available for
 						active donors.

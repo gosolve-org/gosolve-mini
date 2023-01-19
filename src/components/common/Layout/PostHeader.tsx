@@ -16,7 +16,7 @@ function PostHeader() {
 	const readableLocation = locationQuery.split("-").join(" ");
 
 	return (
-		<div className="flex flex-col justify-center items-center ">
+		<div className="flex flex-col justify-center items-center px-4">
 			<div className="w-full max-w-4xl">
 				<div className="mt-6 w-full flex justify-start items-center text-gray-500 text-sm">
 					<Link href={`/${categoryQuery}/${locationQuery}`}>

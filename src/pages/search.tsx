@@ -38,13 +38,19 @@ function Search() {
 		}
 	);
 
-	const [categoriesCollection] = useCollection(collection(db, "categories"), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [categoriesCollection, categoriesLoading] = useCollection(
+		collection(db, "categories"),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
 
-	const [locationsCollection] = useCollection(collection(db, "locations"), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [locationsCollection, locationsLoading] = useCollection(
+		collection(db, "locations"),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
 
 	// Firebase has no good way of matching substrings
 	// https://stackoverflow.com/questions/46568142/google-firestore-query-on-substring-of-a-property-value-text-search
@@ -210,8 +216,8 @@ function Search() {
 		actionsCollection,
 		postsCollection,
 		searchQuery,
-		categoriesCollection?.docs,
-		locationsCollection?.docs,
+		categoriesCollection,
+		locationsCollection,
 	]);
 
 	return (
@@ -225,7 +231,11 @@ function Search() {
 					</div>
 
 					<dl className="mt-6 flex flex-col w-full gap-5">
-						{!topicsLoading && !actionsLoading && !postsLoading
+						{!topicsLoading &&
+						!actionsLoading &&
+						!postsLoading &&
+						!categoriesLoading &&
+						!locationsLoading
 							? renderResults
 							: null}
 					</dl>

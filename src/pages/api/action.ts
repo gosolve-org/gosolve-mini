@@ -23,11 +23,11 @@ const updateAction = async ({
 	details?: Action;
 }) => {
 	try {
-		const userRef = doc(db, "actions", docId);
-		const docSnap = await getDoc(userRef);
+		const actionRef = doc(db, "actions", docId);
+		const docSnap = await getDoc(actionRef);
 
 		if (docSnap.exists()) {
-			await updateDoc(userRef, {
+			await updateDoc(actionRef, {
 				...details,
 				updatedAt: new Date().getTime(),
 			});

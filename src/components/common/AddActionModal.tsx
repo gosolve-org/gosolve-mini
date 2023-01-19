@@ -27,7 +27,6 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	const { currentCategoryId, currentLocationId } = useContext(DataContext);
 
 	const [title, setTitle] = useState("");
-	const [location, setLocation] = useState("");
 
 	const [topicsCollection] = useCollection(
 		query(
@@ -57,9 +56,6 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	const handleTitleChange = (e: FormEvent<HTMLInputElement>) =>
 		setTitle(e.currentTarget.value);
 
-	const handleLocationChange = (e: FormEvent<HTMLInputElement>) =>
-		setLocation(e.currentTarget.value);
-
 	const hasChanges = () => !!title && !!location;
 
 	const handleAddActionSubmit = async (
@@ -73,7 +69,6 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 			details: {
 				authorId: user?.uid || "",
 				title,
-				location,
 				topicId,
 				authorUsername: userProfile?.data()?.username,
 			},
@@ -156,25 +151,6 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 												id="title"
 												className="p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
 												placeholder="Write a title..."
-											/>
-										</div>
-									</div>
-
-									<div className="mt-5">
-										<label
-											htmlFor="location"
-											className="block text-m font-medium text-black"
-										>
-											Location
-										</label>
-										<div className="mt-1">
-											<input
-												onChange={handleLocationChange}
-												type="location"
-												name="location"
-												id="location"
-												className="p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-												placeholder="Write a location..."
 											/>
 										</div>
 									</div>

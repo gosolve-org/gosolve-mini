@@ -170,7 +170,9 @@ function Topic() {
 													</div>
 
 													<div className="mt-10 truncate text-sm font-light text-gray-400">
-														{itemData.location}
+														{
+															itemData.authorUsername
+														}
 													</div>
 												</li>
 											</Link>

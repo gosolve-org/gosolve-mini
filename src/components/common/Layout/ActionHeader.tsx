@@ -66,7 +66,7 @@ function ActionHeader() {
 					</Link>
 				</div>
 				<div className="flex flex-col justify-center h-52 mt-2 items-center rounded-md bg-sky-100">
-					<div className="mt-5 sm:mx-auto sm:w-full sm:max-w-md">
+					<div className="mt-5 sm:mx-auto sm:w-full">
 						<h1 className=" px-4 py-2 text-center text-3xl font-small tracking-tight text-black ">
 							{renderTitle()}
 						</h1>

@@ -40,8 +40,8 @@ function Header() {
 
 	return (
 		<div className="flex flex-col justify-center h-52 items-center bg-sky-100">
-			<div className="mt-5 sm:mx-auto sm:w-full sm:max-w-md">
-				<h1 className=" px-4 py-2 text-center text-3xl font-small tracking-tight text-black ">
+			<div className="mt-5 sm:mx-auto sm:w-full">
+				<h1 className="w-full px-4 py-2 text-center text-3xl font-small tracking-tight text-black ">
 					{`${readableCategory} in ${readableLocation}`}
 				</h1>
 			</div>

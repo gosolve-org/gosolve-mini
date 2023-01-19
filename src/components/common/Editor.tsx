@@ -41,13 +41,6 @@ const Editor = ({
 		setHasChanges(false);
 	}, [saveData]);
 
-	const handleEditClick = () => {
-		!readOnly && setEditMode(true);
-	};
-	const handleCancelClick = () => {
-		!readOnly && setEditMode(false);
-	};
-
 	const handleChange = useCallback(async () => {
 		setHasChanges(true);
 		// const savedData = await editorJS?.current?.save();

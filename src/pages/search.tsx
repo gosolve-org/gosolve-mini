@@ -1,42 +1,218 @@
+import { useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { collection, query, DocumentData } from "firebase/firestore";
 
-import {
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	PlusIcon,
-} from "@heroicons/react/20/solid";
-
-import { Layout } from "components/common";
-
-const searchResults = [
-	{
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		Type: "Post",
-	},
-	{
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		type: "Action",
-	},
-	{
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		type: "Category",
-	},
-];
+import { db } from "utils/firebase";
+import { Layout, Pagination } from "components/common";
+import { DEFAULT_PAGE_SIZE } from "constants/defaultSearches";
 
 function Search() {
 	const router = useRouter();
-	const routerPathname = router.pathname;
 
 	const searchQuery = router?.query?.q ? router?.query?.q.toString() : "";
 
 	const readableSearch = searchQuery.split("+").join(" ");
+
+	const [totalMatches, setTotalMatches] = useState(0);
+
+	const [topicsCollection, topicsLoading] = useCollection(
+		query(collection(db, "topics")),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
+
+	const [actionsCollection, actionsLoading] = useCollection(
+		query(collection(db, "actions")),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
+
+	const [postsCollection, postsLoading] = useCollection(
+		query(collection(db, "posts")),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
+
+	const [categoriesCollection] = useCollection(collection(db, "categories"), {
+		snapshotListenOptions: { includeMetadataChanges: true },
+	});
+
+	const [locationsCollection] = useCollection(collection(db, "locations"), {
+		snapshotListenOptions: { includeMetadataChanges: true },
+	});
+
+	// Firebase has no good way of matching substrings
+	// https://stackoverflow.com/questions/46568142/google-firestore-query-on-substring-of-a-property-value-text-search
+	// Possible solutions would quickly become unscalable on Firebase but tags could solve this/help categorize items better
+	// Other possible solutions are using an external service like Algolia and Elastic Search
+	const renderResults = useMemo(() => {
+		const matchResults = (
+			collection: { docs: DocumentData[] } | undefined
+		) => {
+			const searchTerms = searchQuery.split("+");
+
+			return collection?.docs
+				? collection?.docs.reduce((result, item) => {
+						const itemData = item.data();
+						if (
+							itemData?.content &&
+							searchTerms.every((word) =>
+								itemData.content.includes(word)
+							)
+						) {
+							result.push(item);
+						}
+
+						if (
+							itemData?.title &&
+							searchTerms.every((word) =>
+								itemData.title.includes(word)
+							)
+						) {
+							result.push(item);
+						}
+						return result;
+				  }, [])
+				: [];
+		};
+
+		const getTopicData = (item: DocumentData) => {
+			const topic = topicsCollection?.docs.find(
+				(topic) => topic.id === item.data().topicId
+			);
+			return topic?.data();
+		};
+
+		const getCategoryQuery = (item: DocumentData) => {
+			const topicData = getTopicData(item);
+
+			return categoriesCollection?.docs
+				.find((category) => category.id === topicData?.categoryId)
+				?.data()
+				.category.split(" ")
+				.join("-");
+		};
+
+		const getLocationQuery = (item: DocumentData) => {
+			const topicData = getTopicData(item);
+
+			return locationsCollection?.docs
+				.find((location) => location.id === topicData?.locationId)
+				?.data()
+				.location.split(" ")
+				.join("-");
+		};
+
+		const filteredTopics = matchResults(topicsCollection);
+		const filteredActions = matchResults(actionsCollection);
+		const filteredPosts = matchResults(postsCollection);
+
+		setTotalMatches(
+			filteredTopics.length +
+				filteredActions.length +
+				filteredPosts.length
+		);
+
+		return (
+			<>
+				{filteredTopics.map((item: DocumentData) => {
+					if (item) {
+						const itemData = item.data();
+						const categoryQuery = getCategoryQuery(item);
+						const locationQuery = getLocationQuery(item);
+
+						return (
+							<Link
+								href={`/${categoryQuery}/${locationQuery}`}
+								className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb"
+								key={item.id}
+							>
+								{itemData?.title ? (
+									<h4 className="text-2xl mb-4">
+										{itemData.title}
+									</h4>
+								) : null}
+
+								<p className="text-sm text-gray-500 mb-1">
+									Topic
+								</p>
+							</Link>
+						);
+					}
+				})}
+				{filteredActions.map((item: DocumentData) => {
+					if (item) {
+						const itemData = item.data();
+						const categoryQuery = getCategoryQuery(item);
+						const locationQuery = getLocationQuery(item);
+
+						return (
+							<Link
+								href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
+								className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb"
+								key={item.id}
+							>
+								{itemData?.title ? (
+									<h4 className="text-2xl mb-4">
+										{itemData.title}
+									</h4>
+								) : null}
+
+								<p className="text-sm text-gray-500 mb-1">
+									{`Action${
+										itemData?.authorUsername
+											? ` - ${itemData.authorUsername}`
+											: ""
+									}`}
+								</p>
+							</Link>
+						);
+					}
+				})}
+				{filteredPosts.map((item: DocumentData) => {
+					if (item) {
+						const itemData = item.data();
+						const categoryQuery = getCategoryQuery(item);
+						const locationQuery = getLocationQuery(item);
+
+						return (
+							<Link
+								href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
+								className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb"
+								key={item.id}
+							>
+								{itemData?.title ? (
+									<h4 className="text-2xl mb-4">
+										{itemData.title}
+									</h4>
+								) : null}
+
+								<p className="text-sm text-gray-500 mb-1">
+									{`Post${
+										itemData?.authorUsername
+											? ` - ${itemData.authorUsername}`
+											: ""
+									}`}
+								</p>
+							</Link>
+						);
+					}
+				})}
+			</>
+		);
+	}, [
+		topicsCollection,
+		actionsCollection,
+		postsCollection,
+		searchQuery,
+		categoriesCollection?.docs,
+		locationsCollection?.docs,
+	]);
 
 	return (
 		<Layout>
@@ -49,117 +225,15 @@ function Search() {
 					</div>
 
 					<dl className="mt-6 flex flex-col w-full gap-5">
-						{searchResults.map((item) => (
-							<Link
-								href="/"
-								className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb"
-								key={item.title}
-							>
-								<h4 className="text-2xl mb-4">{item.title}</h4>
-
-								<p className="text-sm text-gray-500 mb-1">
-									{item.type}
-								</p>
-							</Link>
-						))}
+						{!topicsLoading && !actionsLoading && !postsLoading
+							? renderResults
+							: null}
 					</dl>
-					<div className="flex items-center justify-between px-4 py-3 sm:px-6 mt-10">
-						<div className="flex flex-1 justify-between sm:hidden">
-							<a
-								href="#"
-								className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-							>
-								Previous
-							</a>
-							<a
-								href="#"
-								className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-							>
-								Next
-							</a>
-						</div>
-						<div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-							<div>
-								<p className="text-sm text-gray-700">
-									Showing{" "}
-									<span className="font-medium">1</span> to{" "}
-									<span className="font-medium">10</span> of{" "}
-									<span className="font-medium">97</span>{" "}
-									results
-								</p>
-							</div>
-							<div>
-								<nav
-									className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-									aria-label="Pagination"
-								>
-									<a
-										href="#"
-										className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
-									>
-										<span className="sr-only">
-											Previous
-										</span>
-										<ChevronLeftIcon
-											className="h-5 w-5"
-											aria-hidden="true"
-										/>
-									</a>
-									{/* Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" */}
-									<a
-										href="#"
-										aria-current="page"
-										className="relative z-10 inline-flex items-center border border-indigo-500 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 focus:z-20"
-									>
-										1
-									</a>
-									<a
-										href="#"
-										className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
-									>
-										2
-									</a>
-									<a
-										href="#"
-										className="relative hidden items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 md:inline-flex"
-									>
-										3
-									</a>
-									<span className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">
-										...
-									</span>
-									<a
-										href="#"
-										className="relative hidden items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 md:inline-flex"
-									>
-										8
-									</a>
-									<a
-										href="#"
-										className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
-									>
-										9
-									</a>
-									<a
-										href="#"
-										className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
-									>
-										10
-									</a>
-									<a
-										href="#"
-										className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
-									>
-										<span className="sr-only">Next</span>
-										<ChevronRightIcon
-											className="h-5 w-5"
-											aria-hidden="true"
-										/>
-									</a>
-								</nav>
-							</div>
-						</div>
-					</div>
+
+					<Pagination
+						totalCount={totalMatches}
+						pageSize={DEFAULT_PAGE_SIZE}
+					/>
 				</div>
 			</div>
 		</Layout>

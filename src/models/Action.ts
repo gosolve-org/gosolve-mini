@@ -5,6 +5,7 @@ export interface Action {
 	location?: string;
 	topicId?: string;
 	authorId?: string;
+	authorUsername?: string;
 	updatedAt?: Date;
 	createdAt?: Date;
 }

@@ -105,6 +105,7 @@ function Topic() {
 		await updateTopic({
 			docId: topicId,
 			details: {
+				title: `${readableCategory} in ${readableLocation}`,
 				content: savedData,
 				categoryId: currentCategoryId,
 				locationId: currentLocationId,

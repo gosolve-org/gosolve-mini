@@ -162,16 +162,23 @@ function Pagination({ pageSize = 10, totalCount = 0 }: PaginationProps) {
 				<div>
 					<p className="text-sm text-gray-700">
 						Showing{" "}
-						<span className="font-medium">{firstIndexOnPage}</span>{" "}
-						{lastIndexOnPage !== 1 ? (
+						{totalCount === 0 ? null : (
 							<>
-								to{" "}
 								<span className="font-medium">
-									{lastIndexOnPage}
+									{firstIndexOnPage}
 								</span>{" "}
+								{lastIndexOnPage !== 1 ? (
+									<>
+										to{" "}
+										<span className="font-medium">
+											{lastIndexOnPage}
+										</span>{" "}
+									</>
+								) : null}
+								of{" "}
 							</>
-						) : null}
-						of <span className="font-medium">{totalCount}</span>{" "}
+						)}
+						<span className="font-medium">{totalCount}</span>{" "}
 						results
 					</p>
 				</div>

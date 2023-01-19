@@ -8,8 +8,8 @@ import {
 import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useCollection } from "react-firebase-hooks/firestore";
-import { collection, query, where } from "firebase/firestore";
+import { useCollection, useDocument } from "react-firebase-hooks/firestore";
+import { collection, query, where, doc } from "firebase/firestore";
 
 import { addAction } from "pages/api/action";
 import { useAuth } from "context/AuthContext";
@@ -39,6 +39,10 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 			snapshotListenOptions: { includeMetadataChanges: true },
 		}
 	);
+
+	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
+		snapshotListenOptions: { includeMetadataChanges: true },
+	});
 
 	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
@@ -71,6 +75,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 				title,
 				location,
 				topicId,
+				authorUsername: userProfile?.data()?.username,
 			},
 		}).then((docId) => {
 			setOpen(false);

@@ -50,6 +50,9 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 	const locationQuery = router?.query?.location
 		? router?.query?.location.toString()
 		: "...";
+	const actionId = router?.query?.action
+		? router?.query?.action.toString()
+		: "";
 
 	const readableCategoryId = categoryQuery.split("-").join(" ");
 	const readableLocationId = locationQuery.split("-").join(" ");
@@ -68,13 +71,14 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 		e.preventDefault();
 
 		const topicId = topicsCollection?.docs?.[0]?.id || "";
+		const originDetails = actionId ? { actionId } : { topicId };
 
 		await addPost({
 			details: {
+				...originDetails,
 				authorId: user?.uid || "",
 				title,
 				content: description,
-				topicId,
 				authorUsername: userProfile?.data()?.username,
 			},
 		}).then((docId) => {

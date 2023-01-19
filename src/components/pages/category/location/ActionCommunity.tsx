@@ -1,46 +1,72 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/router";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { collection, query, where, orderBy } from "firebase/firestore";
 import Link from "next/link";
-import {
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	PlusIcon,
-} from "@heroicons/react/20/solid";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
-import { Layout, AddCommunityPostModal } from "components/common";
-
-const communities = [
-	{
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
-	},
-	{
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
-	},
-	{
-		title: "Fundraiser for Cancer Research",
-		createdBy: "Barack Obama",
-		createdAt: "December 9 at 11:43 AM",
-		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus sit amet est placerat in egestas",
-	},
-];
+import { db } from "utils/firebase";
+import { DataContext } from "pages/_app";
+import { DEFAULT_PAGE_SIZE } from "constants/defaultSearches";
+import { Layout, AddCommunityPostModal, Pagination } from "components/common";
 
 function ActionCommunity() {
+	const { currentCategoryId, currentLocationId } = useContext(DataContext);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
 		useState(false);
 
 	const router = useRouter();
-	const routerPathname = router.pathname;
+	const routerQuery = router.query;
+
+	const categoryQuery = routerQuery?.category
+		? routerQuery?.category.toString()
+		: "...";
+	const locationQuery = routerQuery?.location
+		? routerQuery?.location.toString()
+		: "...";
+	const actionId = router?.query?.action
+		? router?.query?.action.toString()
+		: "";
+	const pageQuery = routerQuery?.page
+		? parseInt(routerQuery?.page.toString()) || 1
+		: 1;
 
 	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
+
+	const [postsCollection, postsLoading] = useCollection(
+		query(
+			collection(db, "posts"),
+			where("actionId", "==", actionId),
+			orderBy("updatedAt", "desc")
+		),
+		{
+			snapshotListenOptions: { includeMetadataChanges: true },
+		}
+	);
+
+	const totalPosts = postsCollection?.docs.length || 0;
+
+	// Firebase doesn't have a good way to paginate
+	// https://firebase.google.com/docs/firestore/query-data/query-cursors
+	// One solution is to generate indexes of generated docIds of paginated queries and use that with '.startAfter' and 'limit' queries
+	// Another way is with counters (https://stackoverflow.com/questions/39519021/how-to-create-auto-incremented-key-in-firebase) but could limit filtering and hotspots later
+	const paginatedPostsCollection = () => {
+		if (postsCollection?.docs) {
+			const pageCount = Math.ceil(totalPosts / DEFAULT_PAGE_SIZE);
+			const firstIndexOnPage = (pageQuery - 1) * DEFAULT_PAGE_SIZE;
+			const isLastPage = pageQuery === pageCount;
+			const lastIndexOnPage = isLastPage
+				? (totalPosts % DEFAULT_PAGE_SIZE) +
+				  DEFAULT_PAGE_SIZE * (pageQuery - 1)
+				: DEFAULT_PAGE_SIZE * pageQuery;
+
+			return postsCollection?.docs.slice(
+				firstIndexOnPage,
+				lastIndexOnPage
+			);
+		}
+		return [];
+	};
 
 	return (
 		<Layout>
@@ -64,134 +90,58 @@ function ActionCommunity() {
 						</span>
 					</div>
 
-					<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
-						{communities.map((item) => (
-							<Link
-								href="/"
-								className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb w-full"
-								key={item.title}
-							>
-								<h4 className="text-2xl mb-4">{item.title}</h4>
-								<div className="flex space-x-3 justify-center items-center mb-4">
-									<div className="flex-shrink-0">
-										<img
-											className="h-7 w-7 rounded-full"
-											src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-											alt=""
-										/>
-									</div>
-									<div className="min-w-0 flex-1">
-										<span className="text-sm font-medium text-gray-900">
-											{item.createdBy}
-										</span>
-										<span className="text-sm text-gray-500 ml-4">
-											{item.createdAt}
-										</span>
-									</div>
-								</div>
-								<p className="text-sm text-gray-500 mb-1">
-									{item.description}
-								</p>
-							</Link>
-						))}
-					</dl>
-					<div className="flex items-center justify-between px-4 py-3 sm:px-6 mt-10">
-						<div className="flex flex-1 justify-between sm:hidden">
-							<a
-								href="#"
-								className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-							>
-								Previous
-							</a>
-							<a
-								href="#"
-								className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-							>
-								Next
-							</a>
-						</div>
-						<div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-							<div>
-								<p className="text-sm text-gray-700">
-									Showing{" "}
-									<span className="font-medium">1</span> to{" "}
-									<span className="font-medium">10</span> of{" "}
-									<span className="font-medium">97</span>{" "}
-									results
-								</p>
-							</div>
-							<div>
-								<nav
-									className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-									aria-label="Pagination"
-								>
-									<a
-										href="#"
-										className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
-									>
-										<span className="sr-only">
-											Previous
-										</span>
-										<ChevronLeftIcon
-											className="h-5 w-5"
-											aria-hidden="true"
-										/>
-									</a>
-									{/* Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" */}
-									<a
-										href="#"
-										aria-current="page"
-										className="relative z-10 inline-flex items-center border border-indigo-500 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 focus:z-20"
-									>
-										1
-									</a>
-									<a
-										href="#"
-										className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
-									>
-										2
-									</a>
-									<a
-										href="#"
-										className="relative hidden items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 md:inline-flex"
-									>
-										3
-									</a>
-									<span className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">
-										...
-									</span>
-									<a
-										href="#"
-										className="relative hidden items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 md:inline-flex"
-									>
-										8
-									</a>
-									<a
-										href="#"
-										className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
-									>
-										9
-									</a>
-									<a
-										href="#"
-										className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
-									>
-										10
-									</a>
-									<a
-										href="#"
-										className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
-									>
-										<span className="sr-only">Next</span>
-										<ChevronRightIcon
-											className="h-5 w-5"
-											aria-hidden="true"
-										/>
-									</a>
-								</nav>
-							</div>
-						</div>
-					</div>
+					{!postsLoading ? (
+						<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
+							{paginatedPostsCollection()?.map((item) => {
+								if (item) {
+									const itemData = item.data();
+									return (
+										<Link
+											href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
+											className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb w-full"
+											key={item.id}
+										>
+											<h4 className="text-2xl mb-4">
+												{itemData?.title}
+											</h4>
+											<div className="flex space-x-3 justify-center items-center  mb-4">
+												<div className="flex-shrink-0 flex justify-center">
+													<span className=" inline-block h-7 w-7 overflow-hidden rounded-full bg-gray-100">
+														<svg
+															className="h-full w-full text-gray-300"
+															fill="currentColor"
+															viewBox="0 0 24 24"
+														>
+															<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+														</svg>
+													</span>
+												</div>
+												<div className="min-w-0 flex-1">
+													<span className="text-sm font-medium text-gray-900">
+														{itemData?.authorUsername ||
+															"Anonymous"}
+													</span>
+													<span className="text-sm text-gray-500 ml-4">
+														{new Date(
+															itemData?.createdAt
+														).toUTCString()}
+													</span>
+												</div>
+											</div>
+											<p className="text-sm text-gray-500 mb-1">
+												{itemData?.content}
+											</p>
+										</Link>
+									);
+								}
+							})}
+						</dl>
+					) : null}
+
+					<Pagination
+						totalCount={totalPosts}
+						pageSize={DEFAULT_PAGE_SIZE}
+					/>
 				</div>
 			</div>
 

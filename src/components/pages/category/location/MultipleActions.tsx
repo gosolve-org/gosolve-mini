@@ -118,7 +118,7 @@ function MultipleActions() {
 									const itemData = item.data();
 									return (
 										<Link
-											key={itemData.id}
+											key={item.id}
 											href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
 										>
 											<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">

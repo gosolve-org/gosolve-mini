@@ -20,7 +20,8 @@ function Pagination({ pageSize = 10, totalCount = 0 }: PaginationProps) {
 	const firstIndexOnPage = (pageQuery - 1) * pageSize + 1;
 	const isLastPage = pageQuery === pageCount;
 	const lastIndexOnPage = isLastPage
-		? (totalCount % pageSize) + pageSize * (pageQuery - 1)
+		? (totalCount % pageSize === 0 ? pageSize : totalCount % pageSize) +
+		  pageSize * (pageQuery - 1)
 		: pageSize * pageQuery;
 
 	const renderPageControls = () => {
@@ -84,7 +85,7 @@ function Pagination({ pageSize = 10, totalCount = 0 }: PaginationProps) {
 					{pageQuery}
 				</Link>
 
-				{lastIndexOnPage + pageSize <= totalCount ? (
+				{lastIndexOnPage < totalCount ? (
 					<Link
 						href={{
 							pathname,
@@ -97,7 +98,7 @@ function Pagination({ pageSize = 10, totalCount = 0 }: PaginationProps) {
 					</Link>
 				) : null}
 
-				{lastIndexOnPage + 2 * pageSize <= totalCount ? (
+				{lastIndexOnPage + pageSize < totalCount ? (
 					<Link
 						href={{
 							pathname,
@@ -110,7 +111,7 @@ function Pagination({ pageSize = 10, totalCount = 0 }: PaginationProps) {
 					</Link>
 				) : null}
 
-				{lastIndexOnPage + 3 * pageSize <= totalCount ? (
+				{lastIndexOnPage + 2 * pageSize < totalCount ? (
 					<Link
 						href={{
 							pathname,

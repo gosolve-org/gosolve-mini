@@ -66,7 +66,9 @@ function MultipleActions() {
 			const firstIndexOnPage = (pageQuery - 1) * DEFAULT_PAGE_SIZE;
 			const isLastPage = pageQuery === pageCount;
 			const lastIndexOnPage = isLastPage
-				? (totalActions % DEFAULT_PAGE_SIZE) +
+				? (totalActions % DEFAULT_PAGE_SIZE === 0
+						? DEFAULT_PAGE_SIZE
+						: totalActions % DEFAULT_PAGE_SIZE) +
 				  DEFAULT_PAGE_SIZE * (pageQuery - 1)
 				: DEFAULT_PAGE_SIZE * pageQuery;
 

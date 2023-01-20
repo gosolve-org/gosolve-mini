@@ -75,6 +75,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		return () => unsubscribe();
 	}, []);
 
+	const addToWaitlist = async (email: string) => {
+		await fetch("https://api.getwaitlist.com/api/v1/waiter", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				email: email,
+				api_key: process.env.NEXT_PUBLIC_WAITLIST_API_KEY,
+			}),
+		});
+	};
+
 	const validateUser = async (credentials: UserCredential) => {
 		return await updateUser({
 			docId: credentials.user.uid,
@@ -93,14 +106,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			password
 		);
 
-		return await validateUser(credentials);
+		return await validateUser(credentials)
+			.then(() => credentials)
+			.catch(async () => {
+				await addToWaitlist(email);
+				throw new Error("Not allowed");
+			});
 	};
 
 	const loginWithGoogle = async () => {
+		let userEmail = "";
 		const provider = new GoogleAuthProvider();
-		const credentials = await signInWithPopup(auth, provider);
+		const credentials = await signInWithPopup(auth, provider).then(
+			(credentials) => {
+				userEmail = credentials.user.email;
+				return credentials;
+			}
+		);
 
-		return await validateUser(credentials);
+		return await validateUser(credentials)
+			.then(() => credentials)
+			.catch(async () => {
+				await addToWaitlist(userEmail);
+				throw new Error("Not allowed");
+			});
 	};
 
 	const setShouldRemember = async (setShouldRemember: boolean) => {
@@ -115,8 +144,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		return await signOut(auth);
 	};
 
-	const register = (email: string, password: string) => {
-		return createUserWithEmailAndPassword(auth, email, password);
+	const register = async (email: string, password: string) => {
+		const credentials = await createUserWithEmailAndPassword(
+			auth,
+			email,
+			password
+		);
+
+		return await validateUser(credentials)
+			.then(() => credentials)
+			.catch(async () => {
+				await addToWaitlist(email);
+				throw new Error("Not allowed");
+			});
 	};
 
 	return (

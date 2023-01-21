@@ -7,7 +7,7 @@ import {
 	useContext,
 } from "react";
 import { useRouter } from "next/router";
-import { useCollection } from "react-firebase-hooks/firestore";
+import { useCollection, useCollectionOnce } from "react-firebase-hooks/firestore";
 import { collection } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
@@ -34,13 +34,8 @@ function Navbar() {
 	const { handleCurrentCategoryIdChange, handleCurrentLocationIdChange } =
 		useContext(DataContext);
 
-	const [categoriesCollection] = useCollection(collection(db, "categories"), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
-
-	const [locationsCollection] = useCollection(collection(db, "locations"), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [categoriesCollection] = useCollectionOnce(collection(db, "categories"));
+	const [locationsCollection] = useCollectionOnce(collection(db, "locations"));
 
 	const [searchQuery, setSearchQuery] = useState("");
 	const [categories, setCategories] = useState<Category[]>([
@@ -54,15 +49,9 @@ function Navbar() {
 
 	const [selectedLocation, setSelectedLocation] = useState<Location>();
 
-	const readableCategoryId = router?.query?.category
-		? router?.query?.category.toString().split("-").join(" ")
-		: "...";
-	const readableLocationId = router?.query?.location
-		? router?.query?.location.toString().split("-").join(" ")
-		: "...";
-	const readableSearchQuery = router?.query?.q
-		? router?.query?.q.toString().split("+").join(" ")
-		: "";
+	const readableCategory = router?.query?.category?.toString().split("-").join(" ");
+	const readableLocation = router?.query?.location?.toString().split("-").join(" ");
+	const readableSearchQuery = router?.query?.q?.toString().split("+").join(" ") ?? "";
 
 	useEffect(() => {
 		setCategories(
@@ -88,10 +77,10 @@ function Navbar() {
 
 	useEffect(() => {
 		const category = categories.find(
-			(category) => category.category === readableCategoryId
+			(category) => category.category === readableCategory
 		);
 		const location = locations.find(
-			(location) => location.location === readableLocationId
+			(location) => location.location === readableLocation
 		);
 		handleCurrentCategoryIdChange(category?.id || "");
 		handleCurrentLocationIdChange(location?.id || "");
@@ -99,8 +88,8 @@ function Navbar() {
 		setSelectedLocation(location);
 		setSearchQuery(readableSearchQuery);
 	}, [
-		readableCategoryId,
-		readableLocationId,
+		readableCategory,
+		readableLocation,
 		readableSearchQuery,
 		categories,
 		locations,
@@ -189,9 +178,10 @@ function Navbar() {
 										<div className="relative">
 											<Listbox.Button className="relative  cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
 												<span className="block truncate">
-													{selectedCategory
-														? selectedCategory.category
-														: "Enter the category name"}
+													{selectedCategory?.category 
+														?? readableCategory
+														??  "Enter the category name"
+													}
 												</span>
 											</Listbox.Button>
 
@@ -282,9 +272,10 @@ function Navbar() {
 										<div className="relative">
 											<Listbox.Button className="relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
 												<span className="block truncate">
-													{selectedLocation
-														? selectedLocation.location
-														: "Enter the location name"}
+													{selectedLocation?.location
+														?? readableLocation
+														?? "Enter the location name"
+													}
 												</span>
 											</Listbox.Button>
 

@@ -13,13 +13,11 @@ const EditorJs = dynamic(() => import("components/common/Editor"), {
 	ssr: false,
 });
 
-function SingleAction() {
+function Action() {
 	const { user } = useAuth();
 	const router = useRouter();
 
-	const actionId = router?.query?.action
-		? router?.query?.action.toString()
-		: "";
+	const actionId = router?.query?.actionId?.toString() ?? '';
 
 	const [userProfile, userLoading] = useDocument(
 		doc(db, `user`, user?.uid || ""),
@@ -88,4 +86,4 @@ function SingleAction() {
 	);
 }
 
-export default SingleAction;
+export default Action;

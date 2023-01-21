@@ -1,4 +1,5 @@
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
+import { withBreaks } from "utils/textUtils";
 
 interface CommentProps {
 	id: string;
@@ -45,7 +46,7 @@ function Comment({
 						</div>
 					</div>
 
-					<p className="mt-1 text-gray-500">{content}</p>
+					<p className="mt-1 text-gray-500">{withBreaks(content)}</p>
 				</div>
 
 				{handleReplyButtonClick && !isChild ? (

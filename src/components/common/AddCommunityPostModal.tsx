@@ -15,44 +15,29 @@ import { useAuth } from "context/AuthContext";
 import { db } from "utils/firebase";
 import { DataContext } from "pages/_app";
 import { addPost } from "pages/api/post";
+import { ResourceType } from "models/ResourceType";
 
 interface AddCommunityPostProps {
 	open: boolean;
 	setOpen: (open: boolean) => void;
+	parentResourceType: ResourceType;
+	parentResourceId: string;
 }
 
-function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
+function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId }: AddCommunityPostProps) {
 	const { user } = useAuth();
 	const router = useRouter();
-	const { currentCategoryId, currentLocationId } = useContext(DataContext);
 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
-
-	const [topicsCollection] = useCollection(
-		query(
-			collection(db, "topics"),
-			where("categoryId", "==", currentCategoryId),
-			where("locationId", "==", currentLocationId)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
 
 	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
 		snapshotListenOptions: { includeMetadataChanges: true },
 	});
 
-	const categoryQuery = router?.query?.category
-		? router?.query?.category.toString()
-		: "...";
-	const locationQuery = router?.query?.location
-		? router?.query?.location.toString()
-		: "...";
-	const actionId = router?.query?.action
-		? router?.query?.action.toString()
-		: "";
+	const categoryQuery = router?.query?.category?.toString() ?? '...';
+	const locationQuery = router?.query?.location?.toString() ?? '...';
+	const actionId = router?.query?.actionId?.toString() ?? '';
 
 	const readableCategoryId = categoryQuery.split("-").join(" ");
 	const readableLocationId = locationQuery.split("-").join(" ");
@@ -70,8 +55,9 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 	) => {
 		e.preventDefault();
 
-		const topicId = topicsCollection?.docs?.[0]?.id || "";
-		const originDetails = actionId ? { actionId } : { topicId };
+		const originDetails = {
+			[(parentResourceType === ResourceType.Action ? 'actionId' : 'topicId')]: parentResourceId
+		};
 
 		await addPost({
 			details: {
@@ -83,8 +69,9 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 			},
 		}).then((docId) => {
 			setOpen(false);
-			router.push(
-				`/${categoryQuery}/${locationQuery}/community?post=${docId}`
+			router.push(parentResourceType === ResourceType.Topic
+				? `/${categoryQuery}/${locationQuery}/community/${docId}`
+				: `/${categoryQuery}/${locationQuery}/actions/${actionId}/community/${docId}`
 			);
 		});
 	};

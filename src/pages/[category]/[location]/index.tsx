@@ -1,6 +1,6 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useCollection, useDocument } from "react-firebase-hooks/firestore";
+import { useCollection, useCollectionOnce, useDocument } from "react-firebase-hooks/firestore";
 import {
 	collection,
 	query,
@@ -25,10 +25,16 @@ const EditorJs = dynamic(() => import("components/common/Editor"), {
 });
 
 import { Layout } from "components/common";
+import { ResourceType } from "models/ResourceType";
+import { Tab } from "models/Tab";
 
-function Topic() {
+function TopicPage() {
 	const { user } = useAuth();
-	const { currentCategoryId, currentLocationId } = useContext(DataContext);
+	const { currentCategoryId, currentLocationId, handleCurrentTabChange } = useContext(DataContext);
+
+	useEffect(() => {
+		handleCurrentTabChange(Tab.Topic);
+	}, []);
 
 	const [addActionModalOpen, setActionModalOpen] = useState(false);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
@@ -36,25 +42,18 @@ function Topic() {
 
 	const router = useRouter();
 
-	const categoryQuery = router?.query?.category
-		? router?.query?.category.toString()
-		: "...";
-	const locationQuery = router?.query?.location
-		? router?.query?.location.toString()
-		: "...";
+	const categoryQuery = router?.query?.category?.toString();
+	const locationQuery = router?.query?.location?.toString();
 
 	const readableCategory = categoryQuery.split("-").join(" ");
 	const readableLocation = locationQuery.split("-").join(" ");
 
-	const [topicsCollection, topicsLoading] = useCollection(
+	const [topicsCollection, topicsLoading] = useCollectionOnce(
 		query(
 			collection(db, "topics"),
 			where("categoryId", "==", currentCategoryId),
 			where("locationId", "==", currentLocationId)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		)
 	);
 
 	// TODO Seems like error with library if there are no blocks so set default block
@@ -70,28 +69,22 @@ function Topic() {
 		}
 	);
 
-	const [actionsCollection, actionsLoading] = useCollection(
+	const [actionsCollection, actionsLoading] = useCollectionOnce(
 		query(
 			collection(db, "actions"),
 			where("topicId", "==", topicId),
 			orderBy("updatedAt", "desc"),
 			limit(3)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		)
 	);
 
-	const [postsCollection, postsLoading] = useCollection(
+	const [postsCollection, postsLoading] = useCollectionOnce(
 		query(
 			collection(db, "posts"),
 			where("topicId", "==", topicId),
 			orderBy("updatedAt", "desc"),
 			limit(3)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		)
 	);
 
 	const canUserEdit =
@@ -162,7 +155,7 @@ function Topic() {
 										return (
 											<Link
 												key={item.id}
-												href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
+												href={`/${categoryQuery}/${locationQuery}/actions/${item.id}`}
 											>
 												<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 													<div className="text-xl font-medium text-black">
@@ -222,7 +215,7 @@ function Topic() {
 										return (
 											<Link
 												key={item.id}
-												href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
+												href={`/${categoryQuery}/${locationQuery}/community/${item.id}`}
 											>
 												<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 													<div className="text-xl font-medium text-black">
@@ -263,6 +256,8 @@ function Topic() {
 			<AddCommunityPostModal
 				open={addCommunityPostModalOpen}
 				setOpen={setAddCommunityPostModalOpen}
+				parentResourceType={ResourceType.Topic}
+				parentResourceId={topicId}
 			/>
 
 			<ToastContainer
@@ -281,4 +276,4 @@ function Topic() {
 	);
 }
 
-export default Topic;
+export default TopicPage;

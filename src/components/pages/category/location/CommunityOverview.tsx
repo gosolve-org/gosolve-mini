@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { useCollection } from "react-firebase-hooks/firestore";
+import { useCollection, useCollectionOnce } from "react-firebase-hooks/firestore";
 import { collection, query, where, orderBy } from "firebase/firestore";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/20/solid";
@@ -9,11 +9,26 @@ import { db } from "utils/firebase";
 import { DataContext } from "pages/_app";
 import { DEFAULT_PAGE_SIZE } from "constants/defaultSearches";
 import { Layout, AddCommunityPostModal, Pagination } from "components/common";
+import { trimToFirstLine } from "utils/textUtils";
+import { ResourceType } from "models/ResourceType";
 
-function ActionCommunity() {
+interface CommunityOverviewProps {
+	resourceType: ResourceType;
+}
+
+function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 	const { currentCategoryId, currentLocationId } = useContext(DataContext);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
 		useState(false);
+
+	const [topicsCollection, topicsLoading] = resourceType == ResourceType.Topic
+		? useCollectionOnce(
+			query(
+				collection(db, "topics"),
+				where("categoryId", "==", currentCategoryId),
+				where("locationId", "==", currentLocationId)
+			))
+		: [null, false];
 
 	const router = useRouter();
 	const routerQuery = router.query;
@@ -24,24 +39,30 @@ function ActionCommunity() {
 	const locationQuery = routerQuery?.location
 		? routerQuery?.location.toString()
 		: "...";
-	const actionId = router?.query?.action
-		? router?.query?.action.toString()
-		: "";
 	const pageQuery = routerQuery?.page
 		? parseInt(routerQuery?.page.toString()) || 1
 		: 1;
 
+	let resourceId = '';
+	switch (resourceType) {
+		case ResourceType.Action:
+			resourceId = router?.query?.actionId?.toString() ?? '';
+			break;
+		case ResourceType.Topic:
+			resourceId = topicsCollection?.docs?.[0]?.id || "";
+			break;
+		default:
+			console.error(`Could not determine resource type ${resourceType}.`);
+	}
+
 	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
-	const [postsCollection, postsLoading] = useCollection(
+	const [postsCollection, postsLoading] = useCollectionOnce(
 		query(
 			collection(db, "posts"),
-			where("actionId", "==", actionId),
+			where(resourceType === ResourceType.Action ? 'actionId' : 'topicId', "==", resourceId),
 			orderBy("updatedAt", "desc")
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		)
 	);
 
 	const totalPosts = postsCollection?.docs.length || 0;
@@ -71,7 +92,7 @@ function ActionCommunity() {
 	return (
 		<Layout>
 			<div className="flex min-h-full flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
-				<div className="min-w-[75%]">
+				<div className="w-full max-w-4xl">
 					<div className="flex items-center">
 						<h2 className="text-2xl font-xl font-semibold leading-6 text-black">
 							Community
@@ -90,18 +111,21 @@ function ActionCommunity() {
 						</span>
 					</div>
 
-					{!postsLoading ? (
+					{!postsLoading && !topicsLoading ? (
 						<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
 							{paginatedPostsCollection()?.map((item) => {
 								if (item) {
 									const itemData = item.data();
 									return (
 										<Link
-											href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
+											href={resourceType === ResourceType.Topic
+												? `/${categoryQuery}/${locationQuery}/community/${item.id}`
+												: `/${categoryQuery}/${locationQuery}/actions/${resourceId}/community/${item.id}`
+											}
 											className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb w-full"
 											key={item.id}
 										>
-											<h4 className="text-2xl mb-4">
+											<h4 className="text-2xl mb-4 truncate">
 												{itemData?.title}
 											</h4>
 											<div className="flex space-x-3 justify-center items-center  mb-4">
@@ -128,8 +152,8 @@ function ActionCommunity() {
 													</span>
 												</div>
 											</div>
-											<p className="text-sm text-gray-500 mb-1">
-												{itemData?.content}
+											<p className="text-sm text-gray-500 mb-1 truncate">
+												{trimToFirstLine(itemData?.content)}
 											</p>
 										</Link>
 									);
@@ -148,9 +172,11 @@ function ActionCommunity() {
 			<AddCommunityPostModal
 				open={addCommunityPostModalOpen}
 				setOpen={setAddCommunityPostModalOpen}
+				parentResourceType={resourceType}
+				parentResourceId={resourceId}
 			/>
 		</Layout>
 	);
 }
 
-export default ActionCommunity;
+export default CommunityOverview;

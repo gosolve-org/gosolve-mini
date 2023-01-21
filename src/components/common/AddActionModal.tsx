@@ -8,7 +8,7 @@ import {
 import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useCollection, useDocument } from "react-firebase-hooks/firestore";
+import { useCollection, useCollectionOnce, useDocument } from "react-firebase-hooks/firestore";
 import { collection, query, where, doc } from "firebase/firestore";
 
 import { addAction } from "pages/api/action";
@@ -28,27 +28,20 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 
 	const [title, setTitle] = useState("");
 
-	const [topicsCollection] = useCollection(
+	const [topicsCollection] = useCollectionOnce(
 		query(
 			collection(db, "topics"),
 			where("categoryId", "==", currentCategoryId),
 			where("locationId", "==", currentLocationId)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		)
 	);
 
 	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
 		snapshotListenOptions: { includeMetadataChanges: true },
 	});
 
-	const categoryQuery = router?.query?.category
-		? router?.query?.category.toString()
-		: "...";
-	const locationQuery = router?.query?.location
-		? router?.query?.location.toString()
-		: "...";
+	const categoryQuery = router?.query?.category?.toString();
+	const locationQuery = router?.query?.location?.toString();
 
 	const readableCategoryId = categoryQuery.split("-").join(" ");
 	const readableLocationId = locationQuery.split("-").join(" ");

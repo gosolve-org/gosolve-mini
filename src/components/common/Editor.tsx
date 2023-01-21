@@ -77,6 +77,7 @@ const Editor = ({
 				onInitialize={handleInitialize}
 				tools={EDITOR_JS_TOOLS}
 				defaultValue={JSON.parse(defaultValue)}
+				minHeight="100"
 			/>
 		</div>
 	);

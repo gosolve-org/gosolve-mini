@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent, useContext } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
@@ -6,10 +6,12 @@ import { useDocument } from "react-firebase-hooks/firestore";
 import { collection, query, where, doc } from "firebase/firestore";
 
 import { db } from "utils/firebase";
+import { DataContext } from "pages/_app";
+import { Tab } from "models/Tab";
 
 const tabs = [
-	{ name: "Action", href: "action" },
-	{ name: "Community", href: "community" },
+	{ name: "Action", href: "", value: Tab.Action },
+	{ name: "Community", href: "community", value: Tab.Community },
 ];
 
 function classNames(...classes: string[]) {
@@ -18,23 +20,13 @@ function classNames(...classes: string[]) {
 
 function ActionHeader() {
 	const router = useRouter();
-	const pathname = router.pathname;
-	const [currentTab, setCurrentTab] = useState("Action");
+	const { currentTab, handleCurrentTabChange } = useContext(DataContext);
 
-	const actionId = router?.query?.action
-		? router?.query?.action.toString()
-		: "";
-
-	const tabId = router?.query?.tab ? router?.query?.tab.toString() : "action";
+	const actionId = router?.query?.actionId?.toString() ?? '';
 
 	const [actionsCollection] = useDocument(doc(db, "actions", actionId), {
 		snapshotListenOptions: { includeMetadataChanges: true },
 	});
-
-	useEffect(() => {
-		if (tabId === "community") setCurrentTab("Community");
-		else setCurrentTab("Action");
-	}, [tabId]);
 
 	const categoryQuery = router?.query?.category
 		? router?.query?.category.toString()
@@ -48,10 +40,10 @@ function ActionHeader() {
 
 	const renderTitle = () =>
 		actionsCollection?.data()?.title ||
-		`${readableCategory} in ${readableLocation}`;
+		``;
 
 	const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
-		setCurrentTab(e.currentTarget.value);
+		handleCurrentTabChange(Tab[e.currentTarget.value]);
 
 	return (
 		<div className="flex flex-col justify-center items-center ">
@@ -85,7 +77,7 @@ function ActionHeader() {
 								className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
 							>
 								{tabs.map((tab) => (
-									<option key={tab.name}>{tab.name}</option>
+									<option key={tab.value}>{tab.name}</option>
 								))}
 							</select>
 						</div>
@@ -96,10 +88,10 @@ function ActionHeader() {
 							>
 								{tabs.map((tab, tabIdx) => (
 									<Link
-										key={tab.name}
-										href={`/${categoryQuery}/${locationQuery}/actions?action=${actionId}&tab=${tab.href}`}
+										key={tab.value}
+										href={`/${categoryQuery}/${locationQuery}/actions/${actionId}/${tab.href}`}
 										className={classNames(
-											tab.name === currentTab
+											tab.value === currentTab
 												? "text-gray-900"
 												: "text-gray-500 hover:text-gray-700",
 											tabIdx === 0 ? "rounded-l-lg" : "",
@@ -109,7 +101,7 @@ function ActionHeader() {
 											"group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
 										)}
 										aria-current={
-											tab.name === currentTab
+											tab.value === currentTab
 												? "page"
 												: undefined
 										}
@@ -118,7 +110,7 @@ function ActionHeader() {
 										<span
 											aria-hidden="true"
 											className={classNames(
-												tab.name === currentTab
+												tab.value === currentTab
 													? "bg-indigo-500"
 													: "bg-transparent",
 												"absolute inset-x-0 bottom-0 h-0.5"

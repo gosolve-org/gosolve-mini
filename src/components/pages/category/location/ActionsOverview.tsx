@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { useCollection, useDocument } from "react-firebase-hooks/firestore";
+import { useCollection, useCollectionOnce, useDocument } from "react-firebase-hooks/firestore";
 import { collection, query, where, doc, orderBy } from "firebase/firestore";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/20/solid";
@@ -11,7 +11,7 @@ import { useAuth } from "context/AuthContext";
 import { DataContext } from "pages/_app";
 import { DEFAULT_PAGE_SIZE } from "constants/defaultSearches";
 
-function MultipleActions() {
+function ActionsOverview() {
 	const { user } = useAuth();
 	const router = useRouter();
 	const routerQuery = router.query;
@@ -19,39 +19,29 @@ function MultipleActions() {
 
 	const [addActionModalOpen, setActionModalOpen] = useState(false);
 
-	const categoryQuery = routerQuery?.category
-		? routerQuery?.category.toString()
-		: "...";
-	const locationQuery = routerQuery?.location
-		? routerQuery?.location.toString()
-		: "...";
+	const categoryQuery = routerQuery?.category?.toString();
+	const locationQuery = routerQuery?.location?.toString();
 	const pageQuery = routerQuery?.page
 		? parseInt(routerQuery?.page.toString()) || 1
 		: 1;
 
 	const handleAddActionClick = () => setActionModalOpen(true);
 
-	const [topicsCollection, topicsLoading] = useCollection(
+	const [topicsCollection, topicsLoading] = useCollectionOnce(
 		query(
 			collection(db, "topics"),
 			where("categoryId", "==", currentCategoryId),
 			where("locationId", "==", currentLocationId)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		)
 	);
 	const topicId = topicsCollection?.docs?.[0]?.id || "";
 
-	const [actionsCollection, actionsLoading] = useCollection(
+	const [actionsCollection, actionsLoading] = useCollectionOnce(
 		query(
 			collection(db, "actions"),
 			where("topicId", "==", topicId),
 			orderBy("updatedAt", "desc")
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		)
 	);
 
 	const totalActions = actionsCollection?.docs.length || 0;
@@ -119,7 +109,7 @@ function MultipleActions() {
 									return (
 										<Link
 											key={item.id}
-											href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
+											href={`/${categoryQuery}/${locationQuery}/actions/${item.id}`}
 										>
 											<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
 												<div className="text-xl font-medium text-black">
@@ -152,4 +142,4 @@ function MultipleActions() {
 	);
 }
 
-export default MultipleActions;
+export default ActionsOverview;

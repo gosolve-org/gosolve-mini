@@ -14,6 +14,7 @@ import { useAuth } from "context/AuthContext";
 import { db } from "utils/firebase";
 import { addPost } from "pages/api/post";
 import { ResourceType } from "models/ResourceType";
+import { toast } from "react-toastify";
 
 interface AddCommunityPostProps {
 	open: boolean;
@@ -28,6 +29,7 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
 
@@ -51,6 +53,9 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 	) => {
 		e.preventDefault();
 
+		if (isLoading) return;
+		setIsLoading(true);
+
 		const originDetails = {
 			[(parentResourceType === ResourceType.Action ? 'actionId' : 'topicId')]: parentResourceId
 		};
@@ -64,11 +69,14 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 				authorUsername: userProfile?.data()?.username,
 			},
 		}).then((docId) => {
-			setOpen(false);
 			router.push(parentResourceType === ResourceType.Topic
 				? `/${categoryQuery}/${locationQuery}/community/${docId}`
 				: `/${categoryQuery}/${locationQuery}/actions/${actionId}/community/${docId}`
 			);
+		}).catch(err => {
+			toast.error("Something went wrong");
+			console.error(err);
+			setIsLoading(false);
 		});
 	};
 
@@ -169,7 +177,7 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 									</div>
 									<div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
 										<button
-											disabled={!hasChanges()}
+											disabled={!hasChanges() || isLoading}
 											type="submit"
 											className="inline-flex w-full justify-center rounded-md disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-indigo-600 border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
 										>

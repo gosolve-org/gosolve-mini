@@ -7,6 +7,7 @@ import { doc } from "firebase/firestore";
 import { useAuth } from "context/AuthContext";
 import { db } from "utils/firebase";
 import { addComment } from "pages/api/comment";
+import { toast } from "react-toastify";
 
 interface AddCommentModalProps {
 	open: boolean;
@@ -24,6 +25,7 @@ function AddCommentModal({
 	const { user } = useAuth();
 
 	const [comment, setComment] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
 
@@ -37,6 +39,9 @@ function AddCommentModal({
 	) => {
 		e.preventDefault();
 
+		if (isLoading) return;
+		setIsLoading(true);
+
 		await addComment({
 			details: {
 				authorId: user?.uid || "",
@@ -47,6 +52,11 @@ function AddCommentModal({
 			},
 		}).then(() => {
 			setOpen(false);
+			setIsLoading(false);
+		}).catch(err => {
+			toast.error("Something went wrong");
+			console.error(err);
+			setIsLoading(false);
 		});
 	};
 
@@ -117,7 +127,7 @@ function AddCommentModal({
 
 									<div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
 										<button
-											disabled={!hasChanges()}
+											disabled={!hasChanges() || isLoading}
 											type="submit"
 											className="inline-flex w-full justify-center rounded-md disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-indigo-600 border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
 										>

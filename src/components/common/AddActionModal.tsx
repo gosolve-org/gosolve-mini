@@ -15,6 +15,7 @@ import { addAction } from "pages/api/action";
 import { useAuth } from "context/AuthContext";
 import { db, useCollectionOnceWithDependencies } from "utils/firebase";
 import { DataContext } from "pages/_app";
+import { toast } from "react-toastify";
 
 interface AddActionModalProps {
 	open: boolean;
@@ -55,6 +56,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	) => {
 		e.preventDefault();
 
+		if (isLoading) return;
 		setIsLoading(true);
 
 		const topicId = topicsCollection?.docs?.[0]?.id || "";
@@ -70,6 +72,10 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 			router.push(
 				`/${categoryQuery}/${locationQuery}/actions/${docId}`
 			);
+		}).catch(err => {
+			toast.error("Something went wrong");
+			console.error(err);
+			setIsLoading(false);
 		});
 	};
 

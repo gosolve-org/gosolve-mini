@@ -79,23 +79,31 @@ function Navbar() {
 		const category = categories.find(
 			(category) => category.category === readableCategory
 		);
+		if (category?.id) handleCurrentCategoryIdChange(category.id);
+	}, [ categories, readableCategory, handleCurrentCategoryIdChange ]);
+
+	useEffect(() => {
 		const location = locations.find(
 			(location) => location.location === readableLocation
 		);
-		handleCurrentCategoryIdChange(category?.id || "");
-		handleCurrentLocationIdChange(location?.id || "");
-		setSelectedCategory(category);
-		setSelectedLocation(location);
+		if (location?.id) handleCurrentLocationIdChange(location.id);
+	}, [ locations, readableLocation, handleCurrentLocationIdChange ]);
+
+	useEffect(() => {
 		setSearchQuery(readableSearchQuery);
-	}, [
-		readableCategory,
-		readableLocation,
-		readableSearchQuery,
-		categories,
-		locations,
-		handleCurrentCategoryIdChange,
-		handleCurrentLocationIdChange,
-	]);
+	}, [ readableSearchQuery ]);
+
+	useEffect(() => {
+		setSelectedCategory(categories.find(
+			(category) => category.category === readableCategory
+		));
+	}, [ readableCategory, categories ]);
+
+	useEffect(() => {
+		setSelectedLocation(locations.find(
+			(location) => location.location === readableLocation
+		));
+	}, [ readableLocation, locations ]);
 
 	const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
 		setSearchQuery(e.currentTarget.value);

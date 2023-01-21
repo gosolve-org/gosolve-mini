@@ -1,5 +1,5 @@
 import { useState, SyntheticEvent, FormEvent, useMemo, Fragment } from "react";
-import { useDocument, useCollection } from "react-firebase-hooks/firestore";
+import { useCollection, useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc, query, collection, where, orderBy } from "firebase/firestore";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -20,13 +20,9 @@ function Post({ postId } : PostProps) {
 	const [discussionCount, setDiscussionCount] = useState(0);
 	const [addCommentModalOpen, setAddCommentModalOpen] = useState(false);
 
-	const [postData, postLoading] = useDocument(doc(db, "posts", postId), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [postData, postLoading] = useDocumentOnce(doc(db, "posts", postId));
 
-	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
 
 	const postDoc = postData?.data();
 

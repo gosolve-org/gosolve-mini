@@ -1,11 +1,11 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useCollection, useCollectionOnce } from "react-firebase-hooks/firestore";
 import { collection, query, where, orderBy } from "firebase/firestore";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import { db } from "utils/firebase";
+import { db, useCollectionOnceWithDependencies } from "utils/firebase";
 import { DataContext } from "pages/_app";
 import { DEFAULT_PAGE_SIZE } from "constants/defaultSearches";
 import { Layout, AddCommunityPostModal, Pagination } from "components/common";
@@ -22,12 +22,12 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 		useState(false);
 
 	const [topicsCollection, topicsLoading] = resourceType == ResourceType.Topic
-		? useCollectionOnce(
+		? useCollectionOnceWithDependencies(
 			query(
 				collection(db, "topics"),
 				where("categoryId", "==", currentCategoryId),
 				where("locationId", "==", currentLocationId)
-			))
+			), [ currentCategoryId, currentLocationId ])
 		: [null, false];
 
 	const router = useRouter();
@@ -57,12 +57,12 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 
 	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
-	const [postsCollection, postsLoading] = useCollectionOnce(
+	const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
 		query(
 			collection(db, "posts"),
 			where(resourceType === ResourceType.Action ? 'actionId' : 'topicId', "==", resourceId),
 			orderBy("updatedAt", "desc")
-		)
+		), [ resourceId ]
 	);
 
 	const totalPosts = postsCollection?.docs.length || 0;
@@ -71,23 +71,22 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 	// https://firebase.google.com/docs/firestore/query-data/query-cursors
 	// One solution is to generate indexes of generated docIds of paginated queries and use that with '.startAfter' and 'limit' queries
 	// Another way is with counters (https://stackoverflow.com/questions/39519021/how-to-create-auto-incremented-key-in-firebase) but could limit filtering and hotspots later
-	const paginatedPostsCollection = () => {
-		if (postsCollection?.docs) {
-			const pageCount = Math.ceil(totalPosts / DEFAULT_PAGE_SIZE);
-			const firstIndexOnPage = (pageQuery - 1) * DEFAULT_PAGE_SIZE;
-			const isLastPage = pageQuery === pageCount;
-			const lastIndexOnPage = isLastPage
-				? (totalPosts % DEFAULT_PAGE_SIZE) +
-				  DEFAULT_PAGE_SIZE * (pageQuery - 1)
-				: DEFAULT_PAGE_SIZE * pageQuery;
+	const paginatedPostsCollection = useCallback(() => {
+		if (!postsCollection?.docs) return [];
 
-			return postsCollection?.docs.slice(
-				firstIndexOnPage,
-				lastIndexOnPage
-			);
-		}
-		return [];
-	};
+		const pageCount = Math.ceil(totalPosts / DEFAULT_PAGE_SIZE);
+		const firstIndexOnPage = (pageQuery - 1) * DEFAULT_PAGE_SIZE;
+		const isLastPage = pageQuery === pageCount;
+		const lastIndexOnPage = isLastPage
+			? (totalPosts % DEFAULT_PAGE_SIZE) +
+			  DEFAULT_PAGE_SIZE * (pageQuery - 1)
+			: DEFAULT_PAGE_SIZE * pageQuery;
+
+		return postsCollection?.docs.slice(
+			firstIndexOnPage,
+			lastIndexOnPage
+		);
+	}, [ postsCollection, totalPosts, DEFAULT_PAGE_SIZE, pageQuery ]);
 
 	return (
 		<Layout>
@@ -112,9 +111,9 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 					</div>
 
 					{!postsLoading && !topicsLoading ? (
-						<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
-							{paginatedPostsCollection()?.map((item) => {
-								if (item) {
+						<>
+							<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
+								{paginatedPostsCollection()?.filter(Boolean).map((item) => {
 									const itemData = item.data();
 									return (
 										<Link
@@ -157,15 +156,14 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 											</p>
 										</Link>
 									);
-								}
-							})}
-						</dl>
+								})}
+							</dl>
+							<Pagination
+								totalCount={totalPosts}
+								pageSize={DEFAULT_PAGE_SIZE}
+							/>
+						</>
 					) : null}
-
-					<Pagination
-						totalCount={totalPosts}
-						pageSize={DEFAULT_PAGE_SIZE}
-					/>
 				</div>
 			</div>
 

@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useCollection, useCollectionOnce, useDocument } from "react-firebase-hooks/firestore";
+import { useCollectionOnce, useDocumentOnce } from "react-firebase-hooks/firestore";
 import {
 	collection,
 	query,
@@ -16,7 +16,7 @@ import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
 import { ToastContainer, toast } from "react-toastify";
 import { AddActionModal, AddCommunityPostModal } from "components/common";
 import { updateTopic } from "pages/api/topic";
-import { db } from "utils/firebase";
+import { db, useCollectionOnceWithDependencies } from "utils/firebase";
 import { useAuth } from "context/AuthContext";
 import { DataContext } from "pages/_app";
 
@@ -48,43 +48,35 @@ function TopicPage() {
 	const readableCategory = categoryQuery.split("-").join(" ");
 	const readableLocation = locationQuery.split("-").join(" ");
 
-	const [topicsCollection, topicsLoading] = useCollectionOnce(
+	const [topicsCollection, topicsLoading] = useCollectionOnceWithDependencies(
 		query(
 			collection(db, "topics"),
 			where("categoryId", "==", currentCategoryId),
 			where("locationId", "==", currentLocationId)
-		)
+		), [ currentCategoryId, currentLocationId ]
 	);
 
-	// TODO Seems like error with library if there are no blocks so set default block
-	const topicContent =
-		topicsCollection?.docs?.[0]?.data()?.content ||
-		`{"time":1674009351098,"blocks":[{"id":"lLg8bWk7VH","type":"header","data":{"text": "${readableCategory} in ${readableLocation}","level":1}}],"version":"2.26.4"}`;
+	const topicContent = topicsCollection?.docs?.[0]?.data()?.content;
 	const topicId = topicsCollection?.docs?.[0]?.id || "";
 
-	const [userProfile, userLoading] = useDocument(
-		doc(db, `user`, user?.uid || ""),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
+	const [userProfile, userLoading] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
 
-	const [actionsCollection, actionsLoading] = useCollectionOnce(
+	const [actionsCollection, actionsLoading] = useCollectionOnceWithDependencies(
 		query(
 			collection(db, "actions"),
 			where("topicId", "==", topicId),
 			orderBy("updatedAt", "desc"),
 			limit(3)
-		)
+		), [ topicId ]
 	);
 
-	const [postsCollection, postsLoading] = useCollectionOnce(
+	const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
 		query(
 			collection(db, "posts"),
 			where("topicId", "==", topicId),
 			orderBy("updatedAt", "desc"),
 			limit(3)
-		)
+		), [ topicId ]
 	);
 
 	const canUserEdit =
@@ -119,20 +111,23 @@ function TopicPage() {
 									Actions
 								</h2>
 
-								{canUserEdit ? (
-									<span className="ml-3.5">
-										<button
-											onClick={handleAddActionClick}
-											type="button"
-											className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-										>
-											<PlusIcon
-												className="h-4 w-4"
-												aria-hidden="true"
-											/>
-										</button>
-									</span>
-								) : null}
+								<span className="ml-3.5">
+									<button
+										onClick={handleAddActionClick}
+										type="button"
+										title={!canUserEdit ? 'Only admins can create actions. Create a community post instead.' : ''}
+										disabled={!canUserEdit}
+										className={canUserEdit
+											? "inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+											: "inline-flex items-center rounded-full border border-gray-300 bg-gray p-1.5 text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+										}
+									>
+										<PlusIcon
+											className="h-4 w-4"
+											aria-hidden="true"
+										/>
+									</button>
+								</span>
 
 								<span className="mx-3.5">
 									<Link

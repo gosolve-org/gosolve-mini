@@ -1,6 +1,7 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "@firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { DocumentData, FirestoreError, getFirestore, Query, QuerySnapshot } from "firebase/firestore";
+import { useCollectionOnce } from "react-firebase-hooks/firestore";
 
 const firebaseConfig = {
 	apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,3 +16,10 @@ const app = getApps.length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+export const useCollectionOnceWithDependencies = (
+	query : Query<DocumentData>,
+	dependencies: any[]):[QuerySnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
+		const [collection, isLoading, err, reloadData] = useCollectionOnce(dependencies.every(Boolean) ? query : null);
+		return [collection, (isLoading || dependencies.some(el => !el) || collection?.docs === undefined), err, reloadData];
+	};

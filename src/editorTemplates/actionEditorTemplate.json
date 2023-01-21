@@ -1,0 +1,168 @@
+{
+    "time": 1674325105038,
+    "blocks": [
+        {
+            "id": "pjPamHZezT",
+            "type": "header",
+            "data": {
+                "text": "Description",
+                "level": 1
+            }
+        },
+        {
+            "id": "9k2qTWzKNw",
+            "type": "paragraph",
+            "data": {
+                "text": "A brief overview of the action being proposed and its goal."
+            }
+        },
+        {
+            "id": "UiPITXRFUc",
+            "type": "header",
+            "data": {
+                "text": "Problem or Issue",
+                "level": 2
+            }
+        },
+        {
+            "id": "XBdjrv7mpc",
+            "type": "paragraph",
+            "data": {
+                "text": "A brief explanation of the problem or issue that the action aims to address."
+            }
+        },
+        {
+            "id": "7MdjIeVhg2",
+            "type": "header",
+            "data": {
+                "text": "Proposed Solution",
+                "level": 2
+            }
+        },
+        {
+            "id": "WY5jQxbQRN",
+            "type": "paragraph",
+            "data": {
+                "text": "An explanation of the proposed action and how it aims to address the problem or issue."
+            }
+        },
+        {
+            "id": "CPdIhZouPy",
+            "type": "header",
+            "data": {
+                "text": "Impact",
+                "level": 2
+            }
+        },
+        {
+            "id": "zjfUroNK4Y",
+            "type": "paragraph",
+            "data": {
+                "text": "A description of the potential impact of the action on individuals, communities, or society as a whole."
+            }
+        },
+        {
+            "id": "jFHpuhVtKz",
+            "type": "header",
+            "data": {
+                "text": "Take Action",
+                "level": 1
+            }
+        },
+        {
+            "id": "IEvnDbNY26",
+            "type": "paragraph",
+            "data": {
+                "text": "A step-by-step guide on how to participate in the action, including any required materials or preparations."
+            }
+        },
+        {
+            "id": "Ria5t-lyRC",
+            "type": "header",
+            "data": {
+                "text": "Resources",
+                "level": 2
+            }
+        },
+        {
+            "id": "tkeyb4Vxu2",
+            "type": "paragraph",
+            "data": {
+                "text": "Links to reliable sources and additional information related to the action."
+            }
+        },
+        {
+            "id": "iI0-VXHU2R",
+            "type": "header",
+            "data": {
+                "text": "Contact",
+                "level": 2
+            }
+        },
+        {
+            "id": "f3KmYhApuY",
+            "type": "paragraph",
+            "data": {
+                "text": "Information on how to get in touch with the organizer or organization responsible for the action."
+            }
+        },
+        {
+            "id": "zxM5E3sBVH",
+            "type": "header",
+            "data": {
+                "text": "Additional Notes",
+                "level": 1
+            }
+        },
+        {
+            "id": "8a3IsxY0Ii",
+            "type": "paragraph",
+            "data": {
+                "text": "Any additional information or considerations that should be taken into account when participating in the action."
+            }
+        },
+        {
+            "id": "qKZOKhYF_m",
+            "type": "header",
+            "data": {
+                "text": "References",
+                "level": 1
+            }
+        },
+        {
+            "id": "kMjy0QPDJm",
+            "type": "paragraph",
+            "data": {
+                "text": "A list of sources used to gather information for the Action, including academic papers, reports, articles, etc."
+            }
+        },
+        {
+            "id": "AigqEuAONK",
+            "type": "delimiter",
+            "data": {}
+        },
+        {
+            "id": "7S8uQTLPDs",
+            "type": "paragraph",
+            "data": {
+                "text": "Other possible sections to add to your Action:"
+            }
+        },
+        {
+            "id": "xBWxKpCYqZ",
+            "type": "list",
+            "data": {
+                "style": "unordered",
+                "items": [
+                    "<b>Related Actions</b> -&nbsp;Links to other Actions that are related to the current Action.",
+                    "<b>Follow-up</b> - Information on what follow-up measures will be taken after the action, and how people can stay involved.",
+                    "<b>Expected outcome</b> - A clear and concise expected outcome of the action, and a way to measure it.",
+                    "<b>Risk assessment</b> - An overview of any potential risks or hazards associated with the action, and the steps being taken to mitigate them.",
+                    "<b>Expected outcome</b> - A clear and concise expected outcome of the action, and a way to measure it.",
+                    "<b>Social media</b> - Information on how to follow and share the action on social media."
+                ]
+            }
+        }
+    ],
+    "version": "2.26.4"
+}

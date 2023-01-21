@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-import { useDocument } from "react-firebase-hooks/firestore";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 
 import { Layout } from "components/common";
@@ -8,6 +8,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { updateAction } from "pages/api/action";
 import { db } from "utils/firebase";
 import { useAuth } from "context/AuthContext";
+
+import actionEditorTemplate from "editorTemplates/actionEditorTemplate.json"
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
 	ssr: false,
@@ -19,29 +21,16 @@ function Action() {
 
 	const actionId = router?.query?.actionId?.toString() ?? '';
 
-	const [userProfile, userLoading] = useDocument(
-		doc(db, `user`, user?.uid || ""),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
+	const [userProfile, userLoading] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
 
 	const canUserEdit =
 		userProfile?.id === user?.uid &&
 		(userProfile?.data()?.role === "admin" ||
 			userProfile?.data()?.role === "editor");
 
-	const [actionsCollection, actionsLoading] = useDocument(
-		doc(db, "actions", actionId),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
+	const [actionsCollection, actionsLoading] = useDocumentOnce(doc(db, "actions", actionId));
 
-	// TODO Seems like error with library if there are no blocks so set default block
-	const actionContent =
-		actionsCollection?.data()?.content ||
-		`{"time":1674009351098,"blocks":[{"id":"lLg8bWk7VH","type":"header","data":{"text":"Start typing...","level":1}}],"version":"2.26.4"}`;
+	const actionContent = actionsCollection?.data()?.content || JSON.stringify(actionEditorTemplate);
 
 	const handleSaveData = async (savedData: string) => {
 		await updateAction({
@@ -51,7 +40,10 @@ function Action() {
 			},
 		})
 			.then(() => toast.success("Saved!"))
-			.catch(() => toast.error("Something went wrong"));
+			.catch((err) => {
+				toast.error("Something went wrong");
+				console.error(err);
+			});
 	};
 
 	return (

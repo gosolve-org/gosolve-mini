@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import { useDocument } from "react-firebase-hooks/firestore";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -13,9 +13,7 @@ function Admin() {
 
 	const [allowListEmail, setAllowListEmail] = useState("");
 
-	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
 
 	const isAdmin = userProfile?.data().role === "admin";
 	const hasChanges = () => !!allowListEmail;

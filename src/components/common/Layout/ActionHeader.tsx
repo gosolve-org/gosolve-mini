@@ -1,9 +1,9 @@
-import { useEffect, useState, FormEvent, useContext } from "react";
+import { FormEvent, useContext } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
-import { useDocument } from "react-firebase-hooks/firestore";
-import { collection, query, where, doc } from "firebase/firestore";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
+import { doc } from "firebase/firestore";
 
 import { db } from "utils/firebase";
 import { DataContext } from "pages/_app";
@@ -24,23 +24,13 @@ function ActionHeader() {
 
 	const actionId = router?.query?.actionId?.toString() ?? '';
 
-	const [actionsCollection] = useDocument(doc(db, "actions", actionId), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [actionsCollection] = useDocumentOnce(doc(db, "actions", actionId));
 
-	const categoryQuery = router?.query?.category
-		? router?.query?.category.toString()
-		: "...";
-	const locationQuery = router?.query?.location
-		? router?.query?.location.toString()
-		: "...";
+	const categoryQuery = router?.query?.category?.toString() ?? '...';
+	const locationQuery = router?.query?.location?.toString() ?? '...';
 
 	const readableCategory = categoryQuery.split("-").join(" ");
 	const readableLocation = locationQuery.split("-").join(" ");
-
-	const renderTitle = () =>
-		actionsCollection?.data()?.title ||
-		``;
 
 	const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
 		handleCurrentTabChange(Tab[e.currentTarget.value]);
@@ -60,7 +50,7 @@ function ActionHeader() {
 				<div className="flex flex-col justify-center h-52 mt-2 items-center rounded-md bg-sky-100">
 					<div className="mt-5 sm:mx-auto sm:w-full">
 						<h1 className=" px-4 py-2 text-center text-3xl font-small tracking-tight text-black ">
-							{renderTitle()}
+							{actionsCollection?.data()?.title ?? '\u00A0'}
 						</h1>
 					</div>
 					<div className="mt-5 w-[68%] md:max-xl:w-[68%] md:max-lg:w-[78%] md:max-sm:w-[88%]">
@@ -73,7 +63,7 @@ function ActionHeader() {
 								id="tabs"
 								name="tabs"
 								onChange={handleTabChange}
-								value={currentTab}
+								value={currentTab ?? Tab.Action}
 								className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
 							>
 								{tabs.map((tab) => (

@@ -24,9 +24,6 @@ const Editor = ({
 	const [data, setData] = useState("");
 	const [hasChanges, setHasChanges] = useState(false);
 
-	// Dummy data
-	//`{"time":1674009351098,"blocks":[{"id":"lLg8bWk7VH","type":"header","data":{"text":"Start typing...","level":1}}],"version":"2.26.4"}`
-
 	useEffect(() => {
 		defaultValue && !data && setData(JSON.parse(defaultValue));
 	}, [data, defaultValue]);
@@ -71,12 +68,13 @@ const Editor = ({
 				) : null}
 			</div>
 			<ReactEditorJS
+				holder="editorjs-container"
 				onChange={handleChange}
 				readOnly={readOnly}
 				enableReInitialize={true}
 				onInitialize={handleInitialize}
 				tools={EDITOR_JS_TOOLS}
-				defaultValue={JSON.parse(defaultValue)}
+				defaultValue={!!defaultValue ? JSON.parse(defaultValue) : null}
 				minHeight="100"
 			/>
 		</div>

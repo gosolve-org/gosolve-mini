@@ -1,6 +1,6 @@
 import { useState, useEffect, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-import { useDocument } from "react-firebase-hooks/firestore";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 import { updatePassword } from "@firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
@@ -14,9 +14,7 @@ function Settings() {
 	const { user, logout } = useAuth();
 	const router = useRouter();
 
-	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
 
 	const [name, setName] = useState<string>(user?.displayName || "");
 	const [username, setUsername] = useState<string>(user?.displayName || "");

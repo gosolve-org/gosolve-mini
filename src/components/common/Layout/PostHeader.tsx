@@ -2,8 +2,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { ResourceType } from "models/ResourceType";
-import { useEffect, useState } from "react";
-import { useDocument } from "react-firebase-hooks/firestore";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 import { db } from "utils/firebase";
 
@@ -15,9 +14,7 @@ function PostHeader() {
 	const actionId = router?.query?.actionId?.toString() ?? '';
 	const resourceType = !actionId ? ResourceType.Topic : ResourceType.Action;
 
-	const [actionDoc] = resourceType === ResourceType.Action ? useDocument(doc(db, "actions", actionId), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	}) : [null];
+	const [actionDoc] = resourceType === ResourceType.Action ? useDocumentOnce(doc(db, "actions", actionId)) : [null];
 	const actionTitle = actionDoc?.data()?.title;
 
 	const readableCategory = categoryQuery.split("-").join(" ");

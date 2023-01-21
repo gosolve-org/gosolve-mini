@@ -2,18 +2,16 @@ import {
 	Fragment,
 	useState,
 	FormEvent,
-	useContext,
 	SyntheticEvent,
 } from "react";
 import { useRouter } from "next/router";
-import { useCollection, useDocument } from "react-firebase-hooks/firestore";
-import { collection, query, where, doc } from "firebase/firestore";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
+import { doc } from "firebase/firestore";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { useAuth } from "context/AuthContext";
 import { db } from "utils/firebase";
-import { DataContext } from "pages/_app";
 import { addPost } from "pages/api/post";
 import { ResourceType } from "models/ResourceType";
 
@@ -31,9 +29,7 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 
-	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
 
 	const categoryQuery = router?.query?.category?.toString() ?? '...';
 	const locationQuery = router?.query?.location?.toString() ?? '...';

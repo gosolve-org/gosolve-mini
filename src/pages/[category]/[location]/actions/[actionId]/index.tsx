@@ -8,7 +8,7 @@ function TopicActionPage() {
 
 	useEffect(() => {
 		handleCurrentTabChange(Tab.Action);
-	}, []);
+	}, [ handleCurrentTabChange ]);
 
 	return <Action />;
 }

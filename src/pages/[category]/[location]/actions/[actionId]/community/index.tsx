@@ -9,7 +9,7 @@ function ActionCommunityPage() {
 
 	useEffect(() => {
 		handleCurrentTabChange(Tab.Community);
-	}, []);
+	}, [ handleCurrentTabChange ]);
 
 	return <CommunityOverview resourceType={ResourceType.Action} />;
 }

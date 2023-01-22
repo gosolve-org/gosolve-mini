@@ -36,7 +36,7 @@ function TopicPage() {
 
 	useEffect(() => {
 		handleCurrentTabChange(Tab.Topic);
-	}, []);
+	}, [ handleCurrentTabChange ]);
 
 	const [addActionModalOpen, setActionModalOpen] = useState(false);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =

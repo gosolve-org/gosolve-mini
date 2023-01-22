@@ -24,14 +24,13 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
 		useState(false);
 
-	const [topicsCollection, topicsLoading] = resourceType == ResourceType.Topic
-		? useCollectionOnceWithDependencies(
-			query(
-				collection(db, "topics"),
-				where("categoryId", "==", currentCategoryId),
-				where("locationId", "==", currentLocationId)
-			), [ currentCategoryId, currentLocationId ])
-		: [null, false];
+	const [topicsCollection, topicsLoading] = useCollectionOnceWithDependencies(
+		resourceType == ResourceType.Topic ? query(
+			collection(db, "topics"),
+			where("categoryId", "==", currentCategoryId),
+			where("locationId", "==", currentLocationId)
+		) : null, [ currentCategoryId, currentLocationId ]);
+
 
 	const router = useRouter();
 	const routerQuery = router.query;
@@ -94,7 +93,7 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 						</span>
 					</div>
 
-					{!postsLoading && !topicsLoading ? (postsCollection?.docs?.length > 0 ?
+					{!postsLoading && (!topicsLoading || resourceType != ResourceType.Topic) ? (postsCollection?.docs?.length > 0 ?
 						<>
 							<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
 								{paginatePostsCollection().map((item) => {

@@ -8,7 +8,7 @@ function TopicActionsOverviewPage() {
 
 	useEffect(() => {
 		handleCurrentTabChange(Tab.Actions);
-	}, []);
+	}, [ handleCurrentTabChange ]);
 
 	return <ActionsOverview />;
 }

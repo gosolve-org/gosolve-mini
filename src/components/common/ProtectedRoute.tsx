@@ -31,7 +31,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
 			.catch(err => {
 				console.error(err);
 			})
-	}, [ user, routerPath ]);
+	}, [ user, routerPath, router ]);
 
 	return (
 		<>

@@ -10,6 +10,7 @@ import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { useAuth } from "context/AuthContext";
 
 import actionEditorTemplate from "editorTemplates/actionEditorTemplate.json"
+import BasicHead from "components/common/Layout/BasicHead";
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
 	ssr: false,
@@ -28,9 +29,9 @@ function Action() {
 		(userProfile?.data()?.role === "admin" ||
 			userProfile?.data()?.role === "editor");
 
-	const [actionsCollection, actionsLoading] = useDocumentOnce(doc(db, "actions", actionId));
+	const [actionSnapshot, actionsLoading] = useDocumentOnce(doc(db, "actions", actionId));
 
-	const actionContent = actionsCollection?.data()?.content || JSON.stringify(actionEditorTemplate);
+	const actionContent = actionSnapshot?.data()?.content || JSON.stringify(actionEditorTemplate);
 
 	const handleSaveData = async (savedData: string) => {
 		await updateAction({
@@ -48,6 +49,7 @@ function Action() {
 
 	return (
 		<Layout>
+			<BasicHead title={`goSolve | ${actionSnapshot?.data()?.title ?? ''}`} />
 			<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 				<div className="w-full max-w-4xl">
 					<div className="mt-10">

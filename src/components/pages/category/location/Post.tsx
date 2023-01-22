@@ -8,6 +8,10 @@ import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { Layout, Comment, AddCommentModal } from "components/common";
 import { addComment } from "pages/api/comment";
 import { withBreaks } from "utils/textUtils";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import BasicHead from "components/common/Layout/BasicHead";
+dayjs.extend(localizedFormat);
 
 interface PostProps {
 	postId: string;
@@ -130,6 +134,7 @@ function Post({ postId } : PostProps) {
 
 	return (
 		<Layout>
+			<BasicHead title={`goSolve | ${postDoc?.title ?? ''}`} />
 			<div className="flex min-h-full flex-col justify-center items-center pb-20 pt-4 px-4 sm:px-6 lg:px-8">
 				{!postLoading ? (
 					<div className="w-full max-w-4xl">
@@ -152,9 +157,7 @@ function Post({ postId } : PostProps) {
 										{postDoc?.authorUsername || "Anonymous"}
 									</span>
 									<span className="text-sm text-gray-500 ml-4">
-										{new Date(
-											postDoc?.createdAt
-										).toUTCString()}
+										{dayjs(postDoc?.createdAt).format('lll')}
 									</span>
 								</div>
 							</div>

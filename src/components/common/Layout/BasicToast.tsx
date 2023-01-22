@@ -1,6 +1,11 @@
+import { TOAST_IDS } from "constants/toastConstants";
 import { ToastContainer } from "react-toastify";
 
-function StyledToast() {
+interface LinkToastProps {
+    enableMultiToast?: boolean|null;
+}
+
+function BasicToast({ enableMultiToast }: LinkToastProps) {
     return (
         <ToastContainer
             position="bottom-center"
@@ -13,8 +18,10 @@ function StyledToast() {
             draggable
             pauseOnHover
             theme="light"
+            enableMultiContainer={enableMultiToast ?? false}
+            containerId={TOAST_IDS.basicToastId}
         />
     );
 }
 
-export default StyledToast;
+export default BasicToast;

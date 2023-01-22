@@ -3,6 +3,6 @@ export const USER_VALIDATIONS = {
     usernameMaxLength: 30,
     nameMinLength: 2,
     nameMaxLength: 40,
-    birthYearMin: 1990,
+    birthYearMin: 1900,
     birthYearMinAge: 13
 };

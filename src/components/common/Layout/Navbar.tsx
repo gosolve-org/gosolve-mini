@@ -16,6 +16,8 @@ import {
 	MagnifyingGlassIcon,
 	CheckIcon,
 	ArrowRightIcon,
+	ChevronUpDownIcon,
+	ChevronDownIcon,
 } from "@heroicons/react/20/solid";
 
 import { Category } from "models/Category";
@@ -56,10 +58,15 @@ function Navbar() {
 	useEffect(() => {
 		setCategories(
 			categoriesCollection
-				? categoriesCollection.docs.map((doc) => ({
+				? categoriesCollection.docs.map((doc) => {
+					const docData = doc.data();
+
+					return {
 						id: doc.id,
-						category: doc.data().category,
-				  }))
+						category: docData?.category,
+						hidden: docData?.hidden,
+					};
+				  })
 				: [{ id: "", category: "" }]
 		);
 	}, [categoriesCollection]);
@@ -67,10 +74,15 @@ function Navbar() {
 	useEffect(() => {
 		setLocations(
 			locationsCollection
-				? locationsCollection.docs.map((doc) => ({
+				? locationsCollection.docs.map((doc) => {
+					const docData = doc.data();
+
+					return {
 						id: doc.id,
-						location: doc.data().location,
-				  }))
+						location: docData?.location,
+						hidden: docData?.hidden,
+					};
+				  })
 				: [{ id: "", location: "" }]
 		);
 	}, [locationsCollection]);
@@ -155,6 +167,7 @@ function Navbar() {
 								</label>
 								<div className="relative">
 									<input
+										autoComplete="off"
 										id="search"
 										name="search"
 										className="block w-full rounded-3xl border border-gray-300 bg-white py-2 pl-4 pr-3 text-sm placeholder-gray-500 focus:border-indigo-500 focus:text-gray-900 focus:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
@@ -184,12 +197,18 @@ function Navbar() {
 											Category
 										</Listbox.Label>
 										<div className="relative">
-											<Listbox.Button className="relative  cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+											<Listbox.Button className="flex relative  cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
 												<span className="block truncate">
 													{selectedCategory?.category 
 														?? readableCategory
 														??  "Select a category"
 													}
+												</span>
+												<span className="pointer-events-none inset-y-0 right-0 flex items-center pl-1">
+													<ChevronDownIcon
+														className="h-5 w-5 text-gray-400"
+														aria-hidden="true"
+													/>
 												</span>
 											</Listbox.Button>
 
@@ -201,7 +220,7 @@ function Navbar() {
 												leaveTo="opacity-0"
 											>
 												<Listbox.Options className="absolute z-10 mt-1 max-h-60 w-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-													{categories.map(
+													{categories.filter(el => !el?.hidden).map(
 														(category) => (
 															<Listbox.Option
 																key={
@@ -278,12 +297,18 @@ function Navbar() {
 											Location
 										</Listbox.Label>
 										<div className="relative">
-											<Listbox.Button className="relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
-												<span className="block truncate">
+											<Listbox.Button className="flex relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+												<span className="block">
 													{selectedLocation?.location
 														?? readableLocation
 														?? "Select a location"
 													}
+												</span>
+												<span className="pointer-events-none inset-y-0 right-0 flex items-center pl-1">
+													<ChevronDownIcon
+														className="h-5 w-5 text-gray-400"
+														aria-hidden="true"
+													/>
 												</span>
 											</Listbox.Button>
 
@@ -295,7 +320,7 @@ function Navbar() {
 												leaveTo="opacity-0"
 											>
 												<Listbox.Options className="absolute z-10 mt-1 max-h-60 w-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-													{locations.map(
+													{locations.filter(el => !el?.hidden).map(
 														(location) => (
 															<Listbox.Option
 																key={

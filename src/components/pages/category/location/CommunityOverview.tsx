@@ -12,6 +12,9 @@ import { ResourceType } from "models/ResourceType";
 import { paginate } from "utils/pagination";
 import { getRandomItem } from "utils/basicUtils";
 import { NO_POSTS_PLACEHOLDERS } from "constants/placeholderTexts";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+dayjs.extend(localizedFormat);
 
 const PAGE_SIZE = 10;
 
@@ -128,9 +131,7 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 															"Anonymous"}
 													</span>
 													<span className="text-sm text-gray-500 ml-4">
-														{new Date(
-															itemData?.createdAt
-														).toUTCString()}
+														{dayjs(itemData?.createdAt).format('lll')}
 													</span>
 												</div>
 											</div>

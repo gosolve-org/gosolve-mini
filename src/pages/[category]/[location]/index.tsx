@@ -29,6 +29,8 @@ import { ResourceType } from "models/ResourceType";
 import { Tab } from "models/Tab";
 import { getRandomItem } from "utils/basicUtils";
 import { NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS, NO_ACTIONS_PLACEHOLDERS_FOR_USERS, NO_POSTS_PLACEHOLDERS } from "constants/placeholderTexts";
+import Head from "next/head";
+import BasicHead from "components/common/Layout/BasicHead";
 
 function TopicPage() {
 	const { user } = useAuth();
@@ -104,6 +106,7 @@ function TopicPage() {
 
 	return (
 		<Layout>
+			<BasicHead title={`goSolve | ${readableCategory ?? ''} in ${readableLocation ?? ''}`} />
 			<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 				<div className="w-full max-w-4xl">
 					<div className="bg-gray-100 p-6 rounded-lg">
@@ -169,7 +172,7 @@ function TopicPage() {
 												</Link>
 											);
 										})}
-									</ul>) : (<div className="mt-5 text-center truncate text-sm font-light text-gray-400">{getRandomItem(canUserEdit ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}</div>)
+									</ul>) : (<div className="mt-5 truncate text-sm font-light text-gray-400">{getRandomItem(canUserEdit ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}</div>)
 							) : null}
 						</div>
 
@@ -230,7 +233,7 @@ function TopicPage() {
 												</Link>
 											);
 										})}
-									</ul>) : (<div className="mt-5 text-center truncate text-sm font-light text-gray-400">{getRandomItem(NO_POSTS_PLACEHOLDERS)}</div>)
+									</ul>) : (<div className="mt-5 truncate text-sm font-light text-gray-400">{getRandomItem(NO_POSTS_PLACEHOLDERS)}</div>)
 							) : null}
 						</div>
 					</div>

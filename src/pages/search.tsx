@@ -7,6 +7,7 @@ import { collection, query, DocumentData } from "firebase/firestore";
 import { db } from "utils/firebase";
 import { Layout, Pagination } from "components/common";
 import { ResourceType } from "models/ResourceType";
+import BasicHead from "components/common/Layout/BasicHead";
 
 const PAGE_SIZE = 10;
 
@@ -209,6 +210,7 @@ function Search() {
 
 	return (
 		<Layout>
+			<BasicHead title="goSolve | Search" />
 			<div className="flex min-h-full flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
 				<div className="min-w-[75%]">
 					<div className="flex items-center">

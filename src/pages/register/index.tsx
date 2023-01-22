@@ -4,9 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { useAuth } from "context/AuthContext";
-import { addUser } from "pages/api/user";
 import { toast } from "react-toastify";
-import StyledToast from "components/common/Layout/StyledToast";
+import BasicToast from "components/common/Layout/BasicToast";
+import { ErrorWithCode } from "models/ErrorWithCode";
+import { ERROR_CODES } from "constants/errorCodes";
+import LinkToast, { showLinkToast } from "components/common/Layout/LinkToast";
+import { UserCredential } from "@firebase/auth";
+import { TOAST_IDS } from "constants/toastConstants";
+import BasicHead from "components/common/Layout/BasicHead";
 
 function Register() {
 	const [email, setEmail] = useState<string>("");
@@ -14,8 +19,36 @@ function Register() {
 	const [shouldRememberCheckbox, setShouldRememberCheckbox] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const { register, loginWithGoogle, setShouldRemember, logout } = useAuth();
+	const { registerWithEmail, registerWithGoogle, getGoogleCredentials, setShouldRemember, logout } = useAuth();
 	const router = useRouter();
+
+	const handleRegistration = async (registration: Promise<UserCredential>, credentials?: UserCredential|null) => {
+		return registration
+			.then(() => router.push("/register/details"))
+			.catch(err => {
+				if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotFound) {
+					showLinkToast(
+						'error',
+						`You don't have access to the platform yet. Click here to join our waitlist.`,
+						`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
+					setIsLoading(false);
+					return;
+				}
+
+				if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotOffboarded) {
+					showLinkToast(
+						'error',
+						`You're still on the waitlist. Click here to check your status.`,
+						`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
+					setIsLoading(false);
+					return;
+				}
+
+				console.error(err);
+				toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
+				setIsLoading(false);
+			});
+	}
 
 	const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -23,48 +56,23 @@ function Register() {
 		if (isLoading) return;
 		setIsLoading(true);
 
+		if (!password || password.length < 8) {
+			toast.error('Password should contain at least 8 characters.', { containerId: TOAST_IDS.basicToastId });
+			setIsLoading(false);
+			return;
+		}
+
 		setShouldRemember(shouldRememberCheckbox);
-		await register(email, password)
-			.then(async (credentials) => {
-				await addUser({
-					uid: credentials.user.uid,
-					details: { email: credentials.user.email || "" },
-				})
-				.then(() => router.push("/register/details"))
-				.catch(err => {
-					setIsLoading(false);
-					console.error(err);
-					toast.error('Something went wrong');
-				});
-			})
-			.catch(async () => {
-				await logout();
-				router.push("/register/waitlist");
-			});
+		await handleRegistration(registerWithEmail(email, password));
 	};
 
 	const handleGmailLogin = async () => {
 		if (isLoading) return;
 		setIsLoading(true);
 
-		await setShouldRemember(shouldRememberCheckbox);
-		await loginWithGoogle()
-			.then(async (credentials) => {
-				await addUser({
-					uid: credentials.user.uid,
-					details: { email: credentials.user.email || "" },
-				})
-				.then(() => router.push("/register/details"))
-				.catch(err => {
-					setIsLoading(false);
-					console.error(err);
-					toast.error('Something went wrong');
-				});
-			})
-			.catch(async () => {
-				await logout();
-				router.push("/register/waitlist");
-			});
+		setShouldRemember(shouldRememberCheckbox);
+		const credentials = await getGoogleCredentials();
+		await handleRegistration(registerWithGoogle(credentials), credentials);
 	};
 
 	const handleEmailChange = (e: FormEvent<HTMLInputElement>) =>
@@ -78,6 +86,7 @@ function Register() {
 
 	return (
 		<>
+			<BasicHead title="goSolve | Register" />
 			<main className="h-full">
 				<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 					<div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -163,8 +172,12 @@ function Register() {
 								<div className="block text-sm font-normal text-gray-400">
 									By creating an account, you accept
 									goSolve&apos;s{" "}
-									<Link href="/privacy" className="underline">
-										Terms & Privacy Policy
+									<Link href="/privacy" className="underline" target={"_blank"}>
+										Privacy Policy
+									</Link>
+									{" "}and{" "}
+									<Link href="/terms-and-conditions" className="underline" target={"_blank"}>
+										Terms & Conditions
 									</Link>
 									.
 								</div>
@@ -227,7 +240,8 @@ function Register() {
 					</div>
 				</div>
 			</main>
-			<StyledToast />
+			<BasicToast enableMultiToast={true} />
+			<LinkToast enableMultiToast={true} />
 		</>
 	);
 }

@@ -1,3 +1,4 @@
+import BasicHead from "components/common/Layout/BasicHead";
 import CommunityOverview from "components/pages/category/location/CommunityOverview";
 import { ResourceType } from "models/ResourceType";
 import { Tab } from "models/Tab";
@@ -11,7 +12,10 @@ function TopicCommunityPage() {
 		handleCurrentTabChange(Tab.Community);
 	}, [ handleCurrentTabChange ]);
 
-	return <CommunityOverview resourceType={ResourceType.Topic} />;
+	return (<>
+		<BasicHead title="goSolve | Community" />
+		<CommunityOverview resourceType={ResourceType.Topic} />
+	</>);
 }
 
 export default TopicCommunityPage;

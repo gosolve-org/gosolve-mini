@@ -1,5 +1,8 @@
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
 import { withBreaks } from "utils/textUtils";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 interface CommentProps {
 	id: string;
@@ -41,7 +44,7 @@ function Comment({
 								{authorUsername || "Anonymous"}
 							</span>
 							<span className="text-sm text-gray-600 ml-4">
-								{new Date(createdAt).toUTCString()}
+								{dayjs(createdAt).fromNow()}
 							</span>
 						</div>
 					</div>

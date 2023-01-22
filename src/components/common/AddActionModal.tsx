@@ -143,6 +143,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 										</label>
 										<div className="mt-1">
 											<input
+												autoComplete="off"
 												onChange={handleTitleChange}
 												type="title"
 												name="title"

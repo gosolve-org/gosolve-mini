@@ -9,6 +9,8 @@ import { Layout } from "components/common";
 import { useAuth } from "context/AuthContext";
 import { updateUser } from "./api/user";
 import { USER_VALIDATIONS } from "constants/validationRules";
+import BasicHead from "components/common/Layout/BasicHead";
+import Link from "next/link";
 
 function Settings() {
 	const { user, logout } = useAuth();
@@ -102,6 +104,7 @@ function Settings() {
 
 	return (
 		<Layout>
+			<BasicHead title="goSolve | Account settings" />
 			<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 				<div className="sm:mx-auto sm:w-full sm:max-w-md">
 					<h1 className="mt-6 px-4 py-2 text-center text-xl font-small tracking-tight text-black ">
@@ -201,6 +204,22 @@ function Settings() {
 						>
 							Logout
 						</button>
+					</div>
+				</div>
+
+
+				<div className="mt-3 sm:mx-auto sm:w-full sm:max-w-md">
+					<div className="py-8 px-4 shadow sm:rounded-lg sm:px-10 text-sm font-normal text-gray-400">
+						Check out
+						goSolve&apos;s{" "}
+						<Link href="/privacy" className="underline" target={"_blank"}>
+							Privacy Policy
+						</Link>
+						{" "}and{" "}
+						<Link href="/terms-and-conditions" className="underline" target={"_blank"}>
+							Terms & Conditions
+						</Link>
+						{" "}here.
 					</div>
 				</div>
 			</div>

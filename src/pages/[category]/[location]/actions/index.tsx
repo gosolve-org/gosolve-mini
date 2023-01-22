@@ -1,3 +1,4 @@
+import BasicHead from "components/common/Layout/BasicHead";
 import ActionsOverview from "components/pages/category/location/ActionsOverview";
 import { Tab } from "models/Tab";
 import { DataContext } from "pages/_app";
@@ -10,7 +11,10 @@ function TopicActionsOverviewPage() {
 		handleCurrentTabChange(Tab.Actions);
 	}, [ handleCurrentTabChange ]);
 
-	return <ActionsOverview />;
+	return (<>
+		<BasicHead title="goSolve | Actions" />
+		<ActionsOverview />
+	</>);
 }
 
 export default TopicActionsOverviewPage;

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createReactEditorJS } from "react-editor-js";
 import { EDITOR_JS_TOOLS } from "constants/editorTools";
+import { useLeavePageConfirm } from "utils/customHooks";
 
 interface EditorProps {
 	defaultValue?: string;
@@ -27,6 +28,8 @@ const Editor = ({
 	useEffect(() => {
 		defaultValue && !data && setData(JSON.parse(defaultValue));
 	}, [data, defaultValue]);
+
+	useLeavePageConfirm(hasChanges);
 
 	const handleInitialize = useCallback(async (instance) => {
 		if (!editorJS.current) editorJS.current = instance;

@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 import TopicHeader from "./TopicHeader";
 import ActionHeader from "./ActionHeader";
 import PostHeader from "./PostHeader";
-import StyledToast from "./StyledToast";
+import BasicToast from "./BasicToast";
 
 interface LayoutProps {
 	children: ReactNode;
@@ -34,7 +34,7 @@ function Layout({ children }: LayoutProps) {
 			<Navbar />
 			{renderHeader()}
 			<main>{children}</main>
-			<StyledToast />
+			<BasicToast />
 		</div>
 	);
 }

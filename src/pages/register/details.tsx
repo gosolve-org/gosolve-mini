@@ -5,8 +5,9 @@ import Image from "next/image";
 import { useAuth } from "context/AuthContext";
 import { updateUser } from "pages/api/user";
 import { toast } from "react-toastify";
-import StyledToast from "components/common/Layout/StyledToast";
+import BasicToast from "components/common/Layout/BasicToast";
 import { USER_VALIDATIONS } from "constants/validationRules";
+import BasicHead from "components/common/Layout/BasicHead";
 
 function Details() {
 	const { user } = useAuth();
@@ -74,6 +75,7 @@ function Details() {
 
 	return (
 		<>
+			<BasicHead title="goSolve | Onboarding" />
 			<main className="h-full">
 				<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 					<div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -176,7 +178,7 @@ function Details() {
 					</div>
 				</div>
 			</main>
-			<StyledToast />
+			<BasicToast />
 		</>
 	);
 }

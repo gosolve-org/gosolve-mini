@@ -19,7 +19,10 @@ import {
 } from "@firebase/auth";
 
 import { auth } from "utils/firebase";
-import { getUser, updateUser } from "pages/api/user";
+import { doesUserExist, getUser, getWaitlistUser, updateUser } from "pages/api/user";
+import { ErrorWithCode } from "models/ErrorWithCode";
+import { ERROR_CODES } from "constants/errorCodes";
+import { FirebaseError } from "firebase/app";
 
 const AuthContext = createContext<{
 	user: {
@@ -33,20 +36,23 @@ const AuthContext = createContext<{
 	} | null;
 	loading: boolean;
 	login: (email: string, password: string) => Promise<UserCredential>;
-	loginWithGoogle: () => Promise<UserCredential>;
+	getGoogleCredentials: () => Promise<UserCredential>;
 	setShouldRemember: (shouldRemember: boolean) => void;
 	logout: () => Promise<void>;
-	register: (email: string, password: string) => Promise<UserCredential>;
+	registerWithEmail: (email: string, password: string) => Promise<UserCredential>;
+	registerWithGoogle: (credentials: UserCredential) => Promise<UserCredential>;
+	validateUser: (credentials: UserCredential) => Promise<boolean>
 }>({
 	user: null,
 	loading: true,
 	login: (email: string, password: string) =>
 		signInWithEmailAndPassword(auth, email, password),
-	loginWithGoogle: () => signInWithPopup(auth, new GoogleAuthProvider()),
+	getGoogleCredentials: () => signInWithPopup(auth, new GoogleAuthProvider()),
 	setShouldRemember: (shouldRemember: boolean) => {},
 	logout: () => Promise.resolve(),
-	register: (email, password) =>
-		createUserWithEmailAndPassword(auth, email, password),
+	registerWithEmail: (email, password) => createUserWithEmailAndPassword(auth, email, password),
+	registerWithGoogle: null,
+	validateUser: null,
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -71,9 +77,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 							email: authUser.email,
 							displayName: authUser.displayName,
 							photoURL: authUser.photoURL,
-							name: user.name,
-							birthYear: user.birthYear,
-							username: user.username,
+							name: user?.name,
+							birthYear: user?.birthYear,
+							username: user?.username,
 						});
 					})
 					.catch(err => {
@@ -103,48 +109,53 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		});
 	};
 
-	const validateUser = async (credentials: UserCredential) => {
-		return await updateUser({
-			docId: credentials.user.uid,
-			details: { email: credentials.user.email || "" },
-		})
-			.then(() => credentials)
-			.catch(err => {
-				throw new Error("Not allowed");
-			});
+	const validateUser = async (credentials: UserCredential): Promise<boolean> => {
+		if (!credentials.user.email) throw new Error('Could not retrieve email address.');
+
+		return await doesUserExist(credentials.user.email);
 	};
 
-	const login = async (email: string, password: string) => {
-		const credentials = await signInWithEmailAndPassword(
-			auth,
-			email,
-			password
-		);
+	const login = async (email: string, password: string): Promise<UserCredential> => {
+		try
+		{
+			const credentials = await signInWithEmailAndPassword(
+				auth,
+				email,
+				password
+			);
 
-		return await validateUser(credentials)
-			.then(() => credentials)
-			.catch(async () => {
-				await addToWaitlist(email);
-				throw new Error("Not allowed");
-			});
-	};
-
-	const loginWithGoogle = async () => {
-		let userEmail = "";
-		const provider = new GoogleAuthProvider();
-		const credentials = await signInWithPopup(auth, provider).then(
-			(credentials) => {
-				userEmail = credentials.user.email;
-				return credentials;
+			if (!await validateUser(credentials)) {
+				throw new ErrorWithCode(ERROR_CODES.notFound);
 			}
-		);
+	
+			return credentials;
+		} catch (err) {
+			if ((err instanceof FirebaseError && err.code === 'auth/user-not-found')
+				|| (err instanceof ErrorWithCode && err.code === ERROR_CODES.notFound)) {
+					const waitlistUser = await getWaitlistUser(email);
+					if (waitlistUser?.removed_from_waitlist === false) {
+						throw new ErrorWithCode(ERROR_CODES.waitlistUserNotOffboarded);
+					} else {
+						throw new ErrorWithCode(ERROR_CODES.notFound);
+					}
+			}
 
-		return await validateUser(credentials)
-			.then(() => credentials)
-			.catch(async () => {
-				await addToWaitlist(userEmail);
-				throw new Error("Not allowed");
-			});
+			if (err instanceof ErrorWithCode) throw err;
+
+			if (err instanceof FirebaseError) {
+				if (err.code === 'auth/wrong-password') {
+					throw new ErrorWithCode(ERROR_CODES.wrongPassword)
+				}
+			}
+
+			console.error(err);
+			throw new Error('Something went wrong');
+		}
+	};
+
+	const getGoogleCredentials = async (): Promise<UserCredential> => {
+		const provider = new GoogleAuthProvider();
+		return await signInWithPopup(auth, provider);
 	};
 
 	const setShouldRemember = async (setShouldRemember: boolean) => {
@@ -159,19 +170,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		return await signOut(auth);
 	};
 
-	const register = async (email: string, password: string) => {
+	const registerWithGoogle = async (credentials: UserCredential): Promise<UserCredential> => {
+		const waitlistUser = await getWaitlistUser(credentials.user.email);
+		if (waitlistUser == null) {
+			throw new ErrorWithCode(ERROR_CODES.waitlistUserNotFound);
+		}
+
+		if (waitlistUser.removed_from_waitlist === false) {
+			throw new ErrorWithCode(ERROR_CODES.waitlistUserNotOffboarded);
+		}
+
+		await updateUser({
+			docId: credentials.user.uid,
+			details: { email: credentials.user.email },
+		});
+
+		return credentials;
+	};
+
+	const registerWithEmail = async (email: string, password: string): Promise<UserCredential> => {
+		const waitlistUser = await getWaitlistUser(email);
+		if (waitlistUser == null) {
+			throw new ErrorWithCode(ERROR_CODES.waitlistUserNotFound);
+		}
+
+		if (waitlistUser.removed_from_waitlist === false) {
+			throw new ErrorWithCode(ERROR_CODES.waitlistUserNotOffboarded);
+		}
+
 		const credentials = await createUserWithEmailAndPassword(
 			auth,
 			email,
 			password
 		);
 
-		return await validateUser(credentials)
-			.then(() => credentials)
-			.catch(async () => {
-				await addToWaitlist(email);
-				throw new Error("Not allowed");
-			});
+		await updateUser({
+			docId: credentials.user.uid,
+			details: { email },
+		});
+
+		return credentials;
 	};
 
 	return (
@@ -180,10 +218,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				loading,
 				user,
 				login,
-				loginWithGoogle,
+				validateUser,
+				getGoogleCredentials,
 				setShouldRemember,
 				logout,
-				register,
+				registerWithEmail,
+				registerWithGoogle,
 			}}
 		>
 			{loading ? null : children}

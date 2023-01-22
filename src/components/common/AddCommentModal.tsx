@@ -114,6 +114,7 @@ function AddCommentModal({
 										</label>
 										<div className="mt-1">
 											<input
+												autoComplete="off"
 												onChange={handleCommentChange}
 												type="comment"
 												name="comment"

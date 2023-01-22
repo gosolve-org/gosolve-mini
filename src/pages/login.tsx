@@ -4,7 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { useAuth } from "context/AuthContext";
-import StyledToast from "components/common/Layout/StyledToast";
+import BasicToast from "components/common/Layout/BasicToast";
+import { toast } from "react-toastify";
+import { ErrorWithCode } from "models/ErrorWithCode";
+import { ERROR_CODES } from "constants/errorCodes";
+import LinkToast, { showLinkToast } from "components/common/Layout/LinkToast";
+import { TOAST_IDS } from "constants/toastConstants";
+import { FirebaseError } from "firebase/app";
+import { getWaitlistUser } from "./api/user";
+import BasicHead from "components/common/Layout/BasicHead";
 
 function Login() {
 	const [email, setEmail] = useState<string>("");
@@ -12,29 +20,71 @@ function Login() {
 	const [shouldRememberCheckbox, setShouldRememberCheckbox] =
 		useState<boolean>(false);
 
-	const { login, loginWithGoogle, setShouldRemember, logout } = useAuth();
+	const { login, getGoogleCredentials, setShouldRemember, logout, validateUser } = useAuth();
 	const router = useRouter();
 
 	const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		await setShouldRemember(shouldRememberCheckbox);
+		setShouldRemember(shouldRememberCheckbox);
 		await login(email, password)
 			.then(() => router.push("/"))
-			.catch(async () => {
-				await logout();
-				router.push("/register/waitlist");
+			.catch(async (err) => {
+				if ((err instanceof ErrorWithCode)) {
+					if (err.code === ERROR_CODES.notFound || err.code === ERROR_CODES.waitlistUserNotFound) {
+						showLinkToast(
+							'error',
+							'No account with this email exists. Click here to join our waitlist.',
+							`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(email)}#waitlist`);
+						return;
+					}
+
+					if (err.code === ERROR_CODES.wrongPassword) {
+						toast.error('Password is incorrect. Please try again or login with your Google account.', { containerId: TOAST_IDS.basicToastId });
+						return;
+					}
+
+					if (err.code === ERROR_CODES.waitlistUserNotOffboarded) {
+						showLinkToast(
+							'error',
+							`You're still on the waitlist. Click here to check your status.`,
+							`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(email)}#waitlist`);
+						return;
+					}
+				}
+
+				console.error(err);
+				toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
 			});
 	};
 
 	const handleGmailLogin = async () => {
-		await setShouldRemember(shouldRememberCheckbox);
-		await loginWithGoogle()
-			.then(() => router.push("/"))
-			.catch(async () => {
-				await logout();
-				router.push("/register/waitlist");
-			});
+		setShouldRemember(shouldRememberCheckbox);
+
+		try {
+			const credentials = await getGoogleCredentials();
+	
+			if (!await validateUser(credentials)) {
+				const waitlistUser = await getWaitlistUser(credentials.user.email);
+				if (waitlistUser?.removed_from_waitlist === false) {
+					showLinkToast(
+						'error',
+						`You're still on the waitlist. Click here to check your status.`,
+						`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(credentials.user.email)}#waitlist`);
+				} else {
+					showLinkToast(
+						'error',
+						'No account with this email exists. Click here to join our waitlist.',
+						`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(credentials.user.email)}#waitlist`);
+				}
+				return;
+			}
+	
+			router.push("/");
+		} catch (err) {
+			console.error(err);
+			toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
+		}
 	};
 
 	const handleEmailChange = (e: FormEvent<HTMLInputElement>) =>
@@ -48,6 +98,7 @@ function Login() {
 
 	return (
 		<>
+			<BasicHead title="goSolve | Login" />
 			<main className="h-full">
 				<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 					<div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -61,7 +112,7 @@ function Login() {
 						/>
 						<h2 className="mt-6 px-4 py-2 text-center text-m font-normal tracking-tight rounded-md text-black bg-gray-100">
 							goSolve mini is a limited test version of the goSolve
-							platform is currently invite only, or available for
+							platform, is currently invite only, or available for
 							active donors.
 						</h2>
 					</div>
@@ -197,7 +248,8 @@ function Login() {
 					</div>
 				</div>
 			</main>
-			<StyledToast />
+			<BasicToast enableMultiToast={true} />
+			<LinkToast enableMultiToast={true} />
 		</>
 	);
 }

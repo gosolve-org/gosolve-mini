@@ -1,11 +1,10 @@
 import { Fragment, useState, FormEvent, SyntheticEvent } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 
 import { useAuth } from "context/AuthContext";
-import { db } from "utils/firebase";
+import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { addComment } from "pages/api/comment";
 import { toast } from "react-toastify";
 
@@ -27,7 +26,7 @@ function AddCommentModal({
 	const [comment, setComment] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
+	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
 	const handleCommentChange = (e: FormEvent<HTMLInputElement>) =>
 		setComment(e.currentTarget.value);

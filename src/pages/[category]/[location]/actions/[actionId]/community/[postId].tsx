@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import Post from "components/pages/category/location/Post";
-import { ResourceType } from "models/ResourceType";
 
 function ActionCommunityPostPage() {
 	const router = useRouter();

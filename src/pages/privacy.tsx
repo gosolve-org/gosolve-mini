@@ -1,4 +1,5 @@
 import { Layout } from "components/common";
+import StyledToast from "components/common/Layout/StyledToast";
 
 import { useAuth } from "context/AuthContext";
 
@@ -199,7 +200,10 @@ function Privacy() {
 	return user ? (
 		<Layout>{renderPrivacyPage()}</Layout>
 	) : (
-		<>{renderPrivacyPage()}</>
+		<>
+			{renderPrivacyPage()}
+			<StyledToast />
+		</>
 	);
 }
 

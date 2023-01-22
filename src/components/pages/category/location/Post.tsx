@@ -1,10 +1,10 @@
 import { useState, SyntheticEvent, FormEvent, useMemo, Fragment } from "react";
 import { useCollection, useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc, query, collection, where, orderBy } from "firebase/firestore";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { useAuth } from "context/AuthContext";
-import { db } from "utils/firebase";
+import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { Layout, Comment, AddCommentModal } from "components/common";
 import { addComment } from "pages/api/comment";
 import { withBreaks } from "utils/textUtils";
@@ -22,7 +22,7 @@ function Post({ postId } : PostProps) {
 
 	const [postData, postLoading] = useDocumentOnce(doc(db, "posts", postId));
 
-	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
+	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
 	const postDoc = postData?.data();
 
@@ -213,19 +213,6 @@ function Post({ postId } : PostProps) {
 				parentId={replyParentId}
 				open={addCommentModalOpen}
 				setOpen={setAddCommentModalOpen}
-			/>
-
-			<ToastContainer
-				position="bottom-center"
-				autoClose={3000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="light"
 			/>
 		</Layout>
 	);

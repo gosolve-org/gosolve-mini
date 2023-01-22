@@ -6,4 +6,5 @@ export interface User {
 	role?: "user" | "editor" | "admin";
 	createdAt?: Date;
 	updatedAt?: Date;
+	isOnboarded?: boolean;
 }

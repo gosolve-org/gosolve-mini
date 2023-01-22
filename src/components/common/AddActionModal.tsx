@@ -8,12 +8,11 @@ import {
 import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useCollectionOnce, useDocumentOnce } from "react-firebase-hooks/firestore";
 import { collection, query, where, doc } from "firebase/firestore";
 
 import { addAction } from "pages/api/action";
 import { useAuth } from "context/AuthContext";
-import { db, useCollectionOnceWithDependencies } from "utils/firebase";
+import { db, useCollectionOnceWithDependencies, useDocumentOnceWithDependencies } from "utils/firebase";
 import { DataContext } from "pages/_app";
 import { toast } from "react-toastify";
 
@@ -38,7 +37,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 		), [ currentCategoryId, currentLocationId ]
 	);
 
-	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
+	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
 	const categoryQuery = router?.query?.category?.toString();
 	const locationQuery = router?.query?.location?.toString();

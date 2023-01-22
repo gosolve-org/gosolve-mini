@@ -5,13 +5,12 @@ import {
 	SyntheticEvent,
 } from "react";
 import { useRouter } from "next/router";
-import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { useAuth } from "context/AuthContext";
-import { db } from "utils/firebase";
+import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { addPost } from "pages/api/post";
 import { ResourceType } from "models/ResourceType";
 import { toast } from "react-toastify";
@@ -31,10 +30,10 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 	const [description, setDescription] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
+	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
-	const categoryQuery = router?.query?.category?.toString() ?? '...';
-	const locationQuery = router?.query?.location?.toString() ?? '...';
+	const categoryQuery = router?.query?.category?.toString() || '...';
+	const locationQuery = router?.query?.location?.toString() || '...';
 	const actionId = router?.query?.actionId?.toString() ?? '';
 
 	const readableCategoryId = categoryQuery.split("-").join(" ");

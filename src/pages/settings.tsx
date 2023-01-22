@@ -1,25 +1,26 @@
 import { useState, useEffect, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 import { updatePassword } from "@firebase/auth";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
-import { db } from "utils/firebase";
+import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { Layout } from "components/common";
 import { useAuth } from "context/AuthContext";
 import { updateUser } from "./api/user";
+import { USER_VALIDATIONS } from "constants/validationRules";
 
 function Settings() {
 	const { user, logout } = useAuth();
 	const router = useRouter();
 
-	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
+	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
-	const [name, setName] = useState<string>(user?.displayName || "");
-	const [username, setUsername] = useState<string>(user?.displayName || "");
-	const [birthYear, setBirthYear] = useState<number>(0);
+	const [name, setName] = useState<string>("");
+	const [username, setUsername] = useState<string>("");
+	const [birthYear, setBirthYear] = useState<number|null>(null);
 	const [password, setPassword] = useState<string>("");
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const userProfileData = userProfile?.data();
@@ -27,15 +28,47 @@ function Settings() {
 		if (userProfileData?.name) setName(userProfileData.name);
 		if (userProfileData?.username) setUsername(userProfileData.username);
 		if (userProfileData?.birthYear) setBirthYear(userProfileData.birthYear);
+
+		setIsLoading(false);
 	}, [userProfile]);
 
 	const handleSave = async (e: SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		if (isLoading) return;
+		setIsLoading(true);
+
+		const validate = (boolResult: boolean, errorMessage: string): boolean => {
+			if (!boolResult) {
+				setIsLoading(false);
+				toast.error(errorMessage);
+				return false;
+			}
+
+			return true;
+		};
+
+		if (!validate(new Date().getFullYear() - birthYear >= USER_VALIDATIONS.birthYearMinAge, `You need to be at least ${USER_VALIDATIONS.birthYearMinAge} years old to join our platform.`)) return;
+		if (!validate(birthYear >= USER_VALIDATIONS.birthYearMin, 'Please enter a valid birth year.')) return;
+		if (!validate(name.length >= USER_VALIDATIONS.nameMinLength, 'Please enter a valid name.')) return;
+		if (!validate(name.length <= USER_VALIDATIONS.nameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.nameMaxLength} characters.`)) return;
+		if (!validate(username.length >= USER_VALIDATIONS.usernameMinLength, `Your username needs to be at least ${USER_VALIDATIONS.usernameMinLength} characters.`)) return;
+		if (!validate(username.length <= USER_VALIDATIONS.usernameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.usernameMaxLength} characters.`)) return;
+
 		await updateUser({
-			docId: user?.uid || "",
+			docId: user.uid,
 			details: { name, username, birthYear },
-		}).then(() => toast.success("Saved!"));
+		})
+		.then(() => {
+			toast.success('Saved!');
+		})
+		.catch(err => {
+			toast.error('Something went wrong');
+			console.error(err);
+		})
+		.finally(() => {
+			setIsLoading(false);
+		});
 	};
 
 	const hasChanges = () =>
@@ -50,7 +83,10 @@ function Settings() {
 		setUsername(e.currentTarget.value);
 
 	const handleBirthYearChange = (e: FormEvent<HTMLInputElement>) =>
+	{
+		if (!e.currentTarget.value) return;
 		setBirthYear(e.currentTarget.valueAsNumber);
+	}
 
 	const handlePasswordChange = (e: FormEvent<HTMLInputElement>) =>
 		setPassword(e.currentTarget.value);
@@ -97,6 +133,8 @@ function Settings() {
 										required
 										className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
 										onChange={handleNameChange}
+										maxLength={USER_VALIDATIONS.nameMaxLength}
+										disabled={isLoading}
 										value={name}
 									/>
 								</div>
@@ -118,6 +156,8 @@ function Settings() {
 										required
 										className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
 										onChange={handleUsernameChange}
+										maxLength={USER_VALIDATIONS.usernameMaxLength}
+										disabled={isLoading}
 										value={username}
 									/>
 								</div>
@@ -138,14 +178,15 @@ function Settings() {
 										required
 										className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
 										onChange={handleBirthYearChange}
-										value={birthYear}
+										disabled={isLoading}
+										value={birthYear?.toString() || ''}
 									/>
 								</div>
 							</div>
 
 							<div>
 								<button
-									disabled={!hasChanges()}
+									disabled={!hasChanges() || isLoading}
 									type="submit"
 									className="flex w-full justify-center rounded-md border border-transparent disabled:opacity-70 disabled:cursor-not-allowed bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 								>
@@ -163,19 +204,6 @@ function Settings() {
 					</div>
 				</div>
 			</div>
-
-			<ToastContainer
-				position="bottom-center"
-				autoClose={3000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="light"
-			/>
 		</Layout>
 	);
 }

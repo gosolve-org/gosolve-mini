@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent, useContext } from "react";
+import { FormEvent, useContext } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { DataContext } from "pages/_app";

@@ -1,19 +1,19 @@
 import { useState, FormEvent } from "react";
-import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
-import { db } from "utils/firebase";
+import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { Layout } from "components/common";
 import { useAuth } from "context/AuthContext";
 import { addToAllowList } from "./api/admin";
+import StyledToast from "components/common/Layout/StyledToast";
 
 function Admin() {
 	const { user } = useAuth();
 
 	const [allowListEmail, setAllowListEmail] = useState("");
 
-	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
+	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
 	const isAdmin = userProfile?.data().role === "admin";
 	const hasChanges = () => !!allowListEmail;
@@ -73,19 +73,6 @@ function Admin() {
 					<div>Not allowed</div>
 				)}
 			</div>
-
-			<ToastContainer
-				position="bottom-center"
-				autoClose={3000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="light"
-			/>
 		</Layout>
 	);
 }

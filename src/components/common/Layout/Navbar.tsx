@@ -7,7 +7,7 @@ import {
 	useContext,
 } from "react";
 import { useRouter } from "next/router";
-import { useCollection, useCollectionOnce } from "react-firebase-hooks/firestore";
+import { useCollectionOnce } from "react-firebase-hooks/firestore";
 import { collection } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
@@ -188,7 +188,7 @@ function Navbar() {
 												<span className="block truncate">
 													{selectedCategory?.category 
 														?? readableCategory
-														??  "Enter the category name"
+														??  "Select a category"
 													}
 												</span>
 											</Listbox.Button>
@@ -282,7 +282,7 @@ function Navbar() {
 												<span className="block truncate">
 													{selectedLocation?.location
 														?? readableLocation
-														?? "Enter the location name"
+														?? "Select a location"
 													}
 												</span>
 											</Listbox.Button>

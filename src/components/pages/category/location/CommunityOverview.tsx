@@ -1,16 +1,19 @@
 import { useState, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
-import { useCollection, useCollectionOnce } from "react-firebase-hooks/firestore";
 import { collection, query, where, orderBy } from "firebase/firestore";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
 import { db, useCollectionOnceWithDependencies } from "utils/firebase";
 import { DataContext } from "pages/_app";
-import { DEFAULT_PAGE_SIZE } from "constants/defaultSearches";
 import { Layout, AddCommunityPostModal, Pagination } from "components/common";
 import { trimToFirstLine } from "utils/textUtils";
 import { ResourceType } from "models/ResourceType";
+import { paginate } from "utils/pagination";
+import { getRandomItem } from "utils/basicUtils";
+import { NO_POSTS_PLACEHOLDERS } from "constants/placeholderTexts";
+
+const PAGE_SIZE = 10;
 
 interface CommunityOverviewProps {
 	resourceType: ResourceType;
@@ -33,12 +36,8 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 	const router = useRouter();
 	const routerQuery = router.query;
 
-	const categoryQuery = routerQuery?.category
-		? routerQuery?.category.toString()
-		: "...";
-	const locationQuery = routerQuery?.location
-		? routerQuery?.location.toString()
-		: "...";
+	const categoryQuery = routerQuery?.category?.toString() || '...';
+	const locationQuery = routerQuery?.location?.toString() || '...';
 	const pageQuery = routerQuery?.page
 		? parseInt(routerQuery?.page.toString()) || 1
 		: 1;
@@ -71,22 +70,7 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 	// https://firebase.google.com/docs/firestore/query-data/query-cursors
 	// One solution is to generate indexes of generated docIds of paginated queries and use that with '.startAfter' and 'limit' queries
 	// Another way is with counters (https://stackoverflow.com/questions/39519021/how-to-create-auto-incremented-key-in-firebase) but could limit filtering and hotspots later
-	const paginatedPostsCollection = useCallback(() => {
-		if (!postsCollection?.docs) return [];
-
-		const pageCount = Math.ceil(totalPosts / DEFAULT_PAGE_SIZE);
-		const firstIndexOnPage = (pageQuery - 1) * DEFAULT_PAGE_SIZE;
-		const isLastPage = pageQuery === pageCount;
-		const lastIndexOnPage = isLastPage
-			? (totalPosts % DEFAULT_PAGE_SIZE) +
-			  DEFAULT_PAGE_SIZE * (pageQuery - 1)
-			: DEFAULT_PAGE_SIZE * pageQuery;
-
-		return postsCollection?.docs.slice(
-			firstIndexOnPage,
-			lastIndexOnPage
-		);
-	}, [ postsCollection, totalPosts, DEFAULT_PAGE_SIZE, pageQuery ]);
+	const paginatePostsCollection = useCallback(() => paginate(postsCollection?.docs, PAGE_SIZE, pageQuery), [ postsCollection, pageQuery ]);
 
 	return (
 		<Layout>
@@ -110,10 +94,10 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 						</span>
 					</div>
 
-					{!postsLoading && !topicsLoading ? (
+					{!postsLoading && !topicsLoading ? (postsCollection?.docs?.length > 0 ?
 						<>
 							<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
-								{paginatedPostsCollection()?.filter(Boolean).map((item) => {
+								{paginatePostsCollection().map((item) => {
 									const itemData = item.data();
 									return (
 										<Link
@@ -160,9 +144,9 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 							</dl>
 							<Pagination
 								totalCount={totalPosts}
-								pageSize={DEFAULT_PAGE_SIZE}
+								pageSize={PAGE_SIZE}
 							/>
-						</>
+						</> : (<div className="mt-5 truncate text-sm font-light text-gray-400">{getRandomItem(NO_POSTS_PLACEHOLDERS)}</div>)
 					) : null}
 				</div>
 			</div>

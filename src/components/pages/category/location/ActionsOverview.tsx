@@ -1,15 +1,18 @@
 import { useState, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
-import { useCollectionOnce, useDocumentOnce } from "react-firebase-hooks/firestore";
 import { collection, query, where, doc, orderBy, Query, DocumentData, QuerySnapshot, FirestoreError } from "firebase/firestore";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import { db, useCollectionOnceWithDependencies } from "utils/firebase";
+import { db, useCollectionOnceWithDependencies, useDocumentOnceWithDependencies } from "utils/firebase";
 import { AddActionModal, Layout, Pagination } from "components/common";
 import { useAuth } from "context/AuthContext";
 import { DataContext } from "pages/_app";
-import { DEFAULT_PAGE_SIZE } from "constants/defaultSearches";
+import { paginate } from "utils/pagination";
+import { getRandomItem } from "utils/basicUtils";
+import { NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS, NO_ACTIONS_PLACEHOLDERS_FOR_USERS } from "constants/placeholderTexts";
+
+const PAGE_SIZE = 12;
 
 function ActionsOverview() {
 	const { user } = useAuth();
@@ -50,26 +53,9 @@ function ActionsOverview() {
 	// https://firebase.google.com/docs/firestore/query-data/query-cursors
 	// One solution is to generate indexes of generated docIds of paginated queries and use that with '.startAfter' and 'limit' queries
 	// Another way is with counters (https://stackoverflow.com/questions/39519021/how-to-create-auto-incremented-key-in-firebase) but could limit filtering and hotspots later
-	const paginatedActionsCollection = useCallback(() => {
-		if (!actionsCollection?.docs) return [];
+	const paginateActionsCollection = useCallback(() => paginate(actionsCollection?.docs, PAGE_SIZE, pageQuery), [ actionsCollection, pageQuery ]);
 
-		const pageCount = Math.ceil(totalActions / DEFAULT_PAGE_SIZE);
-		const firstIndexOnPage = (pageQuery - 1) * DEFAULT_PAGE_SIZE;
-		const isLastPage = pageQuery === pageCount;
-		const lastIndexOnPage = isLastPage
-			? (totalActions % DEFAULT_PAGE_SIZE === 0
-					? DEFAULT_PAGE_SIZE
-					: totalActions % DEFAULT_PAGE_SIZE) +
-				DEFAULT_PAGE_SIZE * (pageQuery - 1)
-			: DEFAULT_PAGE_SIZE * pageQuery;
-
-		return actionsCollection?.docs.slice(
-			firstIndexOnPage,
-			lastIndexOnPage
-		);
-	}, [ actionsCollection, totalActions, DEFAULT_PAGE_SIZE, pageQuery ]);
-
-	const [userProfile] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
+	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
 	const canUserEdit =
 		userProfile?.data()?.role === "admin" ||
@@ -101,37 +87,35 @@ function ActionsOverview() {
 							</button>
 						</span>
 					</div>
-					{!actionsLoading && !topicsLoading ? (
+					{!actionsLoading && !topicsLoading ? (actionsCollection?.docs?.length > 0 ?
 						<>
 							<ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
-								{paginatedActionsCollection().map((item) => {
-									if (item) {
-										const itemData = item.data();
-										return (
-											<Link
-												key={item.id}
-												href={`/${categoryQuery}/${locationQuery}/actions/${item.id}`}
-											>
-												<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
-													<div className="text-xl font-medium text-black">
-														{itemData.title}
-													</div>
+								{paginateActionsCollection().map((item) => {
+									const itemData = item.data();
+									return (
+										<Link
+											key={item.id}
+											href={`/${categoryQuery}/${locationQuery}/actions/${item.id}`}
+										>
+											<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
+												<div className="text-xl font-medium text-black">
+													{itemData.title}
+												</div>
 
-													<div className="mt-10 truncate text-sm font-light text-gray-400">
-														{itemData.authorUsername}
-													</div>
-												</li>
-											</Link>
-										);
-									}
+												<div className="mt-10 truncate text-sm font-light text-gray-400">
+													{itemData.authorUsername}
+												</div>
+											</li>
+										</Link>
+									);
 								})}
 							</ul>
 
 							<Pagination
 								totalCount={totalActions}
-								pageSize={DEFAULT_PAGE_SIZE}
+								pageSize={PAGE_SIZE}
 							/>
-						</>
+						</> : (<div className="mt-5 truncate text-sm font-light text-gray-400">{getRandomItem(canUserEdit ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}</div>)
 					) : null}
 
 				</div>

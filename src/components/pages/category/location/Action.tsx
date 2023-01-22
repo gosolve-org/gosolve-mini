@@ -4,9 +4,9 @@ import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 
 import { Layout } from "components/common";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { updateAction } from "pages/api/action";
-import { db } from "utils/firebase";
+import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { useAuth } from "context/AuthContext";
 
 import actionEditorTemplate from "editorTemplates/actionEditorTemplate.json"
@@ -19,9 +19,9 @@ function Action() {
 	const { user } = useAuth();
 	const router = useRouter();
 
-	const actionId = router?.query?.actionId?.toString() ?? '';
+	const actionId = router?.query?.actionId?.toString();
 
-	const [userProfile, userLoading] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
+	const [userProfile, userLoading] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
 	const canUserEdit =
 		userProfile?.id === user?.uid &&
@@ -61,19 +61,6 @@ function Action() {
 					</div>
 				</div>
 			</div>
-
-			<ToastContainer
-				position="bottom-center"
-				autoClose={3000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="light"
-			/>
 		</Layout>
 	);
 }

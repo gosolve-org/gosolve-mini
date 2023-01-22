@@ -22,12 +22,12 @@ function ActionHeader() {
 	const router = useRouter();
 	const { currentTab, handleCurrentTabChange } = useContext(DataContext);
 
-	const actionId = router?.query?.actionId?.toString() ?? '';
+	const actionId = router?.query?.actionId?.toString();
 
 	const [actionsCollection] = useDocumentOnce(doc(db, "actions", actionId));
 
-	const categoryQuery = router?.query?.category?.toString() ?? '...';
-	const locationQuery = router?.query?.location?.toString() ?? '...';
+	const categoryQuery = router?.query?.category?.toString() || '...';
+	const locationQuery = router?.query?.location?.toString() || '...';
 
 	const readableCategory = categoryQuery.split("-").join(" ");
 	const readableLocation = locationQuery.split("-").join(" ");
@@ -50,7 +50,7 @@ function ActionHeader() {
 				<div className="flex flex-col justify-center h-52 mt-2 items-center rounded-md bg-sky-100">
 					<div className="mt-5 sm:mx-auto sm:w-full">
 						<h1 className=" px-4 py-2 text-center text-3xl font-small tracking-tight text-black ">
-							{actionsCollection?.data()?.title ?? '\u00A0'}
+							{actionsCollection?.data()?.title || '\u00A0'}
 						</h1>
 					</div>
 					<div className="mt-5 w-[68%] md:max-xl:w-[68%] md:max-lg:w-[78%] md:max-sm:w-[88%]">

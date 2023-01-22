@@ -1,13 +1,14 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useCollection, useCollectionOnce } from "react-firebase-hooks/firestore";
+import { useCollectionOnce } from "react-firebase-hooks/firestore";
 import { collection, query, DocumentData } from "firebase/firestore";
 
 import { db } from "utils/firebase";
 import { Layout, Pagination } from "components/common";
-import { DEFAULT_PAGE_SIZE } from "constants/defaultSearches";
 import { ResourceType } from "models/ResourceType";
+
+const PAGE_SIZE = 10;
 
 function Search() {
 	const router = useRouter();
@@ -228,7 +229,7 @@ function Search() {
 
 					<Pagination
 						totalCount={totalMatches}
-						pageSize={DEFAULT_PAGE_SIZE}
+						pageSize={PAGE_SIZE}
 					/>
 				</div>
 			</div>

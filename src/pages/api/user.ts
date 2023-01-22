@@ -42,19 +42,28 @@ const updateUser = async ({
 	}
 };
 
-const getUsername = async ({ docId }: { docId: string }) => {
+const getUser = async (uid: string): Promise<User> => {
 	try {
-		const userRef = doc(db, "user", docId);
+		const userRef = doc(db, "user", uid);
 		const docSnap = await getDoc(userRef);
 
-		if (docSnap.exists()) {
-			return docSnap.data().name;
-		}
-
-		Promise.resolve();
+		if (!docSnap.exists()) return null;
+		return docSnap.data() as User;
 	} catch (err) {
 		throw new Error("Not allowed");
 	}
 };
 
-export { addUser, updateUser, getUsername };
+const isUserOnboarded = async (userId: string) => {
+	try {
+		const userRef = doc(db, "user", userId);
+		const docSnap = await getDoc(userRef);
+
+		if (!docSnap.exists()) return false;
+		return docSnap.get('isOnboarded') ?? false;
+	} catch (err) {
+		throw new Error("Not allowed");
+	}
+};
+
+export { addUser, updateUser, getUser, isUserOnboarded };

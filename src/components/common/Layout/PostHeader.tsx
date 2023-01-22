@@ -9,9 +9,9 @@ import { db } from "utils/firebase";
 function PostHeader() {
 	const router = useRouter();
 
-	const categoryQuery = router?.query?.category?.toString() ?? '...';
-	const locationQuery = router?.query?.location?.toString() ?? '...';
-	const actionId = router?.query?.actionId?.toString() ?? '';
+	const categoryQuery = router?.query?.category?.toString() || '...';
+	const locationQuery = router?.query?.location?.toString() || '...';
+	const actionId = router?.query?.actionId?.toString();
 	const resourceType = !actionId ? ResourceType.Topic : ResourceType.Action;
 
 	const [actionDoc] = resourceType === ResourceType.Action ? useDocumentOnce(doc(db, "actions", actionId)) : [null];

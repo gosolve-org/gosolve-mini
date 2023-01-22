@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import TopicHeader from "./TopicHeader";
 import ActionHeader from "./ActionHeader";
 import PostHeader from "./PostHeader";
+import StyledToast from "./StyledToast";
 
 interface LayoutProps {
 	children: ReactNode;
@@ -33,6 +34,7 @@ function Layout({ children }: LayoutProps) {
 			<Navbar />
 			{renderHeader()}
 			<main>{children}</main>
+			<StyledToast />
 		</div>
 	);
 }

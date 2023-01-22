@@ -1,7 +1,8 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "@firebase/auth";
-import { DocumentData, FirestoreError, getFirestore, Query, QuerySnapshot } from "firebase/firestore";
-import { useCollectionOnce } from "react-firebase-hooks/firestore";
+import { DocumentData, DocumentReference, DocumentSnapshot, FirestoreError, getFirestore, Query, QuerySnapshot } from "firebase/firestore";
+import { useCollectionOnce, useDocumentOnce } from "react-firebase-hooks/firestore";
+import { OnceOptions } from "react-firebase-hooks/firestore/dist/firestore/types";
 
 const firebaseConfig = {
 	apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -22,4 +23,12 @@ export const useCollectionOnceWithDependencies = (
 	dependencies: any[]):[QuerySnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
 		const [collection, isLoading, err, reloadData] = useCollectionOnce(dependencies.every(Boolean) ? query : null);
 		return [collection, (isLoading || dependencies.some(el => !el) || collection?.docs === undefined), err, reloadData];
+	};
+
+export const useDocumentOnceWithDependencies = (
+	docRef: DocumentReference,
+	dependencies: any[],
+	options?: OnceOptions | undefined):[DocumentSnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
+		const [snapshot, isLoading, err, reloadData] = useDocumentOnce(dependencies.every(Boolean) ? docRef : null, options);
+		return [snapshot, (isLoading || dependencies.some(el => !el)), err, reloadData];
 	};

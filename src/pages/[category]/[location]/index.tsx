@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useCollectionOnce, useDocumentOnce } from "react-firebase-hooks/firestore";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import {
 	collection,
 	query,
@@ -13,10 +13,10 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
 
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { AddActionModal, AddCommunityPostModal } from "components/common";
 import { updateTopic } from "pages/api/topic";
-import { db, useCollectionOnceWithDependencies } from "utils/firebase";
+import { db, useCollectionOnceWithDependencies, useDocumentOnceWithDependencies } from "utils/firebase";
 import { useAuth } from "context/AuthContext";
 import { DataContext } from "pages/_app";
 
@@ -27,6 +27,8 @@ const EditorJs = dynamic(() => import("components/common/Editor"), {
 import { Layout } from "components/common";
 import { ResourceType } from "models/ResourceType";
 import { Tab } from "models/Tab";
+import { getRandomItem } from "utils/basicUtils";
+import { NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS, NO_ACTIONS_PLACEHOLDERS_FOR_USERS, NO_POSTS_PLACEHOLDERS } from "constants/placeholderTexts";
 
 function TopicPage() {
 	const { user } = useAuth();
@@ -59,7 +61,7 @@ function TopicPage() {
 	const topicContent = topicsCollection?.docs?.[0]?.data()?.content;
 	const topicId = topicsCollection?.docs?.[0]?.id || "";
 
-	const [userProfile, userLoading] = useDocumentOnce(doc(db, `user`, user?.uid || ""));
+	const [userProfile, userLoading] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
 	const [actionsCollection, actionsLoading] = useCollectionOnceWithDependencies(
 		query(
@@ -144,29 +146,30 @@ function TopicPage() {
 								</span>
 							</div>
 							{!actionsLoading ? (
-								<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-									{actionsCollection?.docs?.map((item) => {
-										const itemData = item.data();
-										return (
-											<Link
-												key={item.id}
-												href={`/${categoryQuery}/${locationQuery}/actions/${item.id}`}
-											>
-												<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
-													<div className="text-xl font-medium text-black">
-														{itemData.title}
-													</div>
+								actionsCollection?.docs?.length !== 0
+									? (<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+										{actionsCollection?.docs?.map((item) => {
+											const itemData = item.data();
+											return (
+												<Link
+													key={item.id}
+													href={`/${categoryQuery}/${locationQuery}/actions/${item.id}`}
+												>
+													<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
+														<div className="text-xl font-medium text-black">
+															{itemData.title}
+														</div>
 
-													<div className="mt-10 truncate text-sm font-light text-gray-400">
-														{
-															itemData.authorUsername
-														}
-													</div>
-												</li>
-											</Link>
-										);
-									})}
-								</ul>
+														<div className="mt-10 truncate text-sm font-light text-gray-400">
+															{
+																itemData.authorUsername
+															}
+														</div>
+													</li>
+												</Link>
+											);
+										})}
+									</ul>) : (<div className="mt-5 text-center truncate text-sm font-light text-gray-400">{getRandomItem(canUserEdit ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}</div>)
 							) : null}
 						</div>
 
@@ -204,29 +207,30 @@ function TopicPage() {
 								</span>
 							</div>
 							{!postsLoading ? (
-								<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-									{postsCollection?.docs?.map((item) => {
-										const itemData = item.data();
-										return (
-											<Link
-												key={item.id}
-												href={`/${categoryQuery}/${locationQuery}/community/${item.id}`}
-											>
-												<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
-													<div className="text-xl font-medium text-black">
-														{itemData.title}
-													</div>
+								postsCollection?.docs?.length !== 0
+									? (<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+										{postsCollection?.docs?.map((item) => {
+											const itemData = item.data();
+											return (
+												<Link
+													key={item.id}
+													href={`/${categoryQuery}/${locationQuery}/community/${item.id}`}
+												>
+													<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
+														<div className="text-xl font-medium text-black">
+															{itemData.title}
+														</div>
 
-													<div className="mt-10 truncate text-sm font-light text-gray-400">
-														{
-															itemData.authorUsername
-														}
-													</div>
-												</li>
-											</Link>
-										);
-									})}
-								</ul>
+														<div className="mt-10 truncate text-sm font-light text-gray-400">
+															{
+																itemData.authorUsername
+															}
+														</div>
+													</li>
+												</Link>
+											);
+										})}
+									</ul>) : (<div className="mt-5 text-center truncate text-sm font-light text-gray-400">{getRandomItem(NO_POSTS_PLACEHOLDERS)}</div>)
 							) : null}
 						</div>
 					</div>
@@ -253,19 +257,6 @@ function TopicPage() {
 				setOpen={setAddCommunityPostModalOpen}
 				parentResourceType={ResourceType.Topic}
 				parentResourceId={topicId}
-			/>
-
-			<ToastContainer
-				position="bottom-center"
-				autoClose={3000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="light"
 			/>
 		</Layout>
 	);

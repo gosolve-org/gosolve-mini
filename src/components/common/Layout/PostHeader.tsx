@@ -14,7 +14,7 @@ function PostHeader() {
 	const actionId = router?.query?.actionId?.toString();
 	const resourceType = !actionId ? ResourceType.Topic : ResourceType.Action;
 
-	const [actionDoc] = resourceType === ResourceType.Action ? useDocumentOnce(doc(db, "actions", actionId)) : [null];
+	const [actionDoc] = useDocumentOnce(resourceType === ResourceType.Action ?  doc(db, "actions", actionId) : null);
 	const actionTitle = actionDoc?.data()?.title;
 
 	const readableCategory = categoryQuery.split("-").join(" ");

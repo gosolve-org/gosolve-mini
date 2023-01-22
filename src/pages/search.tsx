@@ -1,12 +1,14 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useCollection } from "react-firebase-hooks/firestore";
+import { useCollectionOnce } from "react-firebase-hooks/firestore";
 import { collection, query, DocumentData } from "firebase/firestore";
 
 import { db } from "utils/firebase";
 import { Layout, Pagination } from "components/common";
-import { DEFAULT_PAGE_SIZE } from "constants/defaultSearches";
+import { ResourceType } from "models/ResourceType";
+
+const PAGE_SIZE = 10;
 
 function Search() {
 	const router = useRouter();
@@ -17,40 +19,11 @@ function Search() {
 
 	const [totalMatches, setTotalMatches] = useState(0);
 
-	const [topicsCollection, topicsLoading] = useCollection(
-		query(collection(db, "topics")),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
-
-	const [actionsCollection, actionsLoading] = useCollection(
-		query(collection(db, "actions")),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
-
-	const [postsCollection, postsLoading] = useCollection(
-		query(collection(db, "posts")),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
-
-	const [categoriesCollection, categoriesLoading] = useCollection(
-		collection(db, "categories"),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
-
-	const [locationsCollection, locationsLoading] = useCollection(
-		collection(db, "locations"),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
+	const [topicsCollection, topicsLoading] = useCollectionOnce(query(collection(db, "topics")));
+	const [actionsCollection, actionsLoading] = useCollectionOnce(query(collection(db, "actions")));
+	const [postsCollection, postsLoading] = useCollectionOnce(query(collection(db, "posts")));
+	const [categoriesCollection, categoriesLoading] = useCollectionOnce(collection(db, "categories"));
+	const [locationsCollection, locationsLoading] = useCollectionOnce(collection(db, "locations"));
 
 	// Firebase has no good way of matching substrings
 	// https://stackoverflow.com/questions/46568142/google-firestore-query-on-substring-of-a-property-value-text-search
@@ -159,7 +132,7 @@ function Search() {
 
 						return (
 							<Link
-								href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
+								href={`/${categoryQuery}/${locationQuery}/actions/${item.id}`}
 								className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb"
 								key={item.id}
 							>
@@ -185,10 +158,24 @@ function Search() {
 						const itemData = item.data();
 						const categoryQuery = getCategoryQuery(item);
 						const locationQuery = getLocationQuery(item);
+						const actionId = itemData.actionId;
+						const topicId = itemData.topicId;
+						const resourceType = !!actionId
+							? ResourceType.Action
+							: (!!topicId
+								? ResourceType.Topic
+								: null);
+						if (resourceType === null) {
+							console.error(`Post with id ${item.id} is not linked to either an action or topic.`);
+							return null;
+						}
 
 						return (
 							<Link
-								href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
+								href={resourceType === ResourceType.Topic
+									? `/${categoryQuery}/${locationQuery}/community/${item.id}`
+									: `/${categoryQuery}/${locationQuery}/actions/${actionId}/community/${item.id}`
+								}
 								className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb"
 								key={item.id}
 							>
@@ -242,7 +229,7 @@ function Search() {
 
 					<Pagination
 						totalCount={totalMatches}
-						pageSize={DEFAULT_PAGE_SIZE}
+						pageSize={PAGE_SIZE}
 					/>
 				</div>
 			</div>

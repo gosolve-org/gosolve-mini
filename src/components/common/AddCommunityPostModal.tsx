@@ -2,57 +2,39 @@ import {
 	Fragment,
 	useState,
 	FormEvent,
-	useContext,
 	SyntheticEvent,
 } from "react";
 import { useRouter } from "next/router";
-import { useCollection, useDocument } from "react-firebase-hooks/firestore";
-import { collection, query, where, doc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { useAuth } from "context/AuthContext";
-import { db } from "utils/firebase";
-import { DataContext } from "pages/_app";
+import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { addPost } from "pages/api/post";
+import { ResourceType } from "models/ResourceType";
+import { toast } from "react-toastify";
 
 interface AddCommunityPostProps {
 	open: boolean;
 	setOpen: (open: boolean) => void;
+	parentResourceType: ResourceType;
+	parentResourceId: string;
 }
 
-function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
+function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId }: AddCommunityPostProps) {
 	const { user } = useAuth();
 	const router = useRouter();
-	const { currentCategoryId, currentLocationId } = useContext(DataContext);
 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
-	const [topicsCollection] = useCollection(
-		query(
-			collection(db, "topics"),
-			where("categoryId", "==", currentCategoryId),
-			where("locationId", "==", currentLocationId)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
+	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
-	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
-
-	const categoryQuery = router?.query?.category
-		? router?.query?.category.toString()
-		: "...";
-	const locationQuery = router?.query?.location
-		? router?.query?.location.toString()
-		: "...";
-	const actionId = router?.query?.action
-		? router?.query?.action.toString()
-		: "";
+	const categoryQuery = router?.query?.category?.toString() || '...';
+	const locationQuery = router?.query?.location?.toString() || '...';
+	const actionId = router?.query?.actionId?.toString() ?? '';
 
 	const readableCategoryId = categoryQuery.split("-").join(" ");
 	const readableLocationId = locationQuery.split("-").join(" ");
@@ -70,8 +52,12 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 	) => {
 		e.preventDefault();
 
-		const topicId = topicsCollection?.docs?.[0]?.id || "";
-		const originDetails = actionId ? { actionId } : { topicId };
+		if (isLoading) return;
+		setIsLoading(true);
+
+		const originDetails = {
+			[(parentResourceType === ResourceType.Action ? 'actionId' : 'topicId')]: parentResourceId
+		};
 
 		await addPost({
 			details: {
@@ -82,10 +68,14 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 				authorUsername: userProfile?.data()?.username,
 			},
 		}).then((docId) => {
-			setOpen(false);
-			router.push(
-				`/${categoryQuery}/${locationQuery}/community?post=${docId}`
+			router.push(parentResourceType === ResourceType.Topic
+				? `/${categoryQuery}/${locationQuery}/community/${docId}`
+				: `/${categoryQuery}/${locationQuery}/actions/${actionId}/community/${docId}`
 			);
+		}).catch(err => {
+			toast.error("Something went wrong");
+			console.error(err);
+			setIsLoading(false);
 		});
 	};
 
@@ -186,7 +176,7 @@ function AddCommunityPost({ open, setOpen }: AddCommunityPostProps) {
 									</div>
 									<div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
 										<button
-											disabled={!hasChanges()}
+											disabled={!hasChanges() || isLoading}
 											type="submit"
 											className="inline-flex w-full justify-center rounded-md disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-indigo-600 border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
 										>

@@ -1,6 +1,6 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useCollection, useDocument } from "react-firebase-hooks/firestore";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import {
 	collection,
 	query,
@@ -13,10 +13,10 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
 
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { AddActionModal, AddCommunityPostModal } from "components/common";
 import { updateTopic } from "pages/api/topic";
-import { db } from "utils/firebase";
+import { db, useCollectionOnceWithDependencies, useDocumentOnceWithDependencies } from "utils/firebase";
 import { useAuth } from "context/AuthContext";
 import { DataContext } from "pages/_app";
 
@@ -25,10 +25,18 @@ const EditorJs = dynamic(() => import("components/common/Editor"), {
 });
 
 import { Layout } from "components/common";
+import { ResourceType } from "models/ResourceType";
+import { Tab } from "models/Tab";
+import { getRandomItem } from "utils/basicUtils";
+import { NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS, NO_ACTIONS_PLACEHOLDERS_FOR_USERS, NO_POSTS_PLACEHOLDERS } from "constants/placeholderTexts";
 
-function Topic() {
+function TopicPage() {
 	const { user } = useAuth();
-	const { currentCategoryId, currentLocationId } = useContext(DataContext);
+	const { currentCategoryId, currentLocationId, handleCurrentTabChange } = useContext(DataContext);
+
+	useEffect(() => {
+		handleCurrentTabChange(Tab.Topic);
+	}, []);
 
 	const [addActionModalOpen, setActionModalOpen] = useState(false);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
@@ -36,62 +44,41 @@ function Topic() {
 
 	const router = useRouter();
 
-	const categoryQuery = router?.query?.category
-		? router?.query?.category.toString()
-		: "...";
-	const locationQuery = router?.query?.location
-		? router?.query?.location.toString()
-		: "...";
+	const categoryQuery = router?.query?.category?.toString();
+	const locationQuery = router?.query?.location?.toString();
 
 	const readableCategory = categoryQuery.split("-").join(" ");
 	const readableLocation = locationQuery.split("-").join(" ");
 
-	const [topicsCollection, topicsLoading] = useCollection(
+	const [topicsCollection, topicsLoading] = useCollectionOnceWithDependencies(
 		query(
 			collection(db, "topics"),
 			where("categoryId", "==", currentCategoryId),
 			where("locationId", "==", currentLocationId)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		), [ currentCategoryId, currentLocationId ]
 	);
 
-	// TODO Seems like error with library if there are no blocks so set default block
-	const topicContent =
-		topicsCollection?.docs?.[0]?.data()?.content ||
-		`{"time":1674009351098,"blocks":[{"id":"lLg8bWk7VH","type":"header","data":{"text": "${readableCategory} in ${readableLocation}","level":1}}],"version":"2.26.4"}`;
+	const topicContent = topicsCollection?.docs?.[0]?.data()?.content;
 	const topicId = topicsCollection?.docs?.[0]?.id || "";
 
-	const [userProfile, userLoading] = useDocument(
-		doc(db, `user`, user?.uid || ""),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
-	);
+	const [userProfile, userLoading] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
-	const [actionsCollection, actionsLoading] = useCollection(
+	const [actionsCollection, actionsLoading] = useCollectionOnceWithDependencies(
 		query(
 			collection(db, "actions"),
 			where("topicId", "==", topicId),
 			orderBy("updatedAt", "desc"),
 			limit(3)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		), [ topicId ]
 	);
 
-	const [postsCollection, postsLoading] = useCollection(
+	const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
 		query(
 			collection(db, "posts"),
 			where("topicId", "==", topicId),
 			orderBy("updatedAt", "desc"),
 			limit(3)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		), [ topicId ]
 	);
 
 	const canUserEdit =
@@ -126,20 +113,23 @@ function Topic() {
 									Actions
 								</h2>
 
-								{canUserEdit ? (
-									<span className="ml-3.5">
-										<button
-											onClick={handleAddActionClick}
-											type="button"
-											className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-										>
-											<PlusIcon
-												className="h-4 w-4"
-												aria-hidden="true"
-											/>
-										</button>
-									</span>
-								) : null}
+								<span className="ml-3.5">
+									<button
+										onClick={handleAddActionClick}
+										type="button"
+										title={!canUserEdit ? 'Only admins can create actions. Create a community post instead.' : ''}
+										disabled={!canUserEdit}
+										className={canUserEdit
+											? "inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+											: "inline-flex items-center rounded-full border border-gray-300 bg-gray p-1.5 text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+										}
+									>
+										<PlusIcon
+											className="h-4 w-4"
+											aria-hidden="true"
+										/>
+									</button>
+								</span>
 
 								<span className="mx-3.5">
 									<Link
@@ -156,29 +146,30 @@ function Topic() {
 								</span>
 							</div>
 							{!actionsLoading ? (
-								<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-									{actionsCollection?.docs?.map((item) => {
-										const itemData = item.data();
-										return (
-											<Link
-												key={item.id}
-												href={`/${categoryQuery}/${locationQuery}/actions?action=${item.id}&tab=action`}
-											>
-												<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
-													<div className="text-xl font-medium text-black">
-														{itemData.title}
-													</div>
+								actionsCollection?.docs?.length !== 0
+									? (<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+										{actionsCollection?.docs?.map((item) => {
+											const itemData = item.data();
+											return (
+												<Link
+													key={item.id}
+													href={`/${categoryQuery}/${locationQuery}/actions/${item.id}`}
+												>
+													<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
+														<div className="text-xl font-medium text-black">
+															{itemData.title}
+														</div>
 
-													<div className="mt-10 truncate text-sm font-light text-gray-400">
-														{
-															itemData.authorUsername
-														}
-													</div>
-												</li>
-											</Link>
-										);
-									})}
-								</ul>
+														<div className="mt-10 truncate text-sm font-light text-gray-400">
+															{
+																itemData.authorUsername
+															}
+														</div>
+													</li>
+												</Link>
+											);
+										})}
+									</ul>) : (<div className="mt-5 text-center truncate text-sm font-light text-gray-400">{getRandomItem(canUserEdit ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}</div>)
 							) : null}
 						</div>
 
@@ -216,29 +207,30 @@ function Topic() {
 								</span>
 							</div>
 							{!postsLoading ? (
-								<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-									{postsCollection?.docs?.map((item) => {
-										const itemData = item.data();
-										return (
-											<Link
-												key={item.id}
-												href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
-											>
-												<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
-													<div className="text-xl font-medium text-black">
-														{itemData.title}
-													</div>
+								postsCollection?.docs?.length !== 0
+									? (<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+										{postsCollection?.docs?.map((item) => {
+											const itemData = item.data();
+											return (
+												<Link
+													key={item.id}
+													href={`/${categoryQuery}/${locationQuery}/community/${item.id}`}
+												>
+													<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
+														<div className="text-xl font-medium text-black">
+															{itemData.title}
+														</div>
 
-													<div className="mt-10 truncate text-sm font-light text-gray-400">
-														{
-															itemData.authorUsername
-														}
-													</div>
-												</li>
-											</Link>
-										);
-									})}
-								</ul>
+														<div className="mt-10 truncate text-sm font-light text-gray-400">
+															{
+																itemData.authorUsername
+															}
+														</div>
+													</li>
+												</Link>
+											);
+										})}
+									</ul>) : (<div className="mt-5 text-center truncate text-sm font-light text-gray-400">{getRandomItem(NO_POSTS_PLACEHOLDERS)}</div>)
 							) : null}
 						</div>
 					</div>
@@ -263,22 +255,11 @@ function Topic() {
 			<AddCommunityPostModal
 				open={addCommunityPostModalOpen}
 				setOpen={setAddCommunityPostModalOpen}
-			/>
-
-			<ToastContainer
-				position="bottom-center"
-				autoClose={3000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="light"
+				parentResourceType={ResourceType.Topic}
+				parentResourceId={topicId}
 			/>
 		</Layout>
 	);
 }
 
-export default Topic;
+export default TopicPage;

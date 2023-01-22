@@ -1,30 +1,28 @@
 import { useState, SyntheticEvent, FormEvent, useMemo, Fragment } from "react";
-import { useRouter } from "next/router";
-import { useDocument, useCollection } from "react-firebase-hooks/firestore";
+import { useCollection, useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc, query, collection, where, orderBy } from "firebase/firestore";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { useAuth } from "context/AuthContext";
-import { db } from "utils/firebase";
+import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { Layout, Comment, AddCommentModal } from "components/common";
 import { addComment } from "pages/api/comment";
+import { withBreaks } from "utils/textUtils";
 
-function SinglePost() {
+interface PostProps {
+	postId: string;
+}
+
+function Post({ postId } : PostProps) {
 	const { user } = useAuth();
 	const [postComment, setPostComment] = useState("");
 	const [replyParentId, setReplyParentId] = useState("");
 	const [discussionCount, setDiscussionCount] = useState(0);
 	const [addCommentModalOpen, setAddCommentModalOpen] = useState(false);
-	const router = useRouter();
-	const postId = router?.query?.post ? router?.query?.post.toString() : "";
 
-	const [postData, postLoading] = useDocument(doc(db, "posts", postId), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [postData, postLoading] = useDocumentOnce(doc(db, "posts", postId));
 
-	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
 	const postDoc = postData?.data();
 
@@ -33,10 +31,7 @@ function SinglePost() {
 			collection(db, "comments"),
 			where("postId", "==", postId),
 			orderBy("createdAt", "desc")
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		)
 	);
 	const handlePostCommentChanges = (e: FormEvent<HTMLTextAreaElement>) =>
 		setPostComment(e.currentTarget.value);
@@ -119,7 +114,7 @@ function SinglePost() {
 													/>
 												</Fragment>
 											);
-										} else return <></>;
+										} else return null;
 									}
 								)}
 								{parentComments?.length - 1 !== index ? (
@@ -127,7 +122,7 @@ function SinglePost() {
 								) : null}
 							</Fragment>
 						);
-					} else return <></>;
+					} else return null;
 				})}
 			</>
 		);
@@ -164,7 +159,7 @@ function SinglePost() {
 								</div>
 							</div>
 							<p className="text-sm text-gray-500 mb-1">
-								{postDoc?.content}
+								{withBreaks(postDoc?.content)}
 							</p>
 						</div>
 					</div>
@@ -189,7 +184,6 @@ function SinglePost() {
 									id="comment"
 									className="block w-full resize-none border-0 py-3 focus:ring-0 sm:text-sm"
 									placeholder="Add your comment..."
-									defaultValue={""}
 									value={postComment}
 									onChange={handlePostCommentChanges}
 								/>
@@ -220,21 +214,8 @@ function SinglePost() {
 				open={addCommentModalOpen}
 				setOpen={setAddCommentModalOpen}
 			/>
-
-			<ToastContainer
-				position="bottom-center"
-				autoClose={3000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="light"
-			/>
 		</Layout>
 	);
 }
 
-export default SinglePost;
+export default Post;

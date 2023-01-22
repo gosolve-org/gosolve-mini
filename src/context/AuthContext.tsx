@@ -5,7 +5,6 @@ import {
 	useState,
 	useEffect,
 } from "react";
-import { useRouter } from "next/router";
 import {
 	createUserWithEmailAndPassword,
 	onAuthStateChanged,
@@ -20,13 +19,16 @@ import {
 } from "@firebase/auth";
 
 import { auth } from "utils/firebase";
-import { updateUser } from "pages/api/user";
+import { getUser, updateUser } from "pages/api/user";
 
 const AuthContext = createContext<{
 	user: {
 		uid: string;
 		email: string | null;
 		displayName: string | null;
+		name: string | null;
+		username: string | null;
+		birthYear: number | null;
 		photoURL: string | null;
 	} | null;
 	loading: boolean;
@@ -53,23 +55,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		uid: string;
 		email: string | null;
 		displayName: string | null;
+		name: string | null;
+		username: string | null;
+		birthYear: number | null;
 		photoURL: string | null;
 	} | null>(null);
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, (user) => {
-			if (user) {
-				setUser({
-					uid: user.uid,
-					email: user.email,
-					displayName: user.displayName,
-					photoURL: user.photoURL,
-				});
+		const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+			if (authUser) {
+				getUser(authUser.uid)
+					.then(user => {
+						setUser({
+							uid: authUser.uid,
+							email: authUser.email,
+							displayName: authUser.displayName,
+							photoURL: authUser.photoURL,
+							name: user.name,
+							birthYear: user.birthYear,
+							username: user.username,
+						});
+					})
+					.catch(err => {
+						console.error(err);
+					}).finally(() => {
+						setLoading(false);
+					});
 			} else {
 				setUser(null);
+				setLoading(false);
 			}
-
-			setLoading(false);
 		});
 
 		return () => unsubscribe();
@@ -94,7 +109,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			details: { email: credentials.user.email || "" },
 		})
 			.then(() => credentials)
-			.catch(() => {
+			.catch(err => {
 				throw new Error("Not allowed");
 			});
 	};

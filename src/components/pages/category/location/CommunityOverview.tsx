@@ -1,47 +1,67 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
-import { useCollection } from "react-firebase-hooks/firestore";
 import { collection, query, where, orderBy } from "firebase/firestore";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import { db } from "utils/firebase";
+import { db, useCollectionOnceWithDependencies } from "utils/firebase";
 import { DataContext } from "pages/_app";
-import { DEFAULT_PAGE_SIZE } from "constants/defaultSearches";
 import { Layout, AddCommunityPostModal, Pagination } from "components/common";
+import { trimToFirstLine } from "utils/textUtils";
+import { ResourceType } from "models/ResourceType";
+import { paginate } from "utils/pagination";
+import { getRandomItem } from "utils/basicUtils";
+import { NO_POSTS_PLACEHOLDERS } from "constants/placeholderTexts";
 
-function ActionCommunity() {
+const PAGE_SIZE = 10;
+
+interface CommunityOverviewProps {
+	resourceType: ResourceType;
+}
+
+function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 	const { currentCategoryId, currentLocationId } = useContext(DataContext);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
 		useState(false);
 
+	const [topicsCollection, topicsLoading] = resourceType == ResourceType.Topic
+		? useCollectionOnceWithDependencies(
+			query(
+				collection(db, "topics"),
+				where("categoryId", "==", currentCategoryId),
+				where("locationId", "==", currentLocationId)
+			), [ currentCategoryId, currentLocationId ])
+		: [null, false];
+
 	const router = useRouter();
 	const routerQuery = router.query;
 
-	const categoryQuery = routerQuery?.category
-		? routerQuery?.category.toString()
-		: "...";
-	const locationQuery = routerQuery?.location
-		? routerQuery?.location.toString()
-		: "...";
-	const actionId = router?.query?.action
-		? router?.query?.action.toString()
-		: "";
+	const categoryQuery = routerQuery?.category?.toString() || '...';
+	const locationQuery = routerQuery?.location?.toString() || '...';
 	const pageQuery = routerQuery?.page
 		? parseInt(routerQuery?.page.toString()) || 1
 		: 1;
 
+	let resourceId = '';
+	switch (resourceType) {
+		case ResourceType.Action:
+			resourceId = router?.query?.actionId?.toString() ?? '';
+			break;
+		case ResourceType.Topic:
+			resourceId = topicsCollection?.docs?.[0]?.id || "";
+			break;
+		default:
+			console.error(`Could not determine resource type ${resourceType}.`);
+	}
+
 	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
-	const [postsCollection, postsLoading] = useCollection(
+	const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
 		query(
 			collection(db, "posts"),
-			where("actionId", "==", actionId),
+			where(resourceType === ResourceType.Action ? 'actionId' : 'topicId', "==", resourceId),
 			orderBy("updatedAt", "desc")
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		), [ resourceId ]
 	);
 
 	const totalPosts = postsCollection?.docs.length || 0;
@@ -50,28 +70,12 @@ function ActionCommunity() {
 	// https://firebase.google.com/docs/firestore/query-data/query-cursors
 	// One solution is to generate indexes of generated docIds of paginated queries and use that with '.startAfter' and 'limit' queries
 	// Another way is with counters (https://stackoverflow.com/questions/39519021/how-to-create-auto-incremented-key-in-firebase) but could limit filtering and hotspots later
-	const paginatedPostsCollection = () => {
-		if (postsCollection?.docs) {
-			const pageCount = Math.ceil(totalPosts / DEFAULT_PAGE_SIZE);
-			const firstIndexOnPage = (pageQuery - 1) * DEFAULT_PAGE_SIZE;
-			const isLastPage = pageQuery === pageCount;
-			const lastIndexOnPage = isLastPage
-				? (totalPosts % DEFAULT_PAGE_SIZE) +
-				  DEFAULT_PAGE_SIZE * (pageQuery - 1)
-				: DEFAULT_PAGE_SIZE * pageQuery;
-
-			return postsCollection?.docs.slice(
-				firstIndexOnPage,
-				lastIndexOnPage
-			);
-		}
-		return [];
-	};
+	const paginatePostsCollection = useCallback(() => paginate(postsCollection?.docs, PAGE_SIZE, pageQuery), [ postsCollection, pageQuery ]);
 
 	return (
 		<Layout>
 			<div className="flex min-h-full flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
-				<div className="min-w-[75%]">
+				<div className="w-full max-w-4xl">
 					<div className="flex items-center">
 						<h2 className="text-2xl font-xl font-semibold leading-6 text-black">
 							Community
@@ -90,18 +94,21 @@ function ActionCommunity() {
 						</span>
 					</div>
 
-					{!postsLoading ? (
-						<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
-							{paginatedPostsCollection()?.map((item) => {
-								if (item) {
+					{!postsLoading && !topicsLoading ? (postsCollection?.docs?.length > 0 ?
+						<>
+							<dl className="mt-6 flex flex-col items-center justify-center w-full max-w-4xl gap-5">
+								{paginatePostsCollection().map((item) => {
 									const itemData = item.data();
 									return (
 										<Link
-											href={`/${categoryQuery}/${locationQuery}/community?post=${item.id}`}
+											href={resourceType === ResourceType.Topic
+												? `/${categoryQuery}/${locationQuery}/community/${item.id}`
+												: `/${categoryQuery}/${locationQuery}/actions/${resourceId}/community/${item.id}`
+											}
 											className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb w-full"
 											key={item.id}
 										>
-											<h4 className="text-2xl mb-4">
+											<h4 className="text-2xl mb-4 truncate">
 												{itemData?.title}
 											</h4>
 											<div className="flex space-x-3 justify-center items-center  mb-4">
@@ -128,29 +135,30 @@ function ActionCommunity() {
 													</span>
 												</div>
 											</div>
-											<p className="text-sm text-gray-500 mb-1">
-												{itemData?.content}
+											<p className="text-sm text-gray-500 mb-1 truncate">
+												{trimToFirstLine(itemData?.content)}
 											</p>
 										</Link>
 									);
-								}
-							})}
-						</dl>
+								})}
+							</dl>
+							<Pagination
+								totalCount={totalPosts}
+								pageSize={PAGE_SIZE}
+							/>
+						</> : (<div className="mt-5 truncate text-sm font-light text-gray-400">{getRandomItem(NO_POSTS_PLACEHOLDERS)}</div>)
 					) : null}
-
-					<Pagination
-						totalCount={totalPosts}
-						pageSize={DEFAULT_PAGE_SIZE}
-					/>
 				</div>
 			</div>
 
 			<AddCommunityPostModal
 				open={addCommunityPostModalOpen}
 				setOpen={setAddCommunityPostModalOpen}
+				parentResourceType={resourceType}
+				parentResourceId={resourceId}
 			/>
 		</Layout>
 	);
 }
 
-export default ActionCommunity;
+export default CommunityOverview;

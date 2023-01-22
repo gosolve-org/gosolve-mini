@@ -5,8 +5,8 @@ import Table from "@editorjs/table";
 import List from "@editorjs/list";
 import Warning from "@editorjs/warning";
 import Code from "@editorjs/code";
-import LinkTool from "@editorjs/link";
-// TODO add image upload import Image from '@editorjs/image'
+//import LinkTool from "@editorjs/link";
+//import Image from "@editorjs/image";
 import Raw from "@editorjs/raw";
 import Header from "@editorjs/header";
 import Quote from "@editorjs/quote";
@@ -19,11 +19,17 @@ export const EDITOR_JS_TOOLS = {
 	embed: Embed,
 	table: Table,
 	marker: Marker,
-	list: List,
+	list: {
+		class: List,
+		inlineToolbar: true,
+		config: {
+			defaultStyle: 'unordered'
+		}
+	},
 	warning: Warning,
 	code: Code,
-	linkTool: LinkTool,
-	// image: Image,
+	// linkTool: LinkTool, // This is for rich embedded links, requires a backend resource to fetch necessary data of links
+	// image: Image, // Requires a backend resource
 	raw: Raw,
 	header: Header,
 	quote: Quote,

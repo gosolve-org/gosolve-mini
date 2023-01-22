@@ -8,13 +8,13 @@ import {
 import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import { collection, query, where, doc } from "firebase/firestore";
 
 import { addAction } from "pages/api/action";
 import { useAuth } from "context/AuthContext";
-import { db } from "utils/firebase";
+import { db, useCollectionOnceWithDependencies, useDocumentOnceWithDependencies } from "utils/firebase";
 import { DataContext } from "pages/_app";
+import { toast } from "react-toastify";
 
 interface AddActionModalProps {
 	open: boolean;
@@ -27,28 +27,20 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	const { currentCategoryId, currentLocationId } = useContext(DataContext);
 
 	const [title, setTitle] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
-	const [topicsCollection] = useCollection(
+	const [topicsCollection] = useCollectionOnceWithDependencies(
 		query(
 			collection(db, "topics"),
 			where("categoryId", "==", currentCategoryId),
 			where("locationId", "==", currentLocationId)
-		),
-		{
-			snapshotListenOptions: { includeMetadataChanges: true },
-		}
+		), [ currentCategoryId, currentLocationId ]
 	);
 
-	const [userProfile] = useDocument(doc(db, `user`, user?.uid || ""), {
-		snapshotListenOptions: { includeMetadataChanges: true },
-	});
+	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
 
-	const categoryQuery = router?.query?.category
-		? router?.query?.category.toString()
-		: "...";
-	const locationQuery = router?.query?.location
-		? router?.query?.location.toString()
-		: "...";
+	const categoryQuery = router?.query?.category?.toString();
+	const locationQuery = router?.query?.location?.toString();
 
 	const readableCategoryId = categoryQuery.split("-").join(" ");
 	const readableLocationId = locationQuery.split("-").join(" ");
@@ -63,6 +55,9 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	) => {
 		e.preventDefault();
 
+		if (isLoading) return;
+		setIsLoading(true);
+
 		const topicId = topicsCollection?.docs?.[0]?.id || "";
 
 		await addAction({
@@ -73,10 +68,13 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 				authorUsername: userProfile?.data()?.username,
 			},
 		}).then((docId) => {
-			setOpen(false);
 			router.push(
-				`/${categoryQuery}/${locationQuery}/actions?action=${docId}&tab=action`
+				`/${categoryQuery}/${locationQuery}/actions/${docId}`
 			);
+		}).catch(err => {
+			toast.error("Something went wrong");
+			console.error(err);
+			setIsLoading(false);
 		});
 	};
 
@@ -157,7 +155,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 
 									<div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
 										<button
-											disabled={!hasChanges()}
+											disabled={!hasChanges() || isLoading}
 											type="submit"
 											className="inline-flex w-full justify-center rounded-md disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-indigo-600 border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
 										>

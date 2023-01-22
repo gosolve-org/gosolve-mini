@@ -2,9 +2,10 @@ import { useRouter } from "next/router";
 import React, { ReactNode } from "react";
 
 import Navbar from "./Navbar";
-import Header from "./Header";
+import TopicHeader from "./TopicHeader";
 import ActionHeader from "./ActionHeader";
 import PostHeader from "./PostHeader";
+import StyledToast from "./StyledToast";
 
 interface LayoutProps {
 	children: ReactNode;
@@ -13,23 +14,17 @@ interface LayoutProps {
 function Layout({ children }: LayoutProps) {
 	const router = useRouter();
 
-	const categoryQuery = router?.query?.category
-		? router?.query?.category.toString()
-		: "";
-	const locationQuery = router?.query?.location
-		? router?.query?.location.toString()
-		: "";
-	const actionId = router?.query?.action
-		? router?.query?.action.toString()
-		: "";
-	const postId = router?.query?.post ? router?.query?.post.toString() : "";
+	const categoryQuery = router?.query?.category?.toString() ?? '';
+	const locationQuery = router?.query?.location?.toString() ?? '';
+	const actionId = router?.query?.actionId?.toString() ?? '';
+	const postId = router?.query?.postId?.toString() ?? '';
 
 	const renderHeader = () => {
 		if (categoryQuery && locationQuery) {
 			if (postId) return <PostHeader />;
 			else if (actionId) return <ActionHeader />;
 
-			return <Header />;
+			return <TopicHeader />;
 		}
 		return null;
 	};
@@ -39,6 +34,7 @@ function Layout({ children }: LayoutProps) {
 			<Navbar />
 			{renderHeader()}
 			<main>{children}</main>
+			<StyledToast />
 		</div>
 	);
 }

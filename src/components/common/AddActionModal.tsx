@@ -4,6 +4,7 @@ import {
 	FormEvent,
 	useContext,
 	SyntheticEvent,
+	useRef,
 } from "react";
 import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";
@@ -15,6 +16,7 @@ import { useAuth } from "context/AuthContext";
 import { db, useCollectionOnceWithDependencies, useDocumentOnceWithDependencies } from "utils/firebase";
 import { DataContext } from "pages/_app";
 import { toast } from "react-toastify";
+import { textSpanContainsPosition } from "typescript";
 
 interface AddActionModalProps {
 	open: boolean;
@@ -24,6 +26,7 @@ interface AddActionModalProps {
 function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	const { user } = useAuth();
 	const router = useRouter();
+	const titleInput = useRef(null);
 	const { currentCategoryId, currentLocationId } = useContext(DataContext);
 
 	const [title, setTitle] = useState("");
@@ -37,13 +40,11 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 		), [ currentCategoryId, currentLocationId ]
 	);
 
-	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
-
 	const categoryQuery = router?.query?.category?.toString();
 	const locationQuery = router?.query?.location?.toString();
 
-	const readableCategoryId = categoryQuery.split("-").join(" ");
-	const readableLocationId = locationQuery.split("-").join(" ");
+	const readableCategory = categoryQuery.split("-").join(" ");
+	const readableLocation = locationQuery.split("-").join(" ");
 
 	const handleTitleChange = (e: FormEvent<HTMLInputElement>) =>
 		setTitle(e.currentTarget.value);
@@ -58,15 +59,20 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 		if (isLoading) return;
 		setIsLoading(true);
 
-		const topicId = topicsCollection?.docs?.[0]?.id || "";
+		const topicId = topicsCollection?.docs?.[0]?.id;
+
+		const actionTitle = title || titleInput.current.value;
 
 		await addAction({
 			details: {
-				authorId: user?.uid || "",
-				title,
+				authorId: user?.uid,
+				title: actionTitle,
 				topicId,
-				authorUsername: userProfile?.data()?.username,
+				authorUsername: user.username,
+				createdAt: new Date()
 			},
+			location: readableLocation,
+			category: readableCategory
 		}).then((docId) => {
 			router.push(
 				`/${categoryQuery}/${locationQuery}/actions/${docId}`
@@ -124,7 +130,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 											as="h3"
 											className="text-xs text-gray-500 font-normal truncate"
 										>
-											{`You're creating an action for "${readableCategoryId} in ${readableLocationId}"`}
+											{`You're creating an action for "${readableCategory} in ${readableLocation}"`}
 										</Dialog.Title>
 									</div>
 								</div>
@@ -145,6 +151,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 											<input
 												autoComplete="off"
 												onChange={handleTitleChange}
+												ref={titleInput}
 												type="title"
 												name="title"
 												id="title"

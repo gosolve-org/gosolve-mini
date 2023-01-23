@@ -30,14 +30,12 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 	const [description, setDescription] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
-
 	const categoryQuery = router?.query?.category?.toString() || '...';
 	const locationQuery = router?.query?.location?.toString() || '...';
 	const actionId = router?.query?.actionId?.toString() ?? '';
 
-	const readableCategoryId = categoryQuery.split("-").join(" ");
-	const readableLocationId = locationQuery.split("-").join(" ");
+	const readableCategory = categoryQuery.split("-").join(" ");
+	const readableLocation = locationQuery.split("-").join(" ");
 
 	const handleTitleChange = (e: FormEvent<HTMLInputElement>) =>
 		setTitle(e.currentTarget.value);
@@ -65,8 +63,11 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 				authorId: user?.uid || "",
 				title,
 				content: description,
-				authorUsername: userProfile?.data()?.username,
+				authorUsername: user.username,
+				createdAt: new Date()
 			},
+			category: readableCategory,
+			location: readableLocation
 		}).then((docId) => {
 			router.push(parentResourceType === ResourceType.Topic
 				? `/${categoryQuery}/${locationQuery}/community/${docId}`
@@ -125,7 +126,7 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 											as="h3"
 											className="text-xs text-gray-500 font-normal truncate"
 										>
-											{`You're creating a post in the community for "${readableCategoryId} in ${readableLocationId}"`}
+											{`You're creating a post in the community for "${readableCategory} in ${readableLocation}"`}
 										</Dialog.Title>
 									</div>
 								</div>

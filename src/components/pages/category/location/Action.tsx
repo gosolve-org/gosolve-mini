@@ -20,6 +20,12 @@ function Action() {
 	const { user } = useAuth();
 	const router = useRouter();
 
+	const categoryQuery = router?.query?.category?.toString();
+	const locationQuery = router?.query?.location?.toString();
+
+	const readableCategory = categoryQuery.split("-").join(" ");
+	const readableLocation = locationQuery.split("-").join(" ");
+
 	const actionId = router?.query?.actionId?.toString();
 
 	const [userProfile, userLoading] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
@@ -37,8 +43,16 @@ function Action() {
 		await updateAction({
 			docId: actionId,
 			details: {
+				authorId: user?.uid,
+				title: actionSnapshot?.data()?.title,
+				topicId: actionSnapshot?.data()?.topicId,
 				content: savedData,
+				authorUsername: user.username,
+				createdAt: actionSnapshot?.data()?.createdAt,
+				updatedAt: new Date()
 			},
+			category: readableCategory,
+			location: readableLocation
 		})
 			.then(() => toast.success("Saved!"))
 			.catch((err) => {

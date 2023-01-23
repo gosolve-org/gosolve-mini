@@ -171,7 +171,7 @@ function Navbar() {
 										id="search"
 										name="search"
 										className="block w-full rounded-3xl border border-gray-300 bg-white py-2 pl-4 pr-3 text-sm placeholder-gray-500 focus:border-indigo-500 focus:text-gray-900 focus:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-										type="search"
+										type="text"
 										value={searchQuery}
 										onChange={handleSearchQueryChange}
 										onKeyUp={handleSearchKeyPress}

@@ -1,15 +1,32 @@
-import { db } from "utils/firebase";
+import { db, functions } from "utils/firebase";
 import { collection, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
 
 import { Post } from "models/Post";
+import { httpsCallable } from "firebase/functions";
 
-const addPost = async ({ details }: { details?: Post }) => {
+const upsertPostFunction = httpsCallable(functions, 'upsertPost');
+
+const addPost = async ({ details, category, location }: { details: Post, category: string, location: string }) => {
 	try {
-		return await addDoc(collection(db, "posts"), {
+		const id = await addDoc(collection(db, "posts"), {
 			...details,
 			createdAt: new Date().getTime(),
 			updatedAt: new Date().getTime(),
 		}).then((docRef) => docRef.id);
+
+		await upsertPostFunction({
+			id,
+			topicId: details.topicId,
+			actionId: details.actionId,
+			category,
+			location,
+			title: details.title,
+			authorUsername: details.authorUsername,
+			content: details.content,
+			createdAt: details.createdAt
+		});
+
+		return id;
 	} catch (err) {
 		throw new Error("Not allowed");
 	}
@@ -18,21 +35,38 @@ const addPost = async ({ details }: { details?: Post }) => {
 const updatePost = async ({
 	docId,
 	details,
+	category,
+	location
 }: {
 	docId: string;
-	details?: Post;
+	details: Post;
+	category: string;
+	location: string;
 }) => {
 	try {
 		const postRef = doc(db, "posts", docId);
 		const docSnap = await getDoc(postRef);
 
 		if (docSnap.exists()) {
-			await updateDoc(postRef, {
-				...details,
-				updatedAt: new Date().getTime(),
-			});
+			await Promise.all([
+				updateDoc(postRef, {
+					...details,
+					updatedAt: new Date().getTime(),
+				}),
+				upsertPostFunction({
+					id: docId,
+					topicId: details.topicId,
+					actionId: details.actionId,
+					category,
+					location,
+					title: details.title,
+					authorUsername: details.authorUsername,
+					content: details.content,
+					createdAt: details.createdAt
+				})
+			]);
 		} else {
-			await addPost({ details });
+			await addPost({ details, category, location });
 		}
 
 		Promise.resolve();

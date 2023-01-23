@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import {
@@ -90,8 +90,8 @@ function TopicPage() {
 	const handleAddActionClick = () => setActionModalOpen(true);
 	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
-	const handleSaveData = async (savedData: string) => {
-		await updateTopic({
+	const handleSaveData = useCallback((savedData: string) => {
+		updateTopic({
 			docId: topicId,
 			details: {
 				title: `${readableCategory} in ${readableLocation}`,
@@ -99,10 +99,15 @@ function TopicPage() {
 				categoryId: currentCategoryId,
 				locationId: currentLocationId,
 			},
+			location: readableLocation,
+			category: readableCategory
 		})
 			.then(() => toast.success("Saved!"))
-			.catch(() => toast.error("Something went wrong"));
-	};
+			.catch((err) => {
+				console.error(err);
+				toast.error("Something went wrong");
+			});
+	}, [ topicId, currentCategoryId, currentLocationId, readableCategory, readableLocation ]);
 
 	return (
 		<Layout>

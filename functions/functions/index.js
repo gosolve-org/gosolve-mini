@@ -5,8 +5,10 @@ const { defineString } = require("firebase-functions/params");
 const MEILI_API_URL = defineString('MEILI_API_URL');
 const MEILI_API_KEY = defineString('MEILI_API_KEY');
 
+const REGION = 'us-west2';
+
 // Adds or updates a post to our search engine
-module.exports.upsertPost = functions.https.onCall(async (data) => {
+module.exports.upsertPost = functions.region(REGION).https.onCall(async (data) => {
     await axios.post(
         `${MEILI_API_URL.value()}/indexes/resources/documents`, 
         [{
@@ -19,7 +21,7 @@ module.exports.upsertPost = functions.https.onCall(async (data) => {
 });
 
 // Adds or updates a post to our search engine
-module.exports.upsertAction = functions.https.onCall(async (data) => {
+module.exports.upsertAction = functions.region(REGION).https.onCall(async (data) => {
     await axios.post(
         `${MEILI_API_URL.value()}/indexes/resources/documents`, 
         [{
@@ -32,7 +34,7 @@ module.exports.upsertAction = functions.https.onCall(async (data) => {
 });
 
 // Adds or updates a post to our search engine
-module.exports.upsertTopic = functions.https.onCall(async (data) => {
+module.exports.upsertTopic = functions.region(REGION).https.onCall(async (data) => {
     await axios.post(
         `${MEILI_API_URL.value()}/indexes/resources/documents`, 
         [{
@@ -45,7 +47,7 @@ module.exports.upsertTopic = functions.https.onCall(async (data) => {
 });
 
 // Searches through all resources
-module.exports.search = functions.https.onCall(async (data) => {
+module.exports.search = functions.region(REGION).https.onCall(async (data) => {
     const query = data.query;
     if (!query) return [];
     

@@ -19,7 +19,8 @@ const app = getApps.length > 0 ? getApp() : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const functions = getFunctions(app);
-connectFunctionsEmulator(functions, "localhost", 5001);
+if (process.env.FUNCTIONS_EMULATOR === 'true' || process.env.FUNCTIONS_EMULATOR.toString() === 'true')
+	connectFunctionsEmulator(functions, "localhost", 5001);
 
 export const useCollectionOnceWithDependencies = (
 	query : Query<DocumentData>,

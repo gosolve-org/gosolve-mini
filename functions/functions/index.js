@@ -5,7 +5,7 @@ const { defineString } = require("firebase-functions/params");
 const MEILI_API_URL = defineString('MEILI_API_URL');
 const MEILI_API_KEY = defineString('MEILI_API_KEY');
 
-const REGION = 'us-west2';
+const REGION = 'us-central1';
 
 // Adds or updates a post to our search engine
 module.exports.upsertPost = functions.region(REGION).https.onCall(async (data) => {

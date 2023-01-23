@@ -26,8 +26,6 @@ function AddCommentModal({
 	const [comment, setComment] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
-
 	const handleCommentChange = (e: FormEvent<HTMLInputElement>) =>
 		setComment(e.currentTarget.value);
 
@@ -47,7 +45,7 @@ function AddCommentModal({
 				content: comment,
 				postId,
 				parentId,
-				authorUsername: userProfile?.data()?.username,
+				authorUsername: user.username,
 			},
 		}).then(() => {
 			setOpen(false);

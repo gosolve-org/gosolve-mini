@@ -12,7 +12,7 @@ function BasicHead({ title, description }: BasicHeadProps) {
             <meta name="description" content={description ?? title ?? 'goSolve'} />
             <meta
                 name="viewport"
-                content="width=980px, user-scalable=yes"
+                content="width=980, user-scalable=yes"
             />
             <link rel="icon" href="/favicon.ico" />
         </Head>

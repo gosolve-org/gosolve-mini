@@ -1,4 +1,5 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { getAuth } from "@firebase/auth";
 import { DocumentData, DocumentReference, DocumentSnapshot, FirestoreError, getFirestore, Query, QuerySnapshot } from "firebase/firestore";
 import { useCollectionOnce, useDocumentOnce } from "react-firebase-hooks/firestore";
@@ -17,6 +18,8 @@ const app = getApps.length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const functions = getFunctions(app);
+connectFunctionsEmulator(functions, "localhost", 5001);
 
 export const useCollectionOnceWithDependencies = (
 	query : Query<DocumentData>,

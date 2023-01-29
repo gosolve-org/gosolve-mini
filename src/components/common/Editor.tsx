@@ -15,19 +15,13 @@ interface EditorProps {
 const Editor = ({
 	defaultValue,
 	saveData,
-	onChange,
 	readOnly = true,
 }: EditorProps) => {
 	const ReactEditorJS = createReactEditorJS();
 
 	const editorJS = useRef(null);
 
-	const [data, setData] = useState("");
 	const [hasChanges, setHasChanges] = useState(false);
-
-	useEffect(() => {
-		defaultValue && !data && setData(JSON.parse(defaultValue));
-	}, [data, defaultValue]);
 
 	useLeavePageConfirm(hasChanges);
 
@@ -46,13 +40,6 @@ const Editor = ({
 		// const savedData = await editorJS?.current?.save();
 		// onChange && onChange(JSON.stringify(savedData));
 		// setData(savedData);
-	}, []);
-
-	// https://github.com/Jungwoo-An/react-editor-js/issues/200
-	const updateValue = useCallback((data) => {
-		editorJS?.current?._editorJS?.isReady.then(() => {
-			editorJS.current._editorJS.render(data);
-		});
 	}, []);
 
 	return (

@@ -68,23 +68,23 @@ function ActionsOverview() {
 						<h2 className="text-2xl font-semibold leading-6 text-black">
 							Actions
 						</h2>
-						<span className="mx-3.5">
-							<button
-								onClick={handleAddActionClick}
-								type="button"
-								title={!canUserEdit ? 'Only admins can create actions. Create a community post instead.' : ''}
-								disabled={!canUserEdit}
-								className={canUserEdit
-									? "inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-									: "inline-flex items-center rounded-full border border-gray-300 bg-gray p-1.5 text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-								}
-							>
-								<PlusIcon
-									className="h-4 w-4"
-									aria-hidden="true"
-								/>
-							</button>
-						</span>
+						{
+							canUserEdit && <span className="mx-3.5">
+								<button
+									onClick={handleAddActionClick}
+									type="button"
+									className={canUserEdit
+										? "inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+										: "inline-flex items-center rounded-full border border-gray-300 bg-gray p-1.5 text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+									}
+								>
+									<PlusIcon
+										className="h-4 w-4"
+										aria-hidden="true"
+									/>
+								</button>
+							</span>
+						}
 					</div>
 					{!actionsLoading && !topicsLoading ? (actionsCollection?.docs?.length > 0 ?
 						<>

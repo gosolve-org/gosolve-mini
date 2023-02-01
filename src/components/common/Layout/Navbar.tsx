@@ -19,6 +19,8 @@ import {
 	ChevronDownIcon,
 } from "@heroicons/react/20/solid";
 
+import { MegaphoneIcon } from "@heroicons/react/24/outline";
+
 import { Category } from "models/Category";
 import { Location } from "models/Location";
 import { db } from "utils/firebase";
@@ -26,6 +28,8 @@ import { useAuth } from "context/AuthContext";
 import { toUrlPart } from "utils/textUtils";
 import { DataContext } from "context/DataContext";
 import ResponsiveLogo from "./ResponsiveLogo";
+import Tippy from '@tippyjs/react';
+import { LINKS } from "constants/links";
 
 const CATEGORY_DROPDOWN_PLACEHOLDER = 'Select a category';
 const LOCATION_DROPDOWN_PLACEHOLDER = 'Select a location';
@@ -390,28 +394,40 @@ function Navbar() {
 					</div>
 
 					<div className="flex items-center justify-end xl:col-span-2">
-						<Link href="/settings">
-							{user?.photoURL ? (
-								<img
-									referrerPolicy="no-referrer"
-									className="h-8 w-8 rounded-full"
-									src={user?.photoURL}
-									alt="User Avatar"
-								/>
-							) : (
-								<div className="flex justify-center">
-									<span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
-										<svg
-											className="h-full w-full text-gray-300"
-											fill="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-										</svg>
-									</span>
-								</div>
-							)}
-						</Link>
+						<div className="mr-2">
+							<Tippy content="Give Feedback">
+								<Link href={LINKS.feedbackForm} target="_blank">
+									<MegaphoneIcon className="h-7 w-7 text-gray-800" ></MegaphoneIcon>
+								</Link>
+							</Tippy>
+						</div>
+
+						<div>
+							<Tippy content="Account Settings">
+								<Link href="/settings">
+									{user?.photoURL ? (
+										<img
+											referrerPolicy="no-referrer"
+											className="h-8 w-8 rounded-full"
+											src={user?.photoURL}
+											alt="User Avatar"
+										/>
+									) : (
+										<div className="flex justify-center">
+											<span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
+												<svg
+													className="h-full w-full text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 24 24"
+												>
+													<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+												</svg>
+											</span>
+										</div>
+									)}
+								</Link>
+							</Tippy>
+						</div>
 					</div>
 				</div>
 			</div>

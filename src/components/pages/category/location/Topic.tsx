@@ -21,8 +21,6 @@ import dynamic from "next/dynamic";
 import { ResourceType } from "models/ResourceType";
 import { toUrlPart } from "utils/textUtils";
 import { DataContext } from "context/DataContext";
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
 	ssr: false,

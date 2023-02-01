@@ -9,7 +9,6 @@ import {
 import { useRouter } from "next/router";
 import { useCollectionOnce } from "react-firebase-hooks/firestore";
 import { collection } from "firebase/firestore";
-import Image from "next/image";
 import Link from "next/link";
 import { Transition, Listbox } from "@headlessui/react";
 import {
@@ -29,6 +28,7 @@ import { toUrlPart } from "utils/textUtils";
 import { DataContext } from "context/DataContext";
 import ResponsiveLogo from "./ResponsiveLogo";
 import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 import { LINKS } from "constants/links";
 
 const CATEGORY_DROPDOWN_PLACEHOLDER = 'Select a category';

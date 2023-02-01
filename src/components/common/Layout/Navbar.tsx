@@ -16,7 +16,6 @@ import {
 	MagnifyingGlassIcon,
 	CheckIcon,
 	ArrowRightIcon,
-	ChevronUpDownIcon,
 	ChevronDownIcon,
 } from "@heroicons/react/20/solid";
 
@@ -24,7 +23,16 @@ import { Category } from "models/Category";
 import { Location } from "models/Location";
 import { db } from "utils/firebase";
 import { useAuth } from "context/AuthContext";
-import { DataContext } from "pages/_app";
+import { toUrlPart } from "utils/textUtils";
+import { DataContext } from "context/DataContext";
+import ResponsiveLogo from "./ResponsiveLogo";
+
+const CATEGORY_DROPDOWN_PLACEHOLDER = 'Select a category';
+const LOCATION_DROPDOWN_PLACEHOLDER = 'Select a location';
+
+const topicSelectorStyle = {
+	minWidth: '150px',
+};
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -33,7 +41,7 @@ function classNames(...classes: string[]) {
 function Navbar() {
 	const { user } = useAuth();
 	const router = useRouter();
-	const { handleCurrentCategoryIdChange, handleCurrentLocationIdChange } =
+	const { handleCurrentCategoryChange, handleCurrentLocationChange, currentCategory, currentLocation } =
 		useContext(DataContext);
 
 	const [categoriesCollection] = useCollectionOnce(collection(db, "categories"));
@@ -41,18 +49,16 @@ function Navbar() {
 
 	const [searchQuery, setSearchQuery] = useState("");
 	const [categories, setCategories] = useState<Category[]>([
-		{ id: "", category: "" },
+		{ id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER },
 	]);
 	const [locations, setLocations] = useState<Location[]>([
-		{ id: "", location: "" },
+		{ id: null, location: LOCATION_DROPDOWN_PLACEHOLDER },
 	]);
 
 	const [selectedCategory, setSelectedCategory] = useState<Category>();
 
 	const [selectedLocation, setSelectedLocation] = useState<Location>();
 
-	const readableCategory = router?.query?.category?.toString().split("-").join(" ");
-	const readableLocation = router?.query?.location?.toString().split("-").join(" ");
 	const readableSearchQuery = router?.query?.q?.toString().split("+").join(" ") ?? "";
 
 	useEffect(() => {
@@ -67,7 +73,7 @@ function Navbar() {
 						hidden: docData?.hidden,
 					};
 				  })
-				: [{ id: "", category: "" }]
+				: [{ id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER }]
 		);
 	}, [categoriesCollection]);
 
@@ -83,39 +89,42 @@ function Navbar() {
 						hidden: docData?.hidden,
 					};
 				  })
-				: [{ id: "", location: "" }]
+				: [{ id: null, location: LOCATION_DROPDOWN_PLACEHOLDER }]
 		);
 	}, [locationsCollection]);
 
 	useEffect(() => {
 		const category = categories.find(
-			(category) => category.category === readableCategory
+			(category) => category.category === currentCategory?.category
 		);
-		if (category?.id) handleCurrentCategoryIdChange(category.id);
-	}, [ categories, readableCategory, handleCurrentCategoryIdChange ]);
+		if (category?.id) handleCurrentCategoryChange(category);
+	}, [ categories, currentCategory, handleCurrentCategoryChange ]);
 
 	useEffect(() => {
 		const location = locations.find(
-			(location) => location.location === readableLocation
+			(location) => location.location === currentLocation?.location
 		);
-		if (location?.id) handleCurrentLocationIdChange(location.id);
-	}, [ locations, readableLocation, handleCurrentLocationIdChange ]);
+		if (location?.id) handleCurrentLocationChange(location);
+	}, [ locations, currentLocation, handleCurrentLocationChange ]);
 
 	useEffect(() => {
 		setSearchQuery(readableSearchQuery);
 	}, [ readableSearchQuery ]);
 
 	useEffect(() => {
-		setSelectedCategory(categories.find(
-			(category) => category.category === readableCategory
-		));
-	}, [ readableCategory, categories ]);
+		const category = categories.find(
+			(category) => category.category === currentCategory?.category
+		);
 
-	useEffect(() => {
-		setSelectedLocation(locations.find(
-			(location) => location.location === readableLocation
-		));
-	}, [ readableLocation, locations ]);
+		const location = locations.find(
+			(location) => location.location === currentLocation?.location
+		);
+
+		if (category?.hidden || location?.hidden) return;
+
+		setSelectedCategory(category);
+		setSelectedLocation(location);
+	}, [ currentCategory, currentLocation, categories, locations ]);
 
 	const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
 		setSearchQuery(e.currentTarget.value);
@@ -128,15 +137,11 @@ function Navbar() {
 
 	const handleNavigate = () => {
 		if (selectedCategory && selectedLocation) {
-			handleCurrentCategoryIdChange(selectedCategory.id);
-			handleCurrentLocationIdChange(selectedLocation.id);
+			handleCurrentCategoryChange(selectedCategory);
+			handleCurrentLocationChange(selectedLocation);
 
 			router.push(
-				`/${selectedCategory.category
-					.split(" ")
-					.join("-")}/${selectedLocation.location
-					.split(" ")
-					.join("-")}`
+				`/${toUrlPart(selectedCategory.category)}/${toUrlPart(selectedLocation.location)}`
 			);
 		}
 	};
@@ -148,14 +153,7 @@ function Navbar() {
 					<div className="flex md:absolute md:inset-y-0 md:left-0 lg:static xl:col-span-2">
 						<div className="flex flex-shrink-0 items-center">
 							<Link href="/">
-								<Image
-									className="block h-6 w-auto"
-									src="/images/gosolve_logo.svg"
-									alt="goSolve Logo"
-									width={100}
-									height={37}
-									priority
-								/>
+								<ResponsiveLogo className="block h-6 w-auto" />
 							</Link>
 						</div>
 					</div>
@@ -198,11 +196,8 @@ function Navbar() {
 										</Listbox.Label>
 										<div className="relative">
 											<Listbox.Button className="flex relative  cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
-												<span className="block truncate">
-													{selectedCategory?.category 
-														?? readableCategory
-														??  "Select a category"
-													}
+												<span className="block truncate grow" style={topicSelectorStyle}>
+													{selectedCategory?.category ?? CATEGORY_DROPDOWN_PLACEHOLDER}
 												</span>
 												<span className="pointer-events-none inset-y-0 right-0 flex items-center pl-1">
 													<ChevronDownIcon
@@ -298,11 +293,8 @@ function Navbar() {
 										</Listbox.Label>
 										<div className="relative">
 											<Listbox.Button className="flex relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
-												<span className="block">
-													{selectedLocation?.location
-														?? readableLocation
-														?? "Select a location"
-													}
+												<span className="block truncate grow" style={topicSelectorStyle}>
+													{selectedLocation?.location ?? LOCATION_DROPDOWN_PLACEHOLDER}
 												</span>
 												<span className="pointer-events-none inset-y-0 right-0 flex items-center pl-1">
 													<ChevronDownIcon

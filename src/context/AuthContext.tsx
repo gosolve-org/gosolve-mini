@@ -24,7 +24,7 @@ import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
 import { FirebaseError } from "firebase/app";
 
-const AuthContext = createContext<{
+interface AuthContext {
 	user: {
 		uid: string;
 		email: string | null;
@@ -42,7 +42,9 @@ const AuthContext = createContext<{
 	registerWithEmail: (email: string, password: string) => Promise<UserCredential>;
 	registerWithGoogle: (credentials: UserCredential) => Promise<UserCredential>;
 	validateUser: (credentials: UserCredential) => Promise<boolean>
-}>({
+}
+
+const AuthContext = createContext<AuthContext>({
 	user: null,
 	loading: true,
 	login: (email: string, password: string) =>
@@ -55,7 +57,7 @@ const AuthContext = createContext<{
 	validateUser: null,
 });
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [user, setUser] = useState<{
 		uid: string;
@@ -95,19 +97,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 		return () => unsubscribe();
 	}, []);
-
-	const addToWaitlist = async (email: string) => {
-		await fetch("https://api.getwaitlist.com/api/v1/waiter", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				email: email,
-				api_key: process.env.NEXT_PUBLIC_WAITLIST_API_KEY,
-			}),
-		});
-	};
 
 	const validateUser = async (credentials: UserCredential): Promise<boolean> => {
 		if (!credentials.user.email) throw new Error('Could not retrieve email address.');
@@ -235,7 +224,7 @@ export const useAuth = () => {
 	const context = useContext(AuthContext);
 
 	if (context === undefined) {
-		throw new Error("useCount must be used within a CountProvider");
+		throw new Error("useAuth must be used within a AuthContextProvider");
 	}
 
 	return context;

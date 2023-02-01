@@ -1,6 +1,5 @@
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 
 import { useAuth } from "context/AuthContext";
 import { updateUser } from "pages/api/user";
@@ -8,6 +7,7 @@ import { toast } from "react-toastify";
 import BasicToast from "components/common/Layout/BasicToast";
 import { USER_VALIDATIONS } from "constants/validationRules";
 import BasicHead from "components/common/Layout/BasicHead";
+import Logo from "components/common/Layout/Logo";
 
 function Details() {
 	const { user } = useAuth();
@@ -79,14 +79,7 @@ function Details() {
 			<main className="h-full">
 				<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 					<div className="sm:mx-auto sm:w-full sm:max-w-md">
-						<Image
-							className="mx-auto h-18 w-auto"
-							src="/images/gosolve_logo.svg"
-							alt="goSolve Logo"
-							width={180}
-							height={37}
-							priority
-						/>
+						<Logo className="mx-auto h-18 w-auto" />
 						<h2 className="mt-6 px-4 py-2 text-center text-m font-small tracking-tight text-black ">
 							Thanks for joining goSolve
 						</h2>

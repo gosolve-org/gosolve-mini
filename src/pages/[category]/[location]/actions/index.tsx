@@ -1,7 +1,7 @@
 import BasicHead from "components/common/Layout/BasicHead";
 import ActionsOverview from "components/pages/category/location/ActionsOverview";
+import { DataContext } from "context/DataContext";
 import { Tab } from "models/Tab";
-import { DataContext } from "pages/_app";
 import { useContext, useEffect } from "react";
 
 function TopicActionsOverviewPage() {

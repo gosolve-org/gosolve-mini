@@ -10,7 +10,9 @@ import BasicToast from "components/common/Layout/BasicToast";
 import { ChatBubbleLeftEllipsisIcon, InformationCircleIcon, RocketLaunchIcon } from "@heroicons/react/20/solid";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import calendar from "dayjs/plugin/calendar";
 dayjs.extend(localizedFormat);
+dayjs.extend(calendar);
 
 const PAGE_SIZE = 10;
 
@@ -69,7 +71,9 @@ function Search() {
 										>
 											<p className="text-sm text-gray-500 mb-1 flex">
 												<ChatBubbleLeftEllipsisIcon className="fill-gos-green-light mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-												Post - {result.authorUsername} {!!result.createdAt ? 'at': '' } {!!result.createdAt ? dayjs(result.createdAt).format('lll') : ''}
+												Post - {result.authorUsername} {!!result.createdAt && '- ' + dayjs(result.createdAt).calendar(null, {
+													sameElse: 'lll',
+												})}
 											</p>
 
 											<h4 className="text-2xl mt-4">
@@ -86,7 +90,9 @@ function Search() {
 										>
 											<p className="text-sm text-gray-500 mb-1 flex">
 												<RocketLaunchIcon className="fill-gos-green-light mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-												Action - {result.authorUsername} {!!result.createdAt ? 'at': '' } {!!result.createdAt ? dayjs(result.createdAt).format('lll') : ''}
+												Action - {result.authorUsername} {!!result.createdAt && '- ' + dayjs(result.createdAt).calendar(null, {
+													sameElse: 'lll',
+												})}
 											</p>
 
 											<h4 className="text-2xl mt-4">

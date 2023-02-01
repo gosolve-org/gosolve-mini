@@ -11,6 +11,8 @@ import { useAuth } from "context/AuthContext";
 
 import actionEditorTemplate from "editorTemplates/actionEditorTemplate.json"
 import BasicHead from "components/common/Layout/BasicHead";
+import { useContext } from "react";
+import { DataContext } from "context/DataContext";
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
 	ssr: false,
@@ -19,16 +21,11 @@ const EditorJs = dynamic(() => import("components/common/Editor"), {
 function Action() {
 	const { user } = useAuth();
 	const router = useRouter();
-
-	const categoryQuery = router?.query?.category?.toString();
-	const locationQuery = router?.query?.location?.toString();
-
-	const readableCategory = categoryQuery.split("-").join(" ");
-	const readableLocation = locationQuery.split("-").join(" ");
+	const { currentCategory, currentLocation } = useContext(DataContext);
 
 	const actionId = router?.query?.actionId?.toString();
 
-	const [userProfile, userLoading] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
+	const [userProfile, userLoading] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
 
 	const canUserEdit =
 		userProfile?.id === user?.uid &&
@@ -51,8 +48,8 @@ function Action() {
 				createdAt: actionSnapshot?.data()?.createdAt,
 				updatedAt: new Date()
 			},
-			category: readableCategory,
-			location: readableLocation
+			category: currentCategory?.category,
+			location: currentLocation?.location
 		})
 			.then(() => toast.success("Saved!"))
 			.catch((err) => {

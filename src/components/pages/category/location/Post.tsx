@@ -10,8 +10,10 @@ import { addComment } from "pages/api/comment";
 import { withBreaks } from "utils/textUtils";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import calendar from "dayjs/plugin/calendar";
 import BasicHead from "components/common/Layout/BasicHead";
 dayjs.extend(localizedFormat);
+dayjs.extend(calendar);
 
 interface PostProps {
 	postId: string;
@@ -26,7 +28,7 @@ function Post({ postId } : PostProps) {
 
 	const [postData, postLoading] = useDocumentOnce(doc(db, "posts", postId));
 
-	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
+	const [userProfile] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
 
 	const postDoc = postData?.data();
 
@@ -157,7 +159,9 @@ function Post({ postId } : PostProps) {
 										{postDoc?.authorUsername || "Anonymous"}
 									</span>
 									<span className="text-sm text-gray-500 ml-4">
-										{dayjs(postDoc?.createdAt).format('lll')}
+										{dayjs(postDoc?.createdAt).calendar(null, {
+											sameElse: 'lll',
+										})}
 									</span>
 								</div>
 							</div>
@@ -204,7 +208,7 @@ function Post({ postId } : PostProps) {
 						</form>
 					</div>
 
-					<div className="flex w-full max-w-2xl mt-20">
+					<div className="flex w-full max-w-2xl mt-10">
 						<div className="w-full">
 							{!commentsLoading ? renderComments : null}
 						</div>

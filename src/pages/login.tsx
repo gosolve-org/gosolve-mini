@@ -1,7 +1,5 @@
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
-import Link from "next/link";
 
 import { useAuth } from "context/AuthContext";
 import BasicToast from "components/common/Layout/BasicToast";
@@ -10,9 +8,9 @@ import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
 import LinkToast, { showLinkToast } from "components/common/Layout/LinkToast";
 import { TOAST_IDS } from "constants/toastConstants";
-import { FirebaseError } from "firebase/app";
 import { getWaitlistUser } from "./api/user";
 import BasicHead from "components/common/Layout/BasicHead";
+import Logo from "components/common/Layout/Logo";
 
 function Login() {
 	const [email, setEmail] = useState<string>("");
@@ -102,14 +100,7 @@ function Login() {
 			<main className="h-full">
 				<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 					<div className="sm:mx-auto sm:w-full sm:max-w-md">
-						<Image
-							className="mx-auto h-18 w-auto"
-							src="/images/gosolve_logo.svg"
-							alt="goSolve Logo"
-							width={180}
-							height={37}
-							priority
-						/>
+						<Logo className="mx-auto h-18 w-auto" />
 						<h2 className="mt-6 px-4 py-2 text-center text-m font-normal tracking-tight rounded-md text-black bg-gray-100">
 							goSolve mini is a limited test version of the goSolve
 							platform, is currently invite only, or available for

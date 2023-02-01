@@ -13,10 +13,10 @@ import { collection, query, where, doc } from "firebase/firestore";
 
 import { addAction } from "pages/api/action";
 import { useAuth } from "context/AuthContext";
-import { db, useCollectionOnceWithDependencies, useDocumentOnceWithDependencies } from "utils/firebase";
-import { DataContext } from "pages/_app";
+import { db, useCollectionOnceWithDependencies } from "utils/firebase";
 import { toast } from "react-toastify";
-import { textSpanContainsPosition } from "typescript";
+import { toUrlPart } from "utils/textUtils";
+import { DataContext } from "context/DataContext";
 
 interface AddActionModalProps {
 	open: boolean;
@@ -27,24 +27,18 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 	const { user } = useAuth();
 	const router = useRouter();
 	const titleInput = useRef(null);
-	const { currentCategoryId, currentLocationId } = useContext(DataContext);
+	const { currentCategory, currentLocation } = useContext(DataContext);
 
 	const [title, setTitle] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [topicsCollection] = useCollectionOnceWithDependencies(
-		query(
+		() => query(
 			collection(db, "topics"),
-			where("categoryId", "==", currentCategoryId),
-			where("locationId", "==", currentLocationId)
-		), [ currentCategoryId, currentLocationId ]
+			where("categoryId", "==", currentCategory.id),
+			where("locationId", "==", currentLocation.id)
+		), [ currentCategory?.id, currentLocation?.id ]
 	);
-
-	const categoryQuery = router?.query?.category?.toString();
-	const locationQuery = router?.query?.location?.toString();
-
-	const readableCategory = categoryQuery.split("-").join(" ");
-	const readableLocation = locationQuery.split("-").join(" ");
 
 	const handleTitleChange = (e: FormEvent<HTMLInputElement>) =>
 		setTitle(e.currentTarget.value);
@@ -71,11 +65,11 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 				authorUsername: user.username,
 				createdAt: new Date()
 			},
-			location: readableLocation,
-			category: readableCategory
+			location: currentLocation.location,
+			category: currentCategory.category
 		}).then((docId) => {
 			router.push(
-				`/${categoryQuery}/${locationQuery}/actions/${docId}`
+				`/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/actions/${docId}`
 			);
 		}).catch(err => {
 			toast.error("Something went wrong");
@@ -130,7 +124,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 											as="h3"
 											className="text-xs text-gray-500 font-normal truncate"
 										>
-											{`You're creating an action for "${readableCategory} in ${readableLocation}"`}
+											{`You're creating an action for "${currentCategory?.category} in ${currentLocation?.location}"`}
 										</Dialog.Title>
 									</div>
 								</div>

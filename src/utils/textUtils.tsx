@@ -13,3 +13,6 @@ export const trimToFirstLine = (content: string) => {
     const lines = content.split('\n');
     return lines.length <= 1 ? lines[0] : lines[0] + '…';
 }
+
+export const urlPartToReadable = (content: string) => content?.split("-").join(" ");
+export const toUrlPart = (content: string) => content?.split(" ").join("-");

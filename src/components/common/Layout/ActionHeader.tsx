@@ -6,8 +6,9 @@ import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 
 import { db } from "utils/firebase";
-import { DataContext } from "pages/_app";
 import { Tab } from "models/Tab";
+import { toUrlPart } from "utils/textUtils";
+import { DataContext } from "context/DataContext";
 
 const tabs = [
 	{ name: "Action", href: "", value: Tab.Action },
@@ -20,17 +21,11 @@ function classNames(...classes: string[]) {
 
 function ActionHeader() {
 	const router = useRouter();
-	const { currentTab, handleCurrentTabChange } = useContext(DataContext);
+	const { currentTab, currentCategory, currentLocation, handleCurrentTabChange } = useContext(DataContext);
 
 	const actionId = router?.query?.actionId?.toString();
 
 	const [actionsCollection] = useDocumentOnce(doc(db, "actions", actionId));
-
-	const categoryQuery = router?.query?.category?.toString() || '...';
-	const locationQuery = router?.query?.location?.toString() || '...';
-
-	const readableCategory = categoryQuery.split("-").join(" ");
-	const readableLocation = locationQuery.split("-").join(" ");
 
 	const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
 		handleCurrentTabChange(Tab[e.currentTarget.value]);
@@ -39,12 +34,12 @@ function ActionHeader() {
 		<div className="flex flex-col justify-center items-center ">
 			<div className="w-[68%] md:max-xl:w-[68%] md:max-lg:w-[78%] md:max-sm:w-[88%]">
 				<div className="mt-6 w-full flex justify-start items-center text-gray-500 text-sm">
-					<Link href={`/${categoryQuery}/${locationQuery}`}>
+					<Link href={`/${toUrlPart(currentCategory?.category)}/${currentLocation?.location}`}>
 						<ArrowLeftIcon
 							className="h-4 w-4 inline-block items-center mr-1"
 							aria-hidden="true"
 						/>
-						{`Back to ${readableCategory} in ${readableLocation}`}
+						{`Back to ${currentCategory?.category} in ${currentLocation?.location}`}
 					</Link>
 				</div>
 				<div className="flex flex-col justify-center h-52 mt-2 items-center rounded-md bg-sky-100">
@@ -79,7 +74,7 @@ function ActionHeader() {
 								{tabs.map((tab, tabIdx) => (
 									<Link
 										key={tab.value}
-										href={`/${categoryQuery}/${locationQuery}/actions/${actionId}/${tab.href}`}
+										href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions/${actionId}/${tab.href}`}
 										className={classNames(
 											tab.value === currentTab
 												? "text-gray-900"

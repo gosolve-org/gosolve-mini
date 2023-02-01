@@ -1,6 +1,5 @@
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import Link from "next/link";
 
 import { useAuth } from "context/AuthContext";
@@ -12,6 +11,7 @@ import LinkToast, { showLinkToast } from "components/common/Layout/LinkToast";
 import { UserCredential } from "@firebase/auth";
 import { TOAST_IDS } from "constants/toastConstants";
 import BasicHead from "components/common/Layout/BasicHead";
+import Logo from "components/common/Layout/Logo";
 
 function Register() {
 	const [email, setEmail] = useState<string>("");
@@ -90,14 +90,7 @@ function Register() {
 			<main className="h-full">
 				<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 					<div className="sm:mx-auto sm:w-full sm:max-w-md">
-						<Image
-							className="mx-auto h-12 w-auto"
-							src="/images/gosolve_logo.svg"
-							alt="goSolve Logo"
-							width={180}
-							height={37}
-							priority
-						/>
+						<Logo className="mx-auto h-12 w-auto" />
 						<h1 className="mt-6 text-center text-xl font-normal tracking-tight text-black">
 							Create your account
 						</h1>

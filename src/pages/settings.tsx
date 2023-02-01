@@ -16,7 +16,7 @@ function Settings() {
 	const { user, logout } = useAuth();
 	const router = useRouter();
 
-	const [userProfile] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
+	const [userProfile] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
 
 	const [name, setName] = useState<string>("");
 	const [username, setUsername] = useState<string>("");

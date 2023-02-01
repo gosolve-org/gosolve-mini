@@ -1,8 +1,10 @@
 import { FormEvent, useContext } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { DataContext } from "pages/_app";
 import { Tab } from "models/Tab";
+import { toUrlPart } from "utils/textUtils";
+import { DataContext } from "context/DataContext";
+
+const DEFAULT_PAGE_TITLE = 'Welcome to goSolve mini';
 
 const tabs = [
 	{ name: "Topic", href: "", value: Tab.Topic },
@@ -15,19 +17,7 @@ function classNames(...classes: string[]) {
 }
 
 function TopicHeader() {
-	const router = useRouter();
-	const { currentTab, handleCurrentTabChange } = useContext(DataContext);
-	const pathname = router.pathname;
-
-	const categoryQuery = router?.query?.category
-		? router?.query?.category.toString()
-		: "...";
-	const locationQuery = router?.query?.location
-		? router?.query?.location.toString()
-		: "...";
-
-	const readableCategory = categoryQuery.split("-").join(" ");
-	const readableLocation = locationQuery.split("-").join(" ");
+	const { currentTab, currentCategory, currentLocation, handleCurrentTabChange } = useContext(DataContext);
 
 	const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
 		handleCurrentTabChange(Tab[e.currentTarget.value]);
@@ -36,7 +26,13 @@ function TopicHeader() {
 		<div className="flex flex-col justify-center h-52 items-center bg-sky-100">
 			<div className="mt-5 sm:mx-auto sm:w-full">
 				<h1 className="w-full px-4 py-2 text-center text-3xl font-small tracking-tight text-black ">
-					{`${readableCategory} in ${readableLocation}`}
+					{currentCategory?.hidden || currentLocation?.hidden
+						? DEFAULT_PAGE_TITLE
+						: (currentCategory?.id && currentLocation?.id
+							? `${currentCategory?.category} in ${currentLocation?.location}`
+							: ''
+						)
+					}
 				</h1>
 			</div>
 			<div className="mt-5 w-[68%] md:max-xl:w-[68%] md:max-lg:w-[78%] md:max-sm:w-[88%]">
@@ -65,7 +61,7 @@ function TopicHeader() {
 						{tabs.map((tab, tabIdx) => (
 							<Link
 								key={tab.value}
-								href={`/${categoryQuery}/${locationQuery}/${tab.href}`}
+								href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/${tab.href}`}
 								className={classNames(
 									tab.name === currentTab
 										? "text-gray-900"

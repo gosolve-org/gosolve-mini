@@ -7,9 +7,9 @@ import { DataContext } from "context/DataContext";
 const DEFAULT_PAGE_TITLE = 'Welcome to goSolve mini';
 
 const tabs = [
-	{ name: "Topic", href: "", value: Tab.Topic },
-	{ name: "Actions", href: "actions", value: Tab.Actions },
-	{ name: "Community", href: "community", value: Tab.Community },
+	{ name: "Topic", href: "", value: Tab.Topic, showOnHiddenTopics: true },
+	{ name: "Actions", href: "actions", value: Tab.Actions, showOnHiddenTopics: false },
+	{ name: "Community", href: "community", value: Tab.Community, showOnHiddenTopics: true },
 ];
 
 function classNames(...classes: string[]) {
@@ -58,35 +58,37 @@ function TopicHeader() {
 						className="isolate flex divide-x divide-gray-200 rounded-lg shadow"
 						aria-label="Tabs"
 					>
-						{tabs.map((tab, tabIdx) => (
-							<Link
-								key={tab.value}
-								href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/${tab.href}`}
-								className={classNames(
-									tab.name === currentTab
-										? "text-gray-900"
-										: "text-gray-500 hover:text-gray-700",
-									tabIdx === 0 ? "rounded-l-lg" : "",
-									tabIdx === tabs.length - 1
-										? "rounded-r-lg"
-										: "",
-									"group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
-								)}
-								aria-current={
-									tab.value === currentTab ? "page" : undefined
-								}
-							>
-								<span>{tab.name}</span>
-								<span
-									aria-hidden="true"
+						{!!currentCategory?.id && !!currentLocation?.id && tabs
+							.filter(el => (!currentCategory?.hidden && !currentLocation?.hidden) || el.showOnHiddenTopics)
+							.map((tab, tabIdx) => (
+								<Link
+									key={tab.value}
+									href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/${tab.href}`}
 									className={classNames(
-										tab.value === currentTab
-											? "bg-indigo-500"
-											: "bg-transparent",
-										"absolute inset-x-0 bottom-0 h-0.5"
+										tab.name === currentTab
+											? "text-gray-900"
+											: "text-gray-500 hover:text-gray-700",
+										tabIdx === 0 ? "rounded-l-lg" : "",
+										tabIdx === tabs.length - 1
+											? "rounded-r-lg"
+											: "",
+										"group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
 									)}
-								/>
-							</Link>
+									aria-current={
+										tab.value === currentTab ? "page" : undefined
+									}
+								>
+									<span>{tab.name}</span>
+									<span
+										aria-hidden="true"
+										className={classNames(
+											tab.value === currentTab
+												? "bg-indigo-500"
+												: "bg-transparent",
+											"absolute inset-x-0 bottom-0 h-0.5"
+										)}
+									/>
+								</Link>
 						))}
 					</nav>
 				</div>

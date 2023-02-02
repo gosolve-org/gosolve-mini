@@ -3,7 +3,7 @@ import Post from "components/pages/category/location/Post";
 
 function ActionCommunityPostPage() {
 	const router = useRouter();
-	const postId = router?.query?.postId?.toString() ?? '';
+	const postId = router?.query?.postId?.toString();
 
 	return <Post
         postId={postId}

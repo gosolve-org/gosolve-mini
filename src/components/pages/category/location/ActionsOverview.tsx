@@ -96,12 +96,12 @@ function ActionsOverview() {
 											key={item.id}
 											href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions/${item.id}`}
 										>
-											<li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
-												<div className="text-xl font-medium text-black">
+											<li className="rounded-lg bg-white px-4 py-5 shadow hover:bg-gray-50">
+												<div className="text-sm font-medium text-black">
 													{itemData.title}
 												</div>
 
-												<div className="mt-10 truncate text-sm font-light text-gray-400">
+												<div className="mt-5 truncate text-sm font-light text-gray-400">
 													{itemData.authorUsername}
 												</div>
 											</li>
@@ -114,7 +114,11 @@ function ActionsOverview() {
 								totalCount={totalActions}
 								pageSize={PAGE_SIZE}
 							/>
-						</> : (<div className="mt-5 truncate text-sm font-light text-gray-400">{getRandomItem(canUserEdit ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}</div>)
+						</> : (
+							<div className="mt-5 truncate text-sm font-light text-gray-400">
+								{getRandomItem(canUserEdit ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}
+							</div>
+						)
 					) : null}
 
 				</div>

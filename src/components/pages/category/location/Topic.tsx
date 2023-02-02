@@ -100,22 +100,89 @@ function Topic() {
             <BasicHead title={`goSolve | ${currentCategory?.category ?? ''} in ${currentLocation?.location ?? ''}`} />
             <div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
                 <div className="w-full max-w-4xl">
-                    <div className="bg-gray-100 p-6 rounded-lg">
-                        <div>
-                            <div className="flex items-center">
-                                <h2 className="text-xl font-medium leading-6 text-black">
-                                    Actions
-                                </h2>
+                    {!!currentCategory?.id && !!currentLocation?.id && !currentCategory.hidden && !currentLocation.hidden &&
+                        <div className="bg-gray-100 p-6 rounded-lg">
+                            <div>
+                                <div className="flex items-center">
+                                    <h2 className="text-xl font-medium leading-6 text-black">
+                                        Actions
+                                    </h2>
 
-                                {
-                                    canUserEdit && <span className="ml-3.5">
-                                        <button
-                                            onClick={handleAddActionClick}
+                                    {
+                                        canUserEdit && <span className="ml-3.5">
+                                            <button
+                                                onClick={handleAddActionClick}
+                                                type="button"
+                                                className={canUserEdit
+                                                    ? "inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                    : "inline-flex items-center rounded-full border border-gray-300 bg-gray p-1.5 text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                }
+                                            >
+                                                <PlusIcon
+                                                    className="h-4 w-4"
+                                                    aria-hidden="true"
+                                                />
+                                            </button>
+                                        </span>
+                                    }
+                                    
+                                    <span className="mx-3.5">
+                                        <Link
+                                            href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions`}
                                             type="button"
-                                            className={canUserEdit
-                                                ? "inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                                : "inline-flex items-center rounded-full border border-gray-300 bg-gray p-1.5 text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                            }
+                                            className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                        >
+                                            View all
+                                            <ArrowRightIcon
+                                                className="h-3 w-3 ml-1"
+                                                aria-hidden="true"
+                                            />
+                                        </Link>
+                                    </span>
+                                </div>
+                                {!actionsLoading ? (
+                                    actionsCollection?.docs?.length !== 0
+                                        ? (<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                                            {actionsCollection?.docs?.map((item) => {
+                                                const itemData = item.data();
+                                                return (
+                                                    <Link
+                                                        key={item.id}
+                                                        href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions/${item.id}`}
+                                                    >
+                                                        <li className="rounded-lg bg-white px-4 py-5 shadow hover:bg-gray-50">
+                                                            <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
+                                                                {itemData.title}
+                                                            </div>
+
+                                                            <div className="mt-4 truncate text-sm font-light text-gray-400">
+                                                                {
+                                                                    itemData.authorUsername
+                                                                }
+                                                            </div>
+                                                        </li>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </ul>) : (
+                                            <div className="mt-5 truncate text-sm font-light text-gray-400">
+                                            {getRandomItem(canUserEdit ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}
+                                            </div>
+                                        )
+                                ) : null}
+                            </div>
+
+                            <div className="mt-10">
+                                <div className="flex items-center">
+                                    <h2 className="text-xl font-medium leading-6 text-black">
+                                        Community
+                                    </h2>
+
+                                    <span className="ml-3.5">
+                                        <button
+                                            onClick={handleAddCommunityClick}
+                                            type="button"
+                                            className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                         >
                                             <PlusIcon
                                                 className="h-4 w-4"
@@ -123,119 +190,54 @@ function Topic() {
                                             />
                                         </button>
                                     </span>
-                                }
-                                
-                                <span className="mx-3.5">
-                                    <Link
-                                        href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions`}
-                                        type="button"
-                                        className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                    >
-                                        View all
-                                        <ArrowRightIcon
-                                            className="h-3 w-3 ml-1"
-                                            aria-hidden="true"
-                                        />
-                                    </Link>
-                                </span>
+
+                                    <span className="mx-3.5">
+                                        <Link
+                                            href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community`}
+                                            type="button"
+                                            className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                        >
+                                            View all
+                                            <ArrowRightIcon
+                                                className="h-3 w-3 ml-1"
+                                                aria-hidden="true"
+                                            />
+                                        </Link>
+                                    </span>
+                                </div>
+                                {!postsLoading ? (
+                                    postsCollection?.docs?.length !== 0
+                                        ? (<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                                            {postsCollection?.docs?.map((item) => {
+                                                const itemData = item.data();
+                                                return (
+                                                    <Link
+                                                        key={item.id}
+                                                        href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community/${item.id}`}
+                                                    >
+                                                        <li className="rounded-lg bg-white px-4 py-5 shadow hover:bg-gray-50">
+                                                            <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
+                                                                {itemData.title}
+                                                            </div>
+
+                                                            <div className="mt-4 truncate text-sm font-light text-gray-400">
+                                                                {
+                                                                    itemData.authorUsername
+                                                                }
+                                                            </div>
+                                                        </li>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </ul>) : (
+                                            <div className="mt-5 truncate text-sm font-light text-gray-400">
+                                            {getRandomItem(NO_POSTS_PLACEHOLDERS)}
+                                            </div>
+                                        )
+                                ) : null}
                             </div>
-                            {!actionsLoading ? (
-                                actionsCollection?.docs?.length !== 0
-                                    ? (<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                                        {actionsCollection?.docs?.map((item) => {
-                                            const itemData = item.data();
-                                            return (
-                                                <Link
-                                                    key={item.id}
-                                                    href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions/${item.id}`}
-                                                >
-                                                    <li className="rounded-lg bg-white px-4 py-5 shadow hover:bg-gray-50">
-                                                        <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
-                                                            {itemData.title}
-                                                        </div>
-
-                                                        <div className="mt-4 truncate text-sm font-light text-gray-400">
-                                                            {
-                                                                itemData.authorUsername
-                                                            }
-                                                        </div>
-                                                    </li>
-                                                </Link>
-                                            );
-                                        })}
-                                    </ul>) : (
-                                        <div className="mt-5 truncate text-sm font-light text-gray-400">
-                                        {getRandomItem(canUserEdit ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}
-                                        </div>
-                                    )
-                            ) : null}
                         </div>
-
-                        <div className="mt-10">
-                            <div className="flex items-center">
-                                <h2 className="text-xl font-medium leading-6 text-black">
-                                    Community
-                                </h2>
-
-                                <span className="ml-3.5">
-                                    <button
-                                        onClick={handleAddCommunityClick}
-                                        type="button"
-                                        className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                    >
-                                        <PlusIcon
-                                            className="h-4 w-4"
-                                            aria-hidden="true"
-                                        />
-                                    </button>
-                                </span>
-
-                                <span className="mx-3.5">
-                                    <Link
-                                        href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community`}
-                                        type="button"
-                                        className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                    >
-                                        View all
-                                        <ArrowRightIcon
-                                            className="h-3 w-3 ml-1"
-                                            aria-hidden="true"
-                                        />
-                                    </Link>
-                                </span>
-                            </div>
-                            {!postsLoading ? (
-                                postsCollection?.docs?.length !== 0
-                                    ? (<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                                        {postsCollection?.docs?.map((item) => {
-                                            const itemData = item.data();
-                                            return (
-                                                <Link
-                                                    key={item.id}
-                                                    href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community/${item.id}`}
-                                                >
-                                                    <li className="rounded-lg bg-white px-4 py-5 shadow hover:bg-gray-50">
-                                                        <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
-                                                            {itemData.title}
-                                                        </div>
-
-                                                        <div className="mt-4 truncate text-sm font-light text-gray-400">
-                                                            {
-                                                                itemData.authorUsername
-                                                            }
-                                                        </div>
-                                                    </li>
-                                                </Link>
-                                            );
-                                        })}
-                                    </ul>) : (
-                                        <div className="mt-5 truncate text-sm font-light text-gray-400">
-                                        {getRandomItem(NO_POSTS_PLACEHOLDERS)}
-                                        </div>
-                                    )
-                            ) : null}
-                        </div>
-                    </div>
+                    }
 
                     <div className="mt-10">
                         {!topicsLoading && !userLoading ? (

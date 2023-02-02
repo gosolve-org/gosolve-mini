@@ -24,6 +24,7 @@ function Comment({
 }: CommentProps) {
 	const [isContentClamped, setIsContentClamped] = useState(false);
 	const [isContentExpanded, setIsContentExpanded] = useState(false);
+	const [isStartState, setIsStartState] = useState(true);
 	const contentEl = useRef(null);
 	const containerEl = useRef(null);
 
@@ -32,10 +33,15 @@ function Comment({
 	}, [ contentEl ]);
 
 	useEffect(() => {
-		if (!isContentExpanded) {
+		if (!isContentExpanded && !isStartState) {
 			containerEl.current.scrollIntoView({ behavior: 'auto', block: 'nearest' });
 		}
-	}, [ isContentExpanded ]);
+	}, [ isContentExpanded, isStartState ]);
+
+	const handleClickReadMore = () => {
+		setIsContentExpanded(true);
+		setIsStartState(false);
+	};
 
 	return (
 		<div className="mt-6 flex w-full" key={id} ref={containerEl}>
@@ -71,7 +77,7 @@ function Comment({
 					{
 						isContentClamped && !isContentExpanded && <p
 							className="cursor-pointer text-sm mt-2 text-indigo-700"
-							onClick={() => setIsContentExpanded(true)}
+							onClick={handleClickReadMore}
 						>Read More</p>
 					}
 					{

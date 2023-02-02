@@ -27,6 +27,7 @@ const addAction = async ({ details, location, category }: { details: Action, loc
 
 		return id;
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };
@@ -66,6 +67,7 @@ const updateAction = async ({
 			await addAction({ details, location, category });
 		}
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };

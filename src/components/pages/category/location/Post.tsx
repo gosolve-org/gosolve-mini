@@ -1,17 +1,17 @@
-import { useState, SyntheticEvent, FormEvent, useMemo, Fragment } from "react";
+import { useState, useMemo, Fragment, useCallback, useRef, useEffect } from "react";
 import { useCollection, useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc, query, collection, where, orderBy } from "firebase/firestore";
-import { toast } from "react-toastify";
 
 import { useAuth } from "context/AuthContext";
 import { db, useDocumentOnceWithDependencies } from "utils/firebase";
-import { Layout, Comment, AddCommentModal } from "components/common";
+import { Layout, Comment } from "components/common";
 import { addComment } from "pages/api/comment";
 import { withBreaks } from "utils/textUtils";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import calendar from "dayjs/plugin/calendar";
 import BasicHead from "components/common/Layout/BasicHead";
+import ReplyForm from "components/common/ReplyForm";
 dayjs.extend(localizedFormat);
 dayjs.extend(calendar);
 
@@ -22,9 +22,10 @@ interface PostProps {
 function Post({ postId } : PostProps) {
 	const { user } = useAuth();
 	const [postComment, setPostComment] = useState("");
-	const [replyParentId, setReplyParentId] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+	const [replyParentCommentId, setReplyParentCommentId] = useState(null);
+	const [replyClickCounter, setReplyClickCounter] = useState(0);
 	const [discussionCount, setDiscussionCount] = useState(0);
-	const [addCommentModalOpen, setAddCommentModalOpen] = useState(false);
 
 	const [postData, postLoading] = useDocumentOnce(doc(db, "posts", postId));
 
@@ -39,29 +40,23 @@ function Post({ postId } : PostProps) {
 			orderBy("createdAt", "desc")
 		)
 	);
-	const handlePostCommentChanges = (e: FormEvent<HTMLTextAreaElement>) =>
-		setPostComment(e.currentTarget.value);
 
-	const handlePostComment = async (e: SyntheticEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		setPostComment("");
-
+	const handleCommentSubmit = async (comment: string, parentId: string = null) => {
 		await addComment({
 			details: {
-				authorId: user?.uid || "",
+				authorId: user.uid,
 				authorUsername: userProfile?.data()?.username,
-				content: postComment,
+				content: comment,
 				postId,
+				parentId,
 			},
-		}).then(() => toast.success("Posted!"));
+		});
 	};
 
-	const hasChanges = () => !!postComment;
-
-	const handleReplyButtonClick = (id: string) => {
-		setReplyParentId(id);
-		setAddCommentModalOpen(true);
-	};
+	const handleReplyButtonClick = useCallback((id: string) => {
+		setReplyParentCommentId(id);
+		setReplyClickCounter(replyClickCounter + 1);
+	}, [ replyClickCounter, setReplyClickCounter, setReplyParentCommentId ]);
 
 	const renderComments = useMemo(() => {
 		const parentComments = commentsCollection?.docs?.filter(
@@ -90,39 +85,43 @@ function Post({ postId } : PostProps) {
 									}
 								/>
 
-								{commentsCollection?.docs?.map(
-									(childComment) => {
-										if (
-											childComment &&
-											childComment?.data()?.parentId ===
-												parentComment.id
-										) {
-											const childCommentData =
-												childComment.data();
+								{commentsCollection
+									?.docs
+									?.filter(el => el?.data()?.parentId === parentComment.id)
+									.sort((a, b) => a.data().createdAt - b.data().createdAt)
+									.map((childComment) => {
+										const childCommentData =
+											childComment.data();
 
-											return (
-												<Fragment key={childComment.id}>
-													<Comment
-														isChild
-														id={childComment.id}
-														authorUsername={
-															childCommentData?.authorUsername
-														}
-														createdAt={
-															childCommentData?.createdAt
-														}
-														content={
-															childCommentData?.content
-														}
-														handleReplyButtonClick={
-															handleReplyButtonClick
-														}
-													/>
-												</Fragment>
-											);
-										} else return null;
+										return (
+											<Fragment key={childComment.id}>
+												<Comment
+													isChild
+													id={childComment.id}
+													authorUsername={
+														childCommentData?.authorUsername
+													}
+													createdAt={
+														childCommentData?.createdAt
+													}
+													content={
+														childCommentData?.content
+													}
+													handleReplyButtonClick={
+														handleReplyButtonClick
+													}
+												/>
+											</Fragment>
+										);
 									}
 								)}
+								<Fragment key={`reply-${parentComment.id}`}>
+									<ReplyFormContainer
+										hidden={replyParentCommentId !== parentComment.id}
+										replyClickCounter={replyClickCounter}
+										handleSubmit={(reply) => handleCommentSubmit(reply, parentComment.id)}
+									/>
+								</Fragment>
 								{parentComments?.length - 1 !== index ? (
 									<div className="w-full border-t border-gray-300 mt-6" />
 								) : null}
@@ -132,7 +131,7 @@ function Post({ postId } : PostProps) {
 				})}
 			</>
 		);
-	}, [commentsCollection]);
+	}, [commentsCollection, replyParentCommentId, replyClickCounter]);
 
 	return (
 		<Layout>
@@ -174,39 +173,11 @@ function Post({ postId } : PostProps) {
 
 				<div className="flex flex-col w-full max-w-2xl mt-20">
 					<h4 className="text-xl">{`Discussion (${discussionCount})`}</h4>
-					<div className="min-w-0 flex-1 mt-4">
-						<form
-							action="#"
-							className="relative"
-							method="POST"
-							onSubmit={handlePostComment}
-						>
-							<div className="overflow-hidden rounded-lg border border-gray-300 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500">
-								<label htmlFor="comment" className="sr-only">
-									Add your comment
-								</label>
-								<textarea
-									rows={3}
-									name="comment"
-									id="comment"
-									className="block w-full resize-none border-0 py-3 focus:ring-0 sm:text-sm"
-									placeholder="Add your comment..."
-									value={postComment}
-									onChange={handlePostCommentChanges}
-								/>
-							</div>
-
-							<div className="flex-shrink-0 mt-4">
-								<button
-									disabled={!hasChanges()}
-									type="submit"
-									className="inline-flex items-center disabled:opacity-70 disabled:bg-indigo-600 disabled:cursor-not-allowed rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-								>
-									Post comment
-								</button>
-							</div>
-						</form>
-					</div>
+					<ReplyForm 
+						handleSubmit={handleCommentSubmit}
+						buttonText="Post comment"
+						placeholderText="Add your comment"
+					/>
 
 					<div className="flex w-full max-w-2xl mt-10">
 						<div className="w-full">
@@ -215,13 +186,46 @@ function Post({ postId } : PostProps) {
 					</div>
 				</div>
 			</div>
-			<AddCommentModal
-				postId={postId}
-				parentId={replyParentId}
-				open={addCommentModalOpen}
-				setOpen={setAddCommentModalOpen}
-			/>
 		</Layout>
+	);
+}
+
+interface ReplyFormContainer {
+	hidden: boolean;
+	replyClickCounter: number;
+	handleSubmit: (reply: string) => Promise<void>;
+}
+
+function ReplyFormContainer({
+	hidden,
+	replyClickCounter,
+	handleSubmit,
+}: ReplyFormContainer) {
+	const replyForm = useRef(null);
+	const textareaRef = useRef(null);
+
+	useEffect(() => {
+		if (!hidden) {
+			replyForm.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+			textareaRef.current.focus({ preventScroll: true });
+		}
+	}, [ replyClickCounter ]);
+
+	return (
+		<div
+			className={`mt-6 w-full ${hidden ? 'hidden' : 'flex'}`}
+		>
+			<div className="flex-shrink-0 w-12"></div>
+			<div className="flex flex-col w-full" ref={replyForm}>
+				<ReplyForm
+					handleSubmit={handleSubmit}
+					buttonText="Reply"
+					placeholderText="Add your reply"
+					showSuccessToast={false}
+					textareaRef={textareaRef}
+				/>
+			</div>
+		</div>
 	);
 }
 

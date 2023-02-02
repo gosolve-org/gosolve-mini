@@ -15,6 +15,7 @@ import { ResourceType } from "models/ResourceType";
 import { toast } from "react-toastify";
 import { toUrlPart } from "utils/textUtils";
 import { DataContext } from "context/DataContext";
+import { POST_VALIDATIONS } from "constants/validationRules";
 
 interface AddCommunityPostProps {
 	open: boolean;
@@ -144,6 +145,7 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 											<input
 												autoComplete="off"
 												onChange={handleTitleChange}
+												maxLength={POST_VALIDATIONS.titleMaxLength}
 												type="title"
 												name="title"
 												id="title"
@@ -165,6 +167,7 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 													handleDescriptionChange
 												}
 												rows={4}
+												maxLength={POST_VALIDATIONS.contentMaxLength}
 												name="description"
 												id="description"
 												className="p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"

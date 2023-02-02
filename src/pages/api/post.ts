@@ -28,6 +28,7 @@ const addPost = async ({ details, category, location }: { details: Post, categor
 
 		return id;
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };
@@ -71,6 +72,7 @@ const updatePost = async ({
 
 		Promise.resolve();
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };

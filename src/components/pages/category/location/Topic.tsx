@@ -26,6 +26,10 @@ const EditorJs = dynamic(() => import("components/common/Editor"), {
 	ssr: false,
 });
 
+const cardTitleStyle = {
+    minHeight: '2.5rem'
+};
+
 function Topic() {
 	const { user } = useAuth();
 	const { currentCategory, currentLocation } = useContext(DataContext);
@@ -145,12 +149,12 @@ function Topic() {
                                                     key={item.id}
                                                     href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions/${item.id}`}
                                                 >
-                                                    <li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
-                                                        <div className="text-xl font-medium text-black">
+                                                    <li className="rounded-lg bg-white px-4 py-5 shadow hover:bg-gray-50">
+                                                        <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
                                                             {itemData.title}
                                                         </div>
 
-                                                        <div className="mt-10 truncate text-sm font-light text-gray-400">
+                                                        <div className="mt-4 truncate text-sm font-light text-gray-400">
                                                             {
                                                                 itemData.authorUsername
                                                             }
@@ -210,12 +214,12 @@ function Topic() {
                                                     key={item.id}
                                                     href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community/${item.id}`}
                                                 >
-                                                    <li className="rounded-lg bg-white px-4 py-5 shadow sm:p-6 hover:bg-gray-50">
-                                                        <div className="text-xl font-medium text-black">
+                                                    <li className="rounded-lg bg-white px-4 py-5 shadow hover:bg-gray-50">
+                                                        <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
                                                             {itemData.title}
                                                         </div>
 
-                                                        <div className="mt-10 truncate text-sm font-light text-gray-400">
+                                                        <div className="mt-4 truncate text-sm font-light text-gray-400">
                                                             {
                                                                 itemData.authorUsername
                                                             }

@@ -110,7 +110,7 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 											className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb w-full"
 											key={item.id}
 										>
-											<h4 className="text-2xl mb-4 truncate">
+											<h4 className="text-2xl mb-4 line-clamp-2">
 												{itemData?.title}
 											</h4>
 											<div className="flex space-x-3 justify-center items-center  mb-4">

@@ -14,6 +14,7 @@ const addTopicHistory = async ({ details }: { details: Topic }) => {
 			updatedAt: new Date().getTime(),
 		}).then((docRef) => docRef.id);
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };
@@ -38,6 +39,7 @@ const addTopic = async ({ details, category, location }: { details: Topic, categ
 
 		return id;
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };
@@ -81,6 +83,7 @@ const updateTopic = async ({
 
 		Promise.resolve();
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };

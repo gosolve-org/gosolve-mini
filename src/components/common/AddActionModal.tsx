@@ -17,6 +17,7 @@ import { db, useCollectionOnceWithDependencies } from "utils/firebase";
 import { toast } from "react-toastify";
 import { toUrlPart } from "utils/textUtils";
 import { DataContext } from "context/DataContext";
+import { ACTION_VALIDATIONS } from "constants/validationRules";
 
 interface AddActionModalProps {
 	open: boolean;
@@ -146,6 +147,7 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 												autoComplete="off"
 												onChange={handleTitleChange}
 												ref={titleInput}
+												maxLength={ACTION_VALIDATIONS.titleMaxLength}
 												type="title"
 												name="title"
 												id="title"

@@ -12,6 +12,7 @@ import { UserCredential } from "@firebase/auth";
 import { TOAST_IDS } from "constants/toastConstants";
 import BasicHead from "components/common/Layout/BasicHead";
 import Logo from "components/common/Layout/Logo";
+import { USER_VALIDATIONS } from "constants/validationRules";
 
 function Register() {
 	const [email, setEmail] = useState<string>("");
@@ -137,6 +138,7 @@ function Register() {
 											name="password"
 											type="password"
 											autoComplete="current-password"
+											maxLength={USER_VALIDATIONS.passwordMaxLength}
 											required
 											className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
 											onChange={handlePasswordChange}

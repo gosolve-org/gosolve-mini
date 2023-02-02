@@ -15,6 +15,7 @@ const addUser = async ({ uid, details }: { uid: string; details?: User }) => {
 			updatedAt: new Date().getTime(),
 		}).then(() => Promise.resolve());
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };
@@ -41,6 +42,7 @@ const updateUser = async ({
 
 		Promise.resolve();
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };
@@ -53,6 +55,7 @@ const getUser = async (uid: string): Promise<User> => {
 		if (!docSnap.exists()) return null;
 		return docSnap.data() as User;
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };
@@ -74,6 +77,7 @@ const isUserOnboarded = async (userId: string) => {
 		if (!docSnap.exists()) return false;
 		return docSnap.get('isOnboarded') ?? false;
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };

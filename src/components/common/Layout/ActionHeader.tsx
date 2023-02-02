@@ -10,10 +10,16 @@ import { Tab } from "models/Tab";
 import { toUrlPart } from "utils/textUtils";
 import { DataContext } from "context/DataContext";
 
+const TAB_WIDTH = 200;
+
 const tabs = [
 	{ name: "Action", href: "", value: Tab.Action },
 	{ name: "Community", href: "community", value: Tab.Community },
 ];
+
+const tabsContainerStyle = (amountOfTabs: number) => ({
+	width: `${amountOfTabs * TAB_WIDTH}px`
+});
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -48,7 +54,7 @@ function ActionHeader() {
 							{actionsCollection?.data()?.title || '\u00A0'}
 						</h1>
 					</div>
-					<div className="mt-5 w-[68%] md:max-xl:w-[68%] md:max-lg:w-[78%] md:max-sm:w-[88%]">
+					<div className="mt-5" style={tabsContainerStyle(tabs.length)}>
 						<div className="sm:hidden">
 							<label htmlFor="tabs" className="sr-only">
 								Select a tab

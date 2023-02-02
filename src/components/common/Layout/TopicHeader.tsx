@@ -5,12 +5,17 @@ import { toUrlPart } from "utils/textUtils";
 import { DataContext } from "context/DataContext";
 
 const DEFAULT_PAGE_TITLE = 'Welcome to goSolve mini';
+const TAB_WIDTH = 200;
 
 const tabs = [
 	{ name: "Topic", href: "", value: Tab.Topic, showOnHiddenTopics: true },
 	{ name: "Actions", href: "actions", value: Tab.Actions, showOnHiddenTopics: false },
 	{ name: "Community", href: "community", value: Tab.Community, showOnHiddenTopics: true },
 ];
+
+const tabsContainerStyle = (amountOfTabs: number) => ({
+	width: `${amountOfTabs * TAB_WIDTH}px`
+});
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -35,7 +40,7 @@ function TopicHeader() {
 					}
 				</h1>
 			</div>
-			<div className="mt-5 w-[68%] md:max-xl:w-[68%] md:max-lg:w-[78%] md:max-sm:w-[88%]">
+			<div className="mt-5" style={tabsContainerStyle(tabs.filter(el => (!currentCategory?.hidden && !currentLocation?.hidden) || el.showOnHiddenTopics).length)}>
 				<div className="sm:hidden">
 					<label htmlFor="tabs" className="sr-only">
 						Select a tab
@@ -60,7 +65,7 @@ function TopicHeader() {
 					>
 						{!!currentCategory?.id && !!currentLocation?.id && tabs
 							.filter(el => (!currentCategory?.hidden && !currentLocation?.hidden) || el.showOnHiddenTopics)
-							.map((tab, tabIdx) => (
+							.map((tab, tabIdx, tabArr) => (
 								<Link
 									key={tab.value}
 									href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/${tab.href}`}
@@ -69,7 +74,7 @@ function TopicHeader() {
 											? "text-gray-900"
 											: "text-gray-500 hover:text-gray-700",
 										tabIdx === 0 ? "rounded-l-lg" : "",
-										tabIdx === tabs.length - 1
+										tabIdx === tabArr.length - 1
 											? "rounded-r-lg"
 											: "",
 										"group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"

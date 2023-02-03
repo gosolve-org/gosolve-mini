@@ -76,8 +76,8 @@ function Topic() {
 	const handleAddActionClick = () => setActionModalOpen(true);
 	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
-	const handleSaveData = useCallback((savedData: string) => {
-		updateTopic({
+	const handleSaveData = useCallback(async (savedData: string) => {
+		await updateTopic({
 			docId: topicId,
 			details: {
 				title: `${currentCategory.category} in ${currentLocation.location}`,

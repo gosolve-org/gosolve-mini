@@ -15,7 +15,7 @@ import {
 	browserLocalPersistence,
 	browserSessionPersistence,
 	signOut,
-	UserCredential,
+	UserCredential
 } from "@firebase/auth";
 
 import { auth } from "utils/firebase";

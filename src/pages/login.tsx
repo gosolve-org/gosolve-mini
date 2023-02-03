@@ -17,6 +17,7 @@ function Login() {
 	const [password, setPassword] = useState<string>("");
 	const [shouldRememberCheckbox, setShouldRememberCheckbox] =
 		useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const { login, getGoogleCredentials, setShouldRemember, logout, validateUser } = useAuth();
 	const router = useRouter();
@@ -24,39 +25,44 @@ function Login() {
 	const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		setIsLoading(true);
 		setShouldRemember(shouldRememberCheckbox);
-		await login(email, password)
-			.then(() => router.push("/"))
-			.catch(async (err) => {
-				if ((err instanceof ErrorWithCode)) {
-					if (err.code === ERROR_CODES.notFound || err.code === ERROR_CODES.waitlistUserNotFound) {
-						showLinkToast(
-							'error',
-							'No account with this email exists. Click here to join our waitlist.',
-							`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(email)}#waitlist`);
-						return;
-					}
-
-					if (err.code === ERROR_CODES.wrongPassword) {
-						toast.error('Password is incorrect. Please try again or login with your Google account.', { containerId: TOAST_IDS.basicToastId });
-						return;
-					}
-
-					if (err.code === ERROR_CODES.waitlistUserNotOffboarded) {
-						showLinkToast(
-							'error',
-							`You're still on the waitlist. Click here to check your status.`,
-							`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(email)}#waitlist`);
-						return;
-					}
+		try{
+			await login(email, password);
+			await router.push("/");
+		} catch (err) {
+			if ((err instanceof ErrorWithCode)) {
+				if (err.code === ERROR_CODES.notFound || err.code === ERROR_CODES.waitlistUserNotFound) {
+					showLinkToast(
+						'error',
+						'No account with this email exists. Click here to join our waitlist.',
+						`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(email)}#waitlist`);
+					return;
 				}
 
-				console.error(err);
-				toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
-			});
+				if (err.code === ERROR_CODES.wrongPassword) {
+					toast.error('Password is incorrect. Please try again or login with your Google account.', { containerId: TOAST_IDS.basicToastId });
+					return;
+				}
+
+				if (err.code === ERROR_CODES.waitlistUserNotOffboarded) {
+					showLinkToast(
+						'error',
+						`You're still on the waitlist. Click here to check your status.`,
+						`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(email)}#waitlist`);
+					return;
+				}
+			}
+
+			console.error(err);
+			toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleGmailLogin = async () => {
+		setIsLoading(true);
 		setShouldRemember(shouldRememberCheckbox);
 
 		try {
@@ -78,10 +84,12 @@ function Login() {
 				return;
 			}
 	
-			router.push("/");
+			await router.push("/");
 		} catch (err) {
 			console.error(err);
 			toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -177,6 +185,7 @@ function Login() {
 								<div>
 									<button
 										type="submit"
+										disabled={isLoading}
 										className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 									>
 										Sign in
@@ -199,6 +208,7 @@ function Login() {
 								<div className="mt-6 grid grid-cols-1 gap-3">
 									<div>
 										<button
+											disabled={isLoading}
 											onClick={handleGmailLogin}
 											className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50"
 										>

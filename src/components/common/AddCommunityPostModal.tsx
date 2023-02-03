@@ -55,27 +55,30 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 			[(parentResourceType === ResourceType.Action ? 'actionId' : 'topicId')]: parentResourceId
 		};
 
-		await addPost({
-			details: {
-				...originDetails,
-				authorId: user?.uid || "",
-				title,
-				content: description,
-				authorUsername: user.username,
-				createdAt: new Date()
-			},
-			category: currentCategory.category,
-			location: currentLocation.location
-		}).then((docId) => {
-			router.push(parentResourceType === ResourceType.Topic
+		try {
+			const docId = await addPost({
+				details: {
+					...originDetails,
+					authorId: user?.uid || "",
+					title,
+					content: description,
+					authorUsername: user.username,
+					createdAt: new Date()
+				},
+				category: currentCategory.category,
+				location: currentLocation.location
+			});
+
+			await router.push(parentResourceType === ResourceType.Topic
 				? `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/community/${docId}`
 				: `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/actions/${actionId}/community/${docId}`
 			);
-		}).catch(err => {
+		} catch (err) {
 			toast.error("Something went wrong");
 			console.error(err);
+		} finally {
 			setIsLoading(false);
-		});
+		}
 	};
 
 	return (

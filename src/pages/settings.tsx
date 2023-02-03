@@ -73,11 +73,6 @@ function Settings() {
 		});
 	};
 
-	const hasChanges = () =>
-		userProfile?.data()?.name !== name ||
-		userProfile?.data()?.username !== username ||
-		userProfile?.data()?.birthYear !== birthYear;
-
 	const handleNameChange = (e: FormEvent<HTMLInputElement>) =>
 		setName(e.currentTarget.value);
 
@@ -98,8 +93,14 @@ function Settings() {
 	};
 
 	const handleLogoutClick = async () => {
-		await logout();
-		router.push("/login");
+		setIsLoading(true);
+		try {
+			await logout();
+			await router.push("/login");
+		} catch (err) {
+			setIsLoading(false);
+			throw err;
+		}
 	};
 
 	return (
@@ -190,7 +191,7 @@ function Settings() {
 
 							<div>
 								<button
-									disabled={!hasChanges() || isLoading}
+									disabled={isLoading}
 									type="submit"
 									className="flex w-full justify-center rounded-md border border-transparent disabled:opacity-70 disabled:cursor-not-allowed bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 								>
@@ -200,6 +201,7 @@ function Settings() {
 						</form>
 
 						<button
+							disabled={isLoading}
 							onClick={handleLogoutClick}
 							className="mt-5 w-full flex justify-center items-center rounded-md border border-transparent bg-indigo-100 px-3 py-2 text-sm font-medium leading-4 text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 						>

@@ -24,31 +24,25 @@ function Register() {
 	const router = useRouter();
 
 	const handleRegistration = async (registration: Promise<UserCredential>, credentials?: UserCredential|null) => {
-		return registration
-			.then(() => router.push("/register/details"))
-			.catch(err => {
-				if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotFound) {
-					showLinkToast(
-						'error',
-						`You don't have access to the platform yet. Click here to join our waitlist.`,
-						`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
-					setIsLoading(false);
-					return;
-				}
-
-				if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotOffboarded) {
-					showLinkToast(
-						'error',
-						`You're still on the waitlist. Click here to check your status.`,
-						`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
-					setIsLoading(false);
-					return;
-				}
-
+		try {
+			await registration;
+			await router.push("/register/details");
+		} catch (err) {
+			if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotFound) {
+				showLinkToast(
+					'error',
+					`You don't have access to the platform yet. Click here to join our waitlist.`,
+					`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
+			} else if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotOffboarded) {
+				showLinkToast(
+					'error',
+					`You're still on the waitlist. Click here to check your status.`,
+					`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
+			} else {
 				console.error(err);
 				toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
-				setIsLoading(false);
-			});
+			}
+		}
 	}
 
 	const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
@@ -63,8 +57,12 @@ function Register() {
 			return;
 		}
 
-		setShouldRemember(shouldRememberCheckbox);
-		await handleRegistration(registerWithEmail(email, password));
+		try {
+			setShouldRemember(shouldRememberCheckbox);
+			await handleRegistration(registerWithEmail(email, password));
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleGmailLogin = async () => {
@@ -72,8 +70,12 @@ function Register() {
 		setIsLoading(true);
 
 		setShouldRemember(shouldRememberCheckbox);
-		const credentials = await getGoogleCredentials();
-		await handleRegistration(registerWithGoogle(credentials), credentials);
+		try {
+			const credentials = await getGoogleCredentials();
+			await handleRegistration(registerWithGoogle(credentials), credentials);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleEmailChange = (e: FormEvent<HTMLInputElement>) =>

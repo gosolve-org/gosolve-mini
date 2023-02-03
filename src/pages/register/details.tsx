@@ -22,6 +22,10 @@ function Details() {
 	const handleSubmitDetails = async (e: SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		if (!user?.uid) {
+			router.push('/login');
+		}
+
 		if (isLoading) return;
 		setIsLoading(true);
 
@@ -42,7 +46,7 @@ function Details() {
 		if (!validate(username.length >= USER_VALIDATIONS.usernameMinLength, `Your username needs to be at least ${USER_VALIDATIONS.usernameMinLength} characters.`)) return;
 		if (!validate(username.length <= USER_VALIDATIONS.usernameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.usernameMaxLength} characters.`)) return;
 
-		if (user?.uid) {
+		try {
 			await updateUser({
 				docId: user.uid,
 				details: {
@@ -51,13 +55,13 @@ function Details() {
 					birthYear,
 					isOnboarded: true
 				},
-			})
-			.then(() => router.push("/"))
-			.catch(err => {
-				toast.error('Something went wrong');
-				console.error(err);
-				setIsLoading(false);
 			});
+			await router.push("/");
+		} catch (err) {
+			toast.error('Something went wrong');
+			console.error(err);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 

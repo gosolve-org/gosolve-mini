@@ -47,6 +47,7 @@ function Navbar() {
 	const router = useRouter();
 	const { handleCurrentCategoryChange, handleCurrentLocationChange, currentCategory, currentLocation } =
 		useContext(DataContext);
+	const [isNavigating, setIsNavigating] = useState(false);
 
 	const [categoriesCollection] = useCollectionOnce(collection(db, "categories"));
 	const [locationsCollection] = useCollectionOnce(collection(db, "locations"));
@@ -139,14 +140,16 @@ function Navbar() {
 		}
 	};
 
-	const handleNavigate = () => {
+	const handleNavigate = async () => {
+		setIsNavigating(true);
 		if (selectedCategory && selectedLocation) {
 			handleCurrentCategoryChange(selectedCategory);
 			handleCurrentLocationChange(selectedLocation);
 
-			router.push(
+			await router.push(
 				`/${toUrlPart(selectedCategory.category)}/${toUrlPart(selectedLocation.location)}`
 			);
+			setIsNavigating(false);
 		}
 	};
 
@@ -382,6 +385,7 @@ function Navbar() {
 						<span className="mx-3.5">
 							<button
 								onClick={handleNavigate}
+								disabled={isNavigating}
 								type="button"
 								className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 							>

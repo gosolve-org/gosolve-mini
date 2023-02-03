@@ -58,25 +58,28 @@ function AddActionModal({ open, setOpen }: AddActionModalProps) {
 
 		const actionTitle = title || titleInput.current.value;
 
-		await addAction({
-			details: {
-				authorId: user?.uid,
-				title: actionTitle,
-				topicId,
-				authorUsername: user.username,
-				createdAt: new Date()
-			},
-			location: currentLocation.location,
-			category: currentCategory.category
-		}).then((docId) => {
-			router.push(
+		try {
+			const docId = await addAction({
+				details: {
+					authorId: user?.uid,
+					title: actionTitle,
+					topicId,
+					authorUsername: user.username,
+					createdAt: new Date()
+				},
+				location: currentLocation.location,
+				category: currentCategory.category
+			});
+
+			await router.push(
 				`/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/actions/${docId}`
 			);
-		}).catch(err => {
+		} catch (err) {
 			toast.error("Something went wrong");
 			console.error(err);
+		} finally {
 			setIsLoading(false);
-		});
+		}
 	};
 
 	return (

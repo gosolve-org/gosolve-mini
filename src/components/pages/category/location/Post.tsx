@@ -21,8 +21,6 @@ interface PostProps {
 
 function Post({ postId } : PostProps) {
 	const { user } = useAuth();
-	const [postComment, setPostComment] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
 	const [replyParentCommentId, setReplyParentCommentId] = useState(null);
 	const [replyClickCounter, setReplyClickCounter] = useState(0);
 	const [discussionCount, setDiscussionCount] = useState(0);
@@ -58,7 +56,7 @@ function Post({ postId } : PostProps) {
 		setReplyClickCounter(replyClickCounter + 1);
 	}, [ replyClickCounter, setReplyClickCounter, setReplyParentCommentId ]);
 
-	const renderComments = useMemo(() => {
+	const renderedComments = useMemo(() => {
 		const parentComments = commentsCollection?.docs?.filter(
 			(item) => !item?.data()?.parentId
 		);
@@ -67,67 +65,52 @@ function Post({ postId } : PostProps) {
 
 		return (
 			<>
-				{parentComments?.map((parentComment, index) => {
-					if (parentComment) {
-						const parentCommentData = parentComment.data();
+				{parentComments?.filter(el => el).map((parentComment, index) => {
+					const parentCommentData = parentComment.data();
 
-						return (
-							<Fragment key={parentComment.id}>
-								<Comment
-									id={parentComment.id}
-									authorUsername={
-										parentCommentData?.authorUsername
-									}
-									createdAt={parentCommentData?.createdAt}
-									content={parentCommentData?.content}
-									handleReplyButtonClick={
-										handleReplyButtonClick
-									}
+					return (
+						<Fragment key={parentComment.id}>
+							<Comment
+								id={parentComment.id}
+								authorUsername={parentCommentData?.authorUsername}
+								createdAt={parentCommentData?.createdAt}
+								content={parentCommentData?.content}
+								handleReplyButtonClick={handleReplyButtonClick}
+							/>
+
+							{commentsCollection
+								?.docs
+								?.filter(el => el?.data()?.parentId === parentComment.id)
+								.sort((a, b) => a.data().createdAt - b.data().createdAt)
+								.map((childComment) => {
+									const childCommentData = childComment.data();
+
+									return (
+										<Fragment key={childComment.id}>
+											<Comment
+												isChild
+												id={childComment.id}
+												authorUsername={childCommentData?.authorUsername}
+												createdAt={childCommentData?.createdAt}
+												content={childCommentData?.content}
+												handleReplyButtonClick={handleReplyButtonClick}
+											/>
+										</Fragment>
+									);
+								}
+							)}
+							<Fragment key={`reply-${parentComment.id}`}>
+								<ReplyFormContainer
+									hidden={replyParentCommentId !== parentComment.id}
+									replyClickCounter={replyClickCounter}
+									handleSubmit={(reply) => handleCommentSubmit(reply, parentComment.id)}
 								/>
-
-								{commentsCollection
-									?.docs
-									?.filter(el => el?.data()?.parentId === parentComment.id)
-									.sort((a, b) => a.data().createdAt - b.data().createdAt)
-									.map((childComment) => {
-										const childCommentData =
-											childComment.data();
-
-										return (
-											<Fragment key={childComment.id}>
-												<Comment
-													isChild
-													id={childComment.id}
-													authorUsername={
-														childCommentData?.authorUsername
-													}
-													createdAt={
-														childCommentData?.createdAt
-													}
-													content={
-														childCommentData?.content
-													}
-													handleReplyButtonClick={
-														handleReplyButtonClick
-													}
-												/>
-											</Fragment>
-										);
-									}
-								)}
-								<Fragment key={`reply-${parentComment.id}`}>
-									<ReplyFormContainer
-										hidden={replyParentCommentId !== parentComment.id}
-										replyClickCounter={replyClickCounter}
-										handleSubmit={(reply) => handleCommentSubmit(reply, parentComment.id)}
-									/>
-								</Fragment>
-								{parentComments?.length - 1 !== index ? (
-									<div className="w-full border-t border-gray-300 mt-6" />
-								) : null}
 							</Fragment>
-						);
-					} else return null;
+							{parentComments?.length - 1 !== index && (
+								<div className="w-full border-t border-gray-300 mt-6" />
+							)}
+						</Fragment>
+					);
 				})}
 			</>
 		);
@@ -137,7 +120,7 @@ function Post({ postId } : PostProps) {
 		<Layout>
 			<BasicHead title={`goSolve | ${postDoc?.title ?? ''}`} />
 			<div className="flex min-h-full flex-col justify-center items-center pb-20 pt-4 px-4 sm:px-6 lg:px-8">
-				{!postLoading ? (
+				{!postLoading && (
 					<div className="w-full max-w-4xl">
 						<div className="bg-white px-4 py-5 sm:px-6 rounded-lg shadow mb w-full">
 							<h4 className="text-2xl mb-4">{postDoc?.title}</h4>
@@ -169,7 +152,7 @@ function Post({ postId } : PostProps) {
 							</p>
 						</div>
 					</div>
-				) : null}
+				)}
 
 				<div className="flex flex-col w-full max-w-2xl mt-20">
 					<h4 className="text-xl">{`Discussion (${discussionCount})`}</h4>
@@ -181,7 +164,7 @@ function Post({ postId } : PostProps) {
 
 					<div className="flex w-full max-w-2xl mt-10">
 						<div className="w-full">
-							{!commentsLoading ? renderComments : null}
+							{!commentsLoading && renderedComments}
 						</div>
 					</div>
 				</div>

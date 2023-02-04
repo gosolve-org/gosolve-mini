@@ -39,7 +39,7 @@ function Post({ postId } : PostProps) {
 		)
 	);
 
-	const handleCommentSubmit = async (comment: string, parentId: string = null) => {
+	const handleCommentSubmit = useCallback(async (comment: string, parentId: string = null) => {
 		await addComment({
 			details: {
 				authorId: user.uid,
@@ -49,7 +49,7 @@ function Post({ postId } : PostProps) {
 				parentId,
 			},
 		});
-	};
+	}, [ user, userProfile, postId ]);
 
 	const handleReplyButtonClick = useCallback((id: string) => {
 		setReplyParentCommentId(id);
@@ -114,7 +114,7 @@ function Post({ postId } : PostProps) {
 				})}
 			</>
 		);
-	}, [commentsCollection, replyParentCommentId, replyClickCounter]);
+	}, [commentsCollection, replyParentCommentId, replyClickCounter, handleCommentSubmit, handleReplyButtonClick]);
 
 	return (
 		<Layout>
@@ -192,7 +192,7 @@ function ReplyFormContainer({
 			replyForm.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 			textareaRef.current.focus({ preventScroll: true });
 		}
-	}, [ replyClickCounter ]);
+	}, [ replyClickCounter, hidden ]);
 
 	return (
 		<div

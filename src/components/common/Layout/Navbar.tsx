@@ -18,7 +18,7 @@ import {
 	ChevronDownIcon,
 } from "@heroicons/react/20/solid";
 
-import { MegaphoneIcon } from "@heroicons/react/24/outline";
+import { BellIcon, MegaphoneIcon } from "@heroicons/react/24/outline";
 
 import { Category } from "models/Category";
 import { Location } from "models/Location";
@@ -30,6 +30,7 @@ import ResponsiveLogo from "./ResponsiveLogo";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { LINKS } from "constants/links";
+import NotificationsBell from "./NotificationsBell";
 
 const CATEGORY_DROPDOWN_PLACEHOLDER = 'Select a category';
 const LOCATION_DROPDOWN_PLACEHOLDER = 'Select a location';
@@ -398,15 +399,30 @@ function Navbar() {
 					</div>
 
 					<div className="flex items-center justify-end xl:col-span-2">
+						{/* NOTIFICATIONS BELL */}
+						<div className="mr-2">
+							<NotificationsBell
+								bellIcon={<>
+									<Tippy content="Notifications">
+										<div>
+											<BellIcon className="h-7 w-7 text-gray-light cursor-pointer"/>
+										</div>
+									</Tippy>
+								</>}
+							/>
+						</div>
+
+						{/* FEEDBACK ICON */}
 						<div className="mr-2">
 							<Tippy content="Give Feedback">
 								<Link href={LINKS.feedbackForm} target="_blank">
-									<MegaphoneIcon className="h-7 w-7 text-gray-800" ></MegaphoneIcon>
+									<MegaphoneIcon className="h-7 w-7 text-gray-light"></MegaphoneIcon>
 								</Link>
 							</Tippy>
 						</div>
 
-						<div>
+						{/* ACCOUNT SETTINGS ICON */}
+						<div className="select-none">
 							<Tippy content="Account Settings">
 								<Link href="/settings">
 									{user?.photoURL ? (

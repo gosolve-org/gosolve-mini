@@ -259,7 +259,7 @@ const unreadNotificationStyles = (novuTheme: INovuTheme) => css`
   background: ${novuTheme?.notificationItem?.unread?.background};
   box-shadow: ${novuTheme?.notificationItem?.unread?.boxShadow};
   color: ${novuTheme?.notificationItem?.unread?.fontColor};
-  font-weight: 700;
+  font-size: 14px;
 
   &:before {
     content: '';

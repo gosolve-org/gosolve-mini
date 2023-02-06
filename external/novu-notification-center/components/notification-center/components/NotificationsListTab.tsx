@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { IMessage, ChannelCTATypeEnum } from '@novu/shared';
 import { useNotifications, useApi, useNotificationCenter, useUnseenCount } from '../../../hooks';
-import image from '../../../images/no-new-notifications.png';
 import { NotificationsList } from './NotificationsList';
 import { ITab } from '../../../shared/interfaces';
+import Image from 'next/image';
 
 export function NotificationsListTab({ tab }: { tab?: ITab }) {
   const { api } = useApi();
@@ -71,7 +71,12 @@ export function NotificationsListTab({ tab }: { tab?: ITab }) {
                 justifyContent: 'center',
               }}
             >
-              <img src={image as any} alt="logo" style={{ maxWidth: 200 }} />
+              <Image
+                src="/images/no-new-notifications.png"
+                alt="No new notifications"
+                width={200}
+                height={169}
+              />
             </div>
           )}
         </>

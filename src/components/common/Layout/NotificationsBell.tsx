@@ -1,8 +1,11 @@
 import { IMessage, NotificationBell, NovuProvider, PopoverNotificationCenter } from "../../../../external/novu-notification-center";
 import Tippy from "@tippyjs/react";
-import { ReactElement } from "react";
+import { ReactElement, useContext } from "react";
+import { useAuth } from "context/AuthContext";
 
 function NotificationsBell({ bellIcon }: { bellIcon: ReactElement }) {
+    const auth = useAuth();
+
     const onNotificationClick = (message: IMessage) => {
         // your logic to handle the notification click
         if (message?.cta?.data?.url) {
@@ -10,10 +13,12 @@ function NotificationsBell({ bellIcon }: { bellIcon: ReactElement }) {
         }
     }
 
+    if (!auth?.user?.uid) return null;
+
     return (
         <NovuProvider
-            subscriberId={'63de5aa433a4f2991918bfc5'}
-            applicationIdentifier={'7etHL8POp3K5'}
+            subscriberId={auth.user.uid}
+            applicationIdentifier={process.env.NEXT_PUBLIC_NOVU_APPLICATION_ID}
         >
             <PopoverNotificationCenter
                 onNotificationClick={onNotificationClick}

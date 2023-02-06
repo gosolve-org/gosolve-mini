@@ -7,9 +7,9 @@ import { useNovuTheme, useSubscriberPreference } from '../../../../hooks';
 import { accordionStyles, Text, TextBlock } from './styles';
 import { ChannelPreference } from './ChannelPreference';
 import { getChannel } from './channels';
-import image from '../../../../images/no-settings.png';
 import { useStyles } from '../../../../store/styles';
 import { IThemeUserPreferences } from '../../../../store/novu-theme.context';
+import Image from 'next/image';
 
 const rootClassName = css`
   padding: 15px;
@@ -69,7 +69,7 @@ export function SubscriberPreference() {
         justifyContent: 'center',
       }}
     >
-      <img src={image as any} alt="logo" style={{ maxWidth: 300 }} />
+      <Image src="/images/no-settings.png" alt="No settings" width={300} height={173} />
     </div>
   ) : (
     <ScrollArea style={{ height: 400 }}>

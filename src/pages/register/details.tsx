@@ -8,6 +8,7 @@ import BasicToast from "components/common/Layout/BasicToast";
 import { USER_VALIDATIONS } from "constants/validationRules";
 import BasicHead from "components/common/Layout/BasicHead";
 import Logo from "components/common/Layout/Logo";
+import { createSubscriber } from "pages/api/notifications";
 
 function Details() {
 	const { user } = useAuth();
@@ -47,6 +48,7 @@ function Details() {
 		if (!validate(username.length <= USER_VALIDATIONS.usernameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.usernameMaxLength} characters.`)) return;
 
 		try {
+			await createSubscriber(user.uid, user.email);
 			await updateUser({
 				docId: user.uid,
 				details: {

@@ -14,8 +14,8 @@ function ReplyForm({
     handleSubmit,
     buttonText = 'Post reply',
     placeholderText = 'Add your reply',
-    showSuccessToast = true,
-    successToastMessage = 'Posted!',
+    showSuccessToast = false,
+    successToastMessage,
     textareaRef
 }: ReplyFormProps) {
     const [isLoading, setIsLoading] = useState(false);

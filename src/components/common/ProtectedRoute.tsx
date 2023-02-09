@@ -22,7 +22,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
 	}, [router, routerPath, user]);
 
 	useEffect(() => {
-		if (!user) return;
+		if (!user || router.pathname.endsWith('/register/details')) return;
 		
 		isUserOnboarded(user.uid)
 			.then(isOnboarded => {

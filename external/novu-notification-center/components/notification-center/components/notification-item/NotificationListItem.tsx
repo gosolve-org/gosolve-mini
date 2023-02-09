@@ -302,9 +302,7 @@ const timeMarkClassName = (novuTheme: INovuTheme, unread?: boolean) => css`
   font-weight: 400;
   opacity: 0.5;
   line-height: 14.4px;
-  color: ${unread
-    ? novuTheme?.notificationItem?.unread?.timeMarkFontColor
-    : novuTheme?.notificationItem?.read?.timeMarkFontColor};
+  color: #828299;
 `;
 
 const NotificationContentContainer = styled.div`

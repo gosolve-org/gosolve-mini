@@ -3,23 +3,6 @@ const { REGION } = require('../constants');
 const { upsertDocument, deleteDocument, search } = require('./meili');
 const { createDb, getAction, getTopic, getCategory, getLocation } = require('../db');
 const { getFirestoreEventType, editorJsContentToRawText } = require("../utils");
-const { defineString } = require("firebase-functions/params");
-const axios = require('axios').default;
-
-const MEILI_API_URL = defineString('MEILI_API_URL');
-const MEILI_API_KEY = defineString('MEILI_API_KEY');
-
-module.exports.upsertPost = functions.region(REGION).https.onCall(async (data) => {
-    await axios.post(
-        `${MEILI_API_URL.value()}/indexes/resources/documents`, 
-        [{
-            ...data,
-            type: 'post',
-            id: `post-${data.id}`
-        }],
-        { headers: { "Authorization": `Bearer ${MEILI_API_KEY.value()}` } }
-    );
-});
 
 module.exports.upsertPostToMeiliSearch = functions.region(REGION).firestore
     .document('posts/{docId}')
@@ -53,18 +36,6 @@ module.exports.upsertPostToMeiliSearch = functions.region(REGION).firestore
         }
     });
 
-module.exports.upsertAction = functions.region(REGION).https.onCall(async (data) => {
-    await axios.post(
-        `${MEILI_API_URL.value()}/indexes/resources/documents`, 
-        [{
-            ...data,
-            type: 'action',
-            id: `action-${data.id}`
-        }],
-        { headers: { "Authorization": `Bearer ${MEILI_API_KEY.value()}` } }
-    );
-});
-
 module.exports.upsertActionToMeiliSearch = functions.region(REGION).firestore
     .document('actions/{docId}')
     .onWrite(async (change) => {
@@ -90,18 +61,6 @@ module.exports.upsertActionToMeiliSearch = functions.region(REGION).firestore
             await deleteDocument(id, 'action');
         }
     });
-
-module.exports.upsertTopic = functions.region(REGION).https.onCall(async (data) => {
-    await axios.post(
-        `${MEILI_API_URL.value()}/indexes/resources/documents`, 
-        [{
-            ...data,
-            type: 'topic',
-            id: `topic-${data.id}`
-        }],
-        { headers: { "Authorization": `Bearer ${MEILI_API_KEY.value()}` } }
-    );
-});
 
 module.exports.upsertTopicToMeiliSearch = functions.region(REGION).firestore
     .document('topics/{docId}')

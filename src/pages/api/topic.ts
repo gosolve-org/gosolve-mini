@@ -1,10 +1,7 @@
-import { db, functions } from "utils/firebase";
+import { db } from "utils/firebase";
 import { collection, updateDoc, doc, getDoc, addDoc } from "firebase/firestore";
 
 import { Topic } from "models/Topic";
-import { httpsCallable } from "firebase/functions";
-
-const upsertTopicFunction = httpsCallable(functions, 'upsertTopic');
 
 const addTopicHistory = async ({ details }: { details: Topic }) => {
 	try {
@@ -27,15 +24,7 @@ const addTopic = async ({ details, category, location }: { details: Topic, categ
 			updatedAt: new Date().getTime(),
 		}).then(doc => doc.id);
 
-		await Promise.all([
-			addTopicHistory({ details }),
-			upsertTopicFunction({
-				id,
-				category,
-				location,
-				content: details.content
-			})
-		]);
+		await addTopicHistory({ details });
 
 		return id;
 	} catch (err) {
@@ -67,17 +56,11 @@ const updateTopic = async ({
 					updatedAt: new Date().getTime(),
 				});
 
-				await Promise.all([
-					addTopicHistory({ details }),
-					upsertTopicFunction({
-						id: docId,
-						category,
-						location,
-						content: details.content
-					})
-				]);
+				await addTopicHistory({ details });
+
+				return docId;
 			} else {
-				await addTopic({ details, category, location });
+				return await addTopic({ details, category, location });
 			}
 		}
 

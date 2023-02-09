@@ -204,7 +204,6 @@ function ReplyFormContainer({
 					handleSubmit={handleSubmit}
 					buttonText="Reply"
 					placeholderText="Add your reply"
-					showSuccessToast={false}
 					textareaRef={textareaRef}
 				/>
 			</div>

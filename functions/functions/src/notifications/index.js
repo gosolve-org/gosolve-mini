@@ -3,39 +3,16 @@ const { REGION } = require('../constants');
 const constants = require('../constants');
 const { toUrlPart } = require('../utils');
 const { triggerNotification, createSubscriber } = require('./novu');
-const { createDb } = require('../db');
-
-const getPostMetaData = async (db, postId) => {
-    const postDoc = await db.collection('posts').doc(postId).get();
-    let { authorId: postAuthorId, topicId, actionId, title: postTitle } = postDoc.data();
-
-    let actionTitle;
-    let actionAuthorId;
-    if (!!actionId) {
-        const actionDoc = await db.collection('actions').doc(actionId).get();
-        const action = actionDoc.data();
-        topicId = action.topicId;
-        actionTitle = action.title;
-        actionAuthorId = action.authorId;
-    }
-
-    const topicDoc = await db.collection('topics').doc(topicId).get();
-
-    const { categoryId, locationId } = topicDoc.data();
-    const [ categoryDoc, locationDoc ] = await Promise.all([
-        db.collection('categories').doc(categoryId).get(),
-        db.collection('locations').doc(locationId).get(),
-    ]);
-    const category = categoryDoc.data().category;
-    const location = locationDoc.data().location;
-
-    return { postTitle, category, location, actionId, postAuthorId, actionTitle, actionAuthorId };
-}
+const { createDb, getPost, getTopic, getAction } = require('../db');
 
 const handleRootCommentCreation = async (commentId, commentAuthorUsername, commentAuthorId, postId) => {
         const db = createDb();
 
-        const { postTitle, category, location, actionId, postAuthorId } = await getPostMetaData(db, postId);
+        let { actionId, title: postTitle, authorId: postAuthorId, topicId } = await getPost(db, postId);
+        if (!!actionId) {
+            topicId = (await getAction(db, actionId)).topicId;
+        }
+        const { category, location } = await getTopic(db, topicId);
 
         if (postAuthorId === commentAuthorId) return;
 
@@ -68,6 +45,16 @@ const handleCommentReply = async (commentId, commentAuthorUsername, commentAutho
         return otherCommentReplyDocs.docs.map(doc => doc.data().authorId);
     };
 
+    const getResourceProperties = async () => {
+        let { title: postTitle, actionId, topicId } = await getPost(db, postId);
+        if (!!actionId) {
+            topicId = (await getAction(db, actionId)).topicId;
+        }
+        const { category, location } = await getTopic(db, topicId);
+
+        return { postTitle, category, location, actionId };
+    };
+
     const [
         parentCommentAuthorId,
         otherCommentReplyAuthorIds,
@@ -75,7 +62,7 @@ const handleCommentReply = async (commentId, commentAuthorUsername, commentAutho
     ] = await Promise.all([
         getParentCommentAuthorId(),
         getOtherCommentReplyAuthorIds(),
-        getPostMetaData(db, postId),
+        getResourceProperties(),
     ]);
 
     const subscriberIds = [...new Set(otherCommentReplyAuthorIds.concat(parentCommentAuthorId))]
@@ -117,11 +104,14 @@ module.exports.notifyPostCreation = functions.region(REGION).firestore
     .onCreate(async (snapshot) => {
         const db = createDb();
         const id = snapshot.id;
-        const { authorId, authorUsername } = snapshot.data();
-
-        const { actionId, category, location, actionTitle, actionAuthorId } = await getPostMetaData(db, id);
+        const { authorId, authorUsername, actionId } = snapshot.data();
 
         if (!actionId) return;
+
+        const { topicId, title: actionTitle, authorId: actionAuthorId } = await getAction(db, actionId);
+
+        const { category, location } = await getTopic(db, topicId);
+
         if (authorId === actionAuthorId) return;
 
         await triggerNotification(constants.NOVU.TRIGGERS.NEW_ACTION_POST, [actionAuthorId], {

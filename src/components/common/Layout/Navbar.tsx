@@ -142,16 +142,16 @@ function Navbar() {
 	};
 
 	const handleNavigate = async () => {
-		setIsNavigating(true);
-		if (selectedCategory && selectedLocation) {
-			handleCurrentCategoryChange(selectedCategory);
-			handleCurrentLocationChange(selectedLocation);
+		if (!selectedCategory || !selectedLocation) return;
 
-			await router.push(
-				`/${toUrlPart(selectedCategory.category)}/${toUrlPart(selectedLocation.location)}`
-			);
-			setIsNavigating(false);
-		}
+		setIsNavigating(true);
+		handleCurrentCategoryChange(selectedCategory);
+		handleCurrentLocationChange(selectedLocation);
+
+		await router.push(
+			`/${toUrlPart(selectedCategory.category)}/${toUrlPart(selectedLocation.location)}`
+		);
+		setIsNavigating(false);
 	};
 
 	return (

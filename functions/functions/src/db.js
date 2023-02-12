@@ -57,3 +57,14 @@ module.exports.getLocation = async (db, locationId) => {
     const locationDoc = await db.collection('locations').doc(locationId).get();
     return { location: locationDoc.data().location };
 };
+
+module.exports.getUserByUsername = async (db, username) => {
+    const userDocs = await db.collection('user').where('username', '==', username).get();
+    
+    if (userDocs.empty) return null;
+    return { ...userDocs.docs[0].data(), id: userDocs.docs[0].id };
+};
+
+module.exports.updateUser = async (db, userId, data) => {
+    await db.collection('user').doc(userId).update(data);
+};

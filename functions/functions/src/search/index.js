@@ -2,7 +2,7 @@ const functions = require("firebase-functions");
 const { REGION } = require('../constants');
 const { upsertDocument, deleteDocument, search } = require('./meili');
 const { createDb, getAction, getTopic, getCategory, getLocation } = require('../db');
-const { getFirestoreEventType, editorJsContentToRawText } = require("../utils");
+const { getFirestoreEventType, editorJsContentToRawText, ensureAuth } = require("../utils");
 
 module.exports.upsertPostToMeiliSearch = functions.region(REGION).firestore
     .document('posts/{docId}')
@@ -88,7 +88,8 @@ module.exports.upsertTopicToMeiliSearch = functions.region(REGION).firestore
     });
 
 // Searches through all resources
-module.exports.search = functions.region(REGION).https.onCall(async (data) => {
+module.exports.search = functions.region(REGION).https.onCall(async (data, context) => {
+    ensureAuth(context);
     const query = data.query;
     if (!query) return [];
 

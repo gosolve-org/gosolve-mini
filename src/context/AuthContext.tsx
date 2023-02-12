@@ -19,7 +19,7 @@ import {
 } from "@firebase/auth";
 
 import { auth } from "utils/firebase";
-import { doesUserExist, getUser, getWaitlistUser, updateUser } from "pages/api/user";
+import { addUser, doesUserExist, getUser, getWaitlistUser, updateUser } from "pages/api/user";
 import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
 import { FirebaseError } from "firebase/app";
@@ -169,8 +169,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 			throw new ErrorWithCode(ERROR_CODES.waitlistUserNotOffboarded);
 		}
 
-		await updateUser({
-			docId: credentials.user.uid,
+		await addUser({
+			uid: credentials.user.uid,
 			details: { email: credentials.user.email },
 		});
 
@@ -193,8 +193,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 			password
 		);
 
-		await updateUser({
-			docId: credentials.user.uid,
+		await addUser({
+			uid: credentials.user.uid,
 			details: { email },
 		});
 

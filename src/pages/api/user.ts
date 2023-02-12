@@ -5,6 +5,10 @@ import { User } from "models/User";
 import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
 import { WaitlistUser } from "models/WaitlistUser";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "utils/firebase";
+
+const updateUserFunction = httpsCallable(functions, 'updateUser');
 
 const addUser = async ({ uid, details }: { uid: string; details?: User }) => {
 	try {
@@ -21,30 +25,16 @@ const addUser = async ({ uid, details }: { uid: string; details?: User }) => {
 };
 
 const updateUser = async ({
-	docId,
 	details,
 }: {
-	docId: string;
-	details?: User;
+	details: User;
 }) => {
-	try {
-		const userRef = doc(db, "user", docId);
-		const docSnap = await getDoc(userRef);
-
-		if (docSnap.exists()) {
-			await updateDoc(userRef, {
-				...details,
-				updatedAt: new Date().getTime(),
-			});
-		} else {
-			await addUser({ uid: docId, details });
-		}
-
-		Promise.resolve();
-	} catch (err) {
-		console.error(err);
-		throw new Error("Not allowed");
-	}
+	await updateUserFunction({
+		name: details.name,
+		username: details.username,
+		birthYear: details.birthYear,
+		isOnboarded: details.isOnboarded,
+	});
 };
 
 const getUser = async (uid: string): Promise<User> => {

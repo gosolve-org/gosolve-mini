@@ -56,17 +56,21 @@ function Settings() {
 		if (!validate(name.length <= USER_VALIDATIONS.nameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.nameMaxLength} characters.`)) return;
 		if (!validate(username.length >= USER_VALIDATIONS.usernameMinLength, `Your username needs to be at least ${USER_VALIDATIONS.usernameMinLength} characters.`)) return;
 		if (!validate(username.length <= USER_VALIDATIONS.usernameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.usernameMaxLength} characters.`)) return;
+		if (!validate(/^[a-zA-Z0-9\.\_\-]+$/.test(username), 'Your username can only contain letters, numbers, hyphens, underscores and periods.')) return;
 
 		await updateUser({
-			docId: user.uid,
 			details: { name, username, birthYear },
 		})
 		.then(() => {
 			toast.success('Saved!');
 		})
 		.catch(err => {
-			toast.error('Something went wrong');
-			console.error(err);
+			if (err.code === 'functions/invalid-argument') {
+				toast.error(err.message);
+			} else {
+				toast.error('Something went wrong');
+				console.error(err);
+			}
 		})
 		.finally(() => {
 			setIsLoading(false);

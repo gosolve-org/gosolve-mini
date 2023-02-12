@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 const { REGION } = require('../constants');
 const constants = require('../constants');
-const { toUrlPart } = require('../utils');
+const { toUrlPart, ensureAuth } = require('../utils');
 const { triggerNotification, createSubscriber } = require('./novu');
 const { createDb, getPost, getTopic, getAction } = require('../db');
 
@@ -82,8 +82,9 @@ const handleCommentReply = async (commentId, commentAuthorUsername, commentAutho
     });
 }
 
-module.exports.createSubscriber = functions.region(REGION).https.onCall(async (data) => {
-    await createSubscriber(data.userId, data.email);
+module.exports.createSubscriber = functions.region(REGION).https.onCall(async (_, context) => {
+    ensureAuth(context);
+    await createSubscriber(context.auth.uid, context.auth.token.email);
 });
 
 module.exports.notifyCommentCreation = functions.region(REGION).firestore

@@ -27,14 +27,14 @@ function Action() {
 
 	const [userProfile, userLoading] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
 
-	const canUserEdit =
-		userProfile?.id === user?.uid &&
-		(userProfile?.data()?.role === "admin" ||
-			userProfile?.data()?.role === "editor");
-
 	const [actionSnapshot, actionsLoading] = useDocumentOnce(doc(db, "actions", actionId));
 
 	const actionContent = actionSnapshot?.data()?.content || JSON.stringify(actionEditorTemplate);
+	
+	const canUserEdit =
+		userProfile?.id === user?.uid &&
+		(userProfile?.data()?.role === "admin" ||
+			(userProfile?.data()?.role === "editor" && userProfile?.id === actionSnapshot?.data().authorId));
 
 	const handleSaveData = async (savedData: string) => {
 		await updateAction({

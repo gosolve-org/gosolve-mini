@@ -1,5 +1,6 @@
 const { defineString } = require("firebase-functions/params");
 const { Novu } = require('@novu/node');
+const functions = require("firebase-functions");
 
 const NOVU_API_KEY = defineString('NOVU_API_KEY');
 
@@ -22,7 +23,8 @@ module.exports.createSubscriber = async (id, email) => {
     } catch (_) {}
 
     if (subscriber && subscriber.status >= 200 && subscriber.status < 300) {
-        throw new Error(`Will not create subscriber with id ${id} because subscriber with this id already exists.`);
+        functions.logger.warn(`Will not create subscriber with id ${id} because subscriber with this id already exists.`);
+        return;
     }
 
     await novu.subscribers.identify(id, {

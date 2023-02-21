@@ -9,22 +9,35 @@ import {
 import { useRouter } from "next/router";
 import { useCollectionOnce } from "react-firebase-hooks/firestore";
 import { collection } from "firebase/firestore";
-import Image from "next/image";
 import Link from "next/link";
 import { Transition, Listbox } from "@headlessui/react";
 import {
 	MagnifyingGlassIcon,
 	CheckIcon,
 	ArrowRightIcon,
-	ChevronUpDownIcon,
 	ChevronDownIcon,
 } from "@heroicons/react/20/solid";
+
+import { BellIcon, MegaphoneIcon } from "@heroicons/react/24/outline";
 
 import { Category } from "models/Category";
 import { Location } from "models/Location";
 import { db } from "utils/firebase";
 import { useAuth } from "context/AuthContext";
-import { DataContext } from "pages/_app";
+import { toUrlPart } from "utils/textUtils";
+import { DataContext } from "context/DataContext";
+import ResponsiveLogo from "./ResponsiveLogo";
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+import { LINKS } from "constants/links";
+import NotificationsBell from "./NotificationsBell";
+
+const CATEGORY_DROPDOWN_PLACEHOLDER = 'Select a category';
+const LOCATION_DROPDOWN_PLACEHOLDER = 'Select a location';
+
+const topicSelectorStyle = {
+	minWidth: '150px',
+};
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -33,26 +46,25 @@ function classNames(...classes: string[]) {
 function Navbar() {
 	const { user } = useAuth();
 	const router = useRouter();
-	const { handleCurrentCategoryIdChange, handleCurrentLocationIdChange } =
+	const { handleCurrentCategoryChange, handleCurrentLocationChange, currentCategory, currentLocation } =
 		useContext(DataContext);
+	const [isNavigating, setIsNavigating] = useState(false);
 
 	const [categoriesCollection] = useCollectionOnce(collection(db, "categories"));
 	const [locationsCollection] = useCollectionOnce(collection(db, "locations"));
 
 	const [searchQuery, setSearchQuery] = useState("");
 	const [categories, setCategories] = useState<Category[]>([
-		{ id: "", category: "" },
+		{ id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER },
 	]);
 	const [locations, setLocations] = useState<Location[]>([
-		{ id: "", location: "" },
+		{ id: null, location: LOCATION_DROPDOWN_PLACEHOLDER },
 	]);
 
 	const [selectedCategory, setSelectedCategory] = useState<Category>();
 
 	const [selectedLocation, setSelectedLocation] = useState<Location>();
 
-	const readableCategory = router?.query?.category?.toString().split("-").join(" ");
-	const readableLocation = router?.query?.location?.toString().split("-").join(" ");
 	const readableSearchQuery = router?.query?.q?.toString().split("+").join(" ") ?? "";
 
 	useEffect(() => {
@@ -67,7 +79,7 @@ function Navbar() {
 						hidden: docData?.hidden,
 					};
 				  })
-				: [{ id: "", category: "" }]
+				: [{ id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER }]
 		);
 	}, [categoriesCollection]);
 
@@ -83,39 +95,42 @@ function Navbar() {
 						hidden: docData?.hidden,
 					};
 				  })
-				: [{ id: "", location: "" }]
+				: [{ id: null, location: LOCATION_DROPDOWN_PLACEHOLDER }]
 		);
 	}, [locationsCollection]);
 
 	useEffect(() => {
 		const category = categories.find(
-			(category) => category.category === readableCategory
+			(category) => category.category === currentCategory?.category
 		);
-		if (category?.id) handleCurrentCategoryIdChange(category.id);
-	}, [ categories, readableCategory, handleCurrentCategoryIdChange ]);
+		if (category?.id) handleCurrentCategoryChange(category);
+	}, [ categories, currentCategory, handleCurrentCategoryChange ]);
 
 	useEffect(() => {
 		const location = locations.find(
-			(location) => location.location === readableLocation
+			(location) => location.location === currentLocation?.location
 		);
-		if (location?.id) handleCurrentLocationIdChange(location.id);
-	}, [ locations, readableLocation, handleCurrentLocationIdChange ]);
+		if (location?.id) handleCurrentLocationChange(location);
+	}, [ locations, currentLocation, handleCurrentLocationChange ]);
 
 	useEffect(() => {
 		setSearchQuery(readableSearchQuery);
 	}, [ readableSearchQuery ]);
 
 	useEffect(() => {
-		setSelectedCategory(categories.find(
-			(category) => category.category === readableCategory
-		));
-	}, [ readableCategory, categories ]);
+		const category = categories.find(
+			(category) => category.category === currentCategory?.category
+		);
 
-	useEffect(() => {
-		setSelectedLocation(locations.find(
-			(location) => location.location === readableLocation
-		));
-	}, [ readableLocation, locations ]);
+		const location = locations.find(
+			(location) => location.location === currentLocation?.location
+		);
+
+		if (category?.hidden || location?.hidden) return;
+
+		setSelectedCategory(category);
+		setSelectedLocation(location);
+	}, [ currentCategory, currentLocation, categories, locations ]);
 
 	const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
 		setSearchQuery(e.currentTarget.value);
@@ -126,19 +141,17 @@ function Navbar() {
 		}
 	};
 
-	const handleNavigate = () => {
-		if (selectedCategory && selectedLocation) {
-			handleCurrentCategoryIdChange(selectedCategory.id);
-			handleCurrentLocationIdChange(selectedLocation.id);
+	const handleNavigate = async () => {
+		if (!selectedCategory || !selectedLocation) return;
 
-			router.push(
-				`/${selectedCategory.category
-					.split(" ")
-					.join("-")}/${selectedLocation.location
-					.split(" ")
-					.join("-")}`
-			);
-		}
+		setIsNavigating(true);
+		handleCurrentCategoryChange(selectedCategory);
+		handleCurrentLocationChange(selectedLocation);
+
+		await router.push(
+			`/${toUrlPart(selectedCategory.category)}/${toUrlPart(selectedLocation.location)}`
+		);
+		setIsNavigating(false);
 	};
 
 	return (
@@ -148,14 +161,7 @@ function Navbar() {
 					<div className="flex md:absolute md:inset-y-0 md:left-0 lg:static xl:col-span-2">
 						<div className="flex flex-shrink-0 items-center">
 							<Link href="/">
-								<Image
-									className="block h-6 w-auto"
-									src="/images/gosolve_logo.svg"
-									alt="goSolve Logo"
-									width={100}
-									height={37}
-									priority
-								/>
+								<ResponsiveLogo className="block h-6 w-auto" />
 							</Link>
 						</div>
 					</div>
@@ -198,11 +204,8 @@ function Navbar() {
 										</Listbox.Label>
 										<div className="relative">
 											<Listbox.Button className="flex relative  cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
-												<span className="block truncate">
-													{selectedCategory?.category 
-														?? readableCategory
-														??  "Select a category"
-													}
+												<span className="block truncate grow" style={topicSelectorStyle}>
+													{selectedCategory?.category ?? CATEGORY_DROPDOWN_PLACEHOLDER}
 												</span>
 												<span className="pointer-events-none inset-y-0 right-0 flex items-center pl-1">
 													<ChevronDownIcon
@@ -298,11 +301,8 @@ function Navbar() {
 										</Listbox.Label>
 										<div className="relative">
 											<Listbox.Button className="flex relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 px-3 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
-												<span className="block">
-													{selectedLocation?.location
-														?? readableLocation
-														?? "Select a location"
-													}
+												<span className="block truncate grow" style={topicSelectorStyle}>
+													{selectedLocation?.location ?? LOCATION_DROPDOWN_PLACEHOLDER}
 												</span>
 												<span className="pointer-events-none inset-y-0 right-0 flex items-center pl-1">
 													<ChevronDownIcon
@@ -386,6 +386,7 @@ function Navbar() {
 						<span className="mx-3.5">
 							<button
 								onClick={handleNavigate}
+								disabled={isNavigating}
 								type="button"
 								className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 							>
@@ -398,28 +399,55 @@ function Navbar() {
 					</div>
 
 					<div className="flex items-center justify-end xl:col-span-2">
-						<Link href="/settings">
-							{user?.photoURL ? (
-								<img
-									referrerPolicy="no-referrer"
-									className="h-8 w-8 rounded-full"
-									src={user?.photoURL}
-									alt="User Avatar"
-								/>
-							) : (
-								<div className="flex justify-center">
-									<span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
-										<svg
-											className="h-full w-full text-gray-300"
-											fill="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-										</svg>
-									</span>
-								</div>
-							)}
-						</Link>
+						{/* NOTIFICATIONS BELL */}
+						<div className="mr-2">
+							<NotificationsBell
+								bellIcon={<>
+									<Tippy content="Notifications">
+										<div>
+											<BellIcon className="h-7 w-7 text-gray-light cursor-pointer"/>
+										</div>
+									</Tippy>
+								</>}
+							/>
+						</div>
+
+						{/* FEEDBACK ICON */}
+						<div className="mr-2">
+							<Tippy content="Give Feedback">
+								<Link href={LINKS.feedbackForm} target="_blank">
+									<MegaphoneIcon className="h-7 w-7 text-gray-light"></MegaphoneIcon>
+								</Link>
+							</Tippy>
+						</div>
+
+						{/* ACCOUNT SETTINGS ICON */}
+						<div className="select-none">
+							<Tippy content="Account Settings">
+								<Link href="/settings">
+									{user?.photoURL ? (
+										<img
+											referrerPolicy="no-referrer"
+											className="h-8 w-8 rounded-full"
+											src={user?.photoURL}
+											alt="User Avatar"
+										/>
+									) : (
+										<div className="flex justify-center">
+											<span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
+												<svg
+													className="h-full w-full text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 24 24"
+												>
+													<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+												</svg>
+											</span>
+										</div>
+									)}
+								</Link>
+							</Tippy>
+						</div>
 					</div>
 				</div>
 			</div>

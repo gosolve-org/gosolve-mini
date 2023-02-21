@@ -7,6 +7,7 @@ import { useAuth } from "context/AuthContext";
 import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { addComment } from "pages/api/comment";
 import { toast } from "react-toastify";
+import { POST_VALIDATIONS } from "constants/validationRules";
 
 interface AddCommentModalProps {
 	open: boolean;
@@ -26,7 +27,7 @@ function AddCommentModal({
 	const [comment, setComment] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleCommentChange = (e: FormEvent<HTMLInputElement>) =>
+	const handleCommentChange = (e: FormEvent<HTMLTextAreaElement>) =>
 		setComment(e.currentTarget.value);
 
 	const hasChanges = () => !!comment;
@@ -111,10 +112,11 @@ function AddCommentModal({
 											Comment
 										</label>
 										<div className="mt-1">
-											<input
+											<textarea
 												autoComplete="off"
 												onChange={handleCommentChange}
-												type="comment"
+												maxLength={POST_VALIDATIONS.commentMaxLength}
+												rows={1}
 												name="comment"
 												id="comment"
 												className="p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"

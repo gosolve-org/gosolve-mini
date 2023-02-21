@@ -1,6 +1,5 @@
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 
 import { useAuth } from "context/AuthContext";
 import { updateUser } from "pages/api/user";
@@ -8,6 +7,8 @@ import { toast } from "react-toastify";
 import BasicToast from "components/common/Layout/BasicToast";
 import { USER_VALIDATIONS } from "constants/validationRules";
 import BasicHead from "components/common/Layout/BasicHead";
+import Logo from "components/common/Layout/Logo";
+import { createSubscriber } from "pages/api/notifications";
 
 function Details() {
 	const { user } = useAuth();
@@ -21,6 +22,10 @@ function Details() {
 
 	const handleSubmitDetails = async (e: SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		if (!user?.uid) {
+			router.push('/login');
+		}
 
 		if (isLoading) return;
 		setIsLoading(true);
@@ -41,23 +46,28 @@ function Details() {
 		if (!validate(name.length <= USER_VALIDATIONS.nameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.nameMaxLength} characters.`)) return;
 		if (!validate(username.length >= USER_VALIDATIONS.usernameMinLength, `Your username needs to be at least ${USER_VALIDATIONS.usernameMinLength} characters.`)) return;
 		if (!validate(username.length <= USER_VALIDATIONS.usernameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.usernameMaxLength} characters.`)) return;
+		if (!validate(/^[a-zA-Z0-9\.\_\-]+$/.test(username), 'Your username can only contain letters, numbers, hyphens, underscores and periods.')) return;
 
-		if (user?.uid) {
+		try {
+			await createSubscriber();
 			await updateUser({
-				docId: user.uid,
 				details: {
 					name,
 					username,
 					birthYear,
 					isOnboarded: true
 				},
-			})
-			.then(() => router.push("/"))
-			.catch(err => {
+			});
+			await router.push("/");
+		} catch (err) {
+			if (err.code === 'functions/invalid-argument') {
+				toast.error(err.message);
+			} else {
 				toast.error('Something went wrong');
 				console.error(err);
-				setIsLoading(false);
-			});
+			}
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -79,14 +89,7 @@ function Details() {
 			<main className="h-full">
 				<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 					<div className="sm:mx-auto sm:w-full sm:max-w-md">
-						<Image
-							className="mx-auto h-18 w-auto"
-							src="/images/gosolve_logo.svg"
-							alt="goSolve Logo"
-							width={180}
-							height={37}
-							priority
-						/>
+						<Logo className="mx-auto h-18 w-auto" />
 						<h2 className="mt-6 px-4 py-2 text-center text-m font-small tracking-tight text-black ">
 							Thanks for joining goSolve
 						</h2>
@@ -157,6 +160,7 @@ function Details() {
 											name="birthYear"
 											type="number"
 											value={birthYear?.toString() || ''}
+											maxLength={4}
 											required
 											className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
 											onChange={handleBirthYearChange}

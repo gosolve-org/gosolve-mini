@@ -1,5 +1,5 @@
 import { db } from "utils/firebase";
-import { collection, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 
 import { Comment } from "models/Comment";
 
@@ -10,6 +10,7 @@ const addComment = async ({ details }: { details?: Comment }) => {
 			createdAt: new Date().getTime(),
 		}).then((docRef) => docRef.id);
 	} catch (err) {
+		console.error(err);
 		throw new Error("Not allowed");
 	}
 };

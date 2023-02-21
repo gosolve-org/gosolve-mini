@@ -7,8 +7,8 @@ import { useLeavePageConfirm } from "utils/customHooks";
 
 interface EditorProps {
 	defaultValue?: string;
-	saveData?: (savedData: string) => void;
-	onChange?: (savedData: string) => void;
+	saveData?: (savedData: string) => Promise<void>;
+	onChange?: (savedData: string) => Promise<void>;
 	readOnly?: boolean;
 }
 
@@ -22,6 +22,7 @@ const Editor = ({
 	const editorJS = useRef(null);
 
 	const [hasChanges, setHasChanges] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useLeavePageConfirm(hasChanges);
 
@@ -30,9 +31,14 @@ const Editor = ({
 	}, []);
 
 	const handleSaveClick = useCallback(async () => {
-		const savedData = await editorJS?.current?.save();
-		saveData && saveData(JSON.stringify(savedData));
-		setHasChanges(false);
+		try {
+			setIsLoading(true);
+			const savedData = await editorJS?.current?.save();
+			saveData && await saveData(JSON.stringify(savedData));
+			setHasChanges(false);
+		} finally {
+			setIsLoading(false);
+		}
 	}, [saveData]);
 
 	const handleChange = useCallback(async () => {
@@ -49,6 +55,7 @@ const Editor = ({
 					<div className="mt-6 flex justify-center items-center w-full gap-4">
 						<button
 							onClick={handleSaveClick}
+							disabled={isLoading}
 							type="button"
 							className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 						>

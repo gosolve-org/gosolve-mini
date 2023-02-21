@@ -11,6 +11,8 @@ import { useAuth } from "context/AuthContext";
 
 import actionEditorTemplate from "editorTemplates/actionEditorTemplate.json"
 import BasicHead from "components/common/Layout/BasicHead";
+import { useContext } from "react";
+import { DataContext } from "context/DataContext";
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
 	ssr: false,
@@ -19,25 +21,20 @@ const EditorJs = dynamic(() => import("components/common/Editor"), {
 function Action() {
 	const { user } = useAuth();
 	const router = useRouter();
-
-	const categoryQuery = router?.query?.category?.toString();
-	const locationQuery = router?.query?.location?.toString();
-
-	const readableCategory = categoryQuery.split("-").join(" ");
-	const readableLocation = locationQuery.split("-").join(" ");
+	const { currentCategory, currentLocation } = useContext(DataContext);
 
 	const actionId = router?.query?.actionId?.toString();
 
-	const [userProfile, userLoading] = useDocumentOnceWithDependencies(doc(db, `user`, user?.uid), [ user?.uid ]);
-
-	const canUserEdit =
-		userProfile?.id === user?.uid &&
-		(userProfile?.data()?.role === "admin" ||
-			userProfile?.data()?.role === "editor");
+	const [userProfile, userLoading] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
 
 	const [actionSnapshot, actionsLoading] = useDocumentOnce(doc(db, "actions", actionId));
 
 	const actionContent = actionSnapshot?.data()?.content || JSON.stringify(actionEditorTemplate);
+	
+	const canUserEdit =
+		userProfile?.id === user?.uid &&
+		(userProfile?.data()?.role === "admin" ||
+			(userProfile?.data()?.role === "editor" && userProfile?.id === actionSnapshot?.data().authorId));
 
 	const handleSaveData = async (savedData: string) => {
 		await updateAction({
@@ -51,8 +48,8 @@ function Action() {
 				createdAt: actionSnapshot?.data()?.createdAt,
 				updatedAt: new Date()
 			},
-			category: readableCategory,
-			location: readableLocation
+			category: currentCategory?.category,
+			location: currentLocation?.location
 		})
 			.then(() => toast.success("Saved!"))
 			.catch((err) => {

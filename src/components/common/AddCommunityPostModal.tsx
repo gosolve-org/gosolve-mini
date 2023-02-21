@@ -3,17 +3,19 @@ import {
 	useState,
 	FormEvent,
 	SyntheticEvent,
+	useContext,
 } from "react";
 import { useRouter } from "next/router";
-import { doc } from "firebase/firestore";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { useAuth } from "context/AuthContext";
-import { db, useDocumentOnceWithDependencies } from "utils/firebase";
 import { addPost } from "pages/api/post";
 import { ResourceType } from "models/ResourceType";
 import { toast } from "react-toastify";
+import { toUrlPart } from "utils/textUtils";
+import { DataContext } from "context/DataContext";
+import { POST_VALIDATIONS } from "constants/validationRules";
 
 interface AddCommunityPostProps {
 	open: boolean;
@@ -24,18 +26,14 @@ interface AddCommunityPostProps {
 
 function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId }: AddCommunityPostProps) {
 	const { user } = useAuth();
+	const { currentCategory, currentLocation } = useContext(DataContext);
 	const router = useRouter();
 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const categoryQuery = router?.query?.category?.toString() || '...';
-	const locationQuery = router?.query?.location?.toString() || '...';
 	const actionId = router?.query?.actionId?.toString() ?? '';
-
-	const readableCategory = categoryQuery.split("-").join(" ");
-	const readableLocation = locationQuery.split("-").join(" ");
 
 	const handleTitleChange = (e: FormEvent<HTMLInputElement>) =>
 		setTitle(e.currentTarget.value);
@@ -57,27 +55,30 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 			[(parentResourceType === ResourceType.Action ? 'actionId' : 'topicId')]: parentResourceId
 		};
 
-		await addPost({
-			details: {
-				...originDetails,
-				authorId: user?.uid || "",
-				title,
-				content: description,
-				authorUsername: user.username,
-				createdAt: new Date()
-			},
-			category: readableCategory,
-			location: readableLocation
-		}).then((docId) => {
-			router.push(parentResourceType === ResourceType.Topic
-				? `/${categoryQuery}/${locationQuery}/community/${docId}`
-				: `/${categoryQuery}/${locationQuery}/actions/${actionId}/community/${docId}`
+		try {
+			const docId = await addPost({
+				details: {
+					...originDetails,
+					authorId: user?.uid || "",
+					title,
+					content: description,
+					authorUsername: user.username,
+					createdAt: new Date()
+				},
+				category: currentCategory.category,
+				location: currentLocation.location
+			});
+
+			await router.push(parentResourceType === ResourceType.Topic
+				? `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/community/${docId}`
+				: `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/actions/${actionId}/community/${docId}`
 			);
-		}).catch(err => {
+		} catch (err) {
 			toast.error("Something went wrong");
 			console.error(err);
+		} finally {
 			setIsLoading(false);
-		});
+		}
 	};
 
 	return (
@@ -126,7 +127,7 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 											as="h3"
 											className="text-xs text-gray-500 font-normal truncate"
 										>
-											{`You're creating a post in the community for "${readableCategory} in ${readableLocation}"`}
+											{`You're creating a post in the community for "${currentCategory?.category} in ${currentLocation?.location}"`}
 										</Dialog.Title>
 									</div>
 								</div>
@@ -147,6 +148,7 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 											<input
 												autoComplete="off"
 												onChange={handleTitleChange}
+												maxLength={POST_VALIDATIONS.titleMaxLength}
 												type="title"
 												name="title"
 												id="title"
@@ -168,6 +170,7 @@ function AddCommunityPost({ open, setOpen, parentResourceType, parentResourceId 
 													handleDescriptionChange
 												}
 												rows={4}
+												maxLength={POST_VALIDATIONS.contentMaxLength}
 												name="description"
 												id="description"
 												className="p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"

@@ -1,6 +1,6 @@
 import Action from "components/pages/category/location/Action";
+import { DataContext } from "context/DataContext";
 import { Tab } from "models/Tab";
-import { DataContext } from "pages/_app";
 import { useContext, useEffect } from "react";
 
 function TopicActionPage() {

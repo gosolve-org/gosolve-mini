@@ -5,16 +5,18 @@ import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
 import { db, useCollectionOnceWithDependencies } from "utils/firebase";
-import { DataContext } from "pages/_app";
 import { Layout, AddCommunityPostModal, Pagination } from "components/common";
-import { trimToFirstLine } from "utils/textUtils";
+import { toUrlPart, trimToFirstLine } from "utils/textUtils";
 import { ResourceType } from "models/ResourceType";
 import { paginate } from "utils/pagination";
 import { getRandomItem } from "utils/basicUtils";
 import { NO_POSTS_PLACEHOLDERS } from "constants/placeholderTexts";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import calendar from "dayjs/plugin/calendar";
+import { DataContext } from "context/DataContext";
 dayjs.extend(localizedFormat);
+dayjs.extend(calendar);
 
 const PAGE_SIZE = 10;
 
@@ -23,23 +25,21 @@ interface CommunityOverviewProps {
 }
 
 function CommunityOverview({ resourceType } : CommunityOverviewProps) {
-	const { currentCategoryId, currentLocationId } = useContext(DataContext);
+	const { currentCategory, currentLocation } = useContext(DataContext);
 	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
 		useState(false);
 
 	const [topicsCollection, topicsLoading] = useCollectionOnceWithDependencies(
-		resourceType == ResourceType.Topic ? query(
+		resourceType == ResourceType.Topic ? () => query(
 			collection(db, "topics"),
-			where("categoryId", "==", currentCategoryId),
-			where("locationId", "==", currentLocationId)
-		) : null, [ currentCategoryId, currentLocationId ]);
+			where("categoryId", "==", currentCategory.id),
+			where("locationId", "==", currentLocation.id)
+		) : null, [ currentCategory?.id, currentLocation?.id ]);
 
 
 	const router = useRouter();
 	const routerQuery = router.query;
 
-	const categoryQuery = routerQuery?.category?.toString() || '...';
-	const locationQuery = routerQuery?.location?.toString() || '...';
 	const pageQuery = routerQuery?.page
 		? parseInt(routerQuery?.page.toString()) || 1
 		: 1;
@@ -59,7 +59,7 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
 	const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
-		query(
+		() => query(
 			collection(db, "posts"),
 			where(resourceType === ResourceType.Action ? 'actionId' : 'topicId', "==", resourceId),
 			orderBy("updatedAt", "desc")
@@ -104,13 +104,13 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 									return (
 										<Link
 											href={resourceType === ResourceType.Topic
-												? `/${categoryQuery}/${locationQuery}/community/${item.id}`
-												: `/${categoryQuery}/${locationQuery}/actions/${resourceId}/community/${item.id}`
+												? `/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community/${item.id}`
+												: `/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions/${resourceId}/community/${item.id}`
 											}
 											className="bg-white hover:bg-gray-50 px-4 py-5 sm:px-6 rounded-lg shadow mb w-full"
 											key={item.id}
 										>
-											<h4 className="text-2xl mb-4 truncate">
+											<h4 className="text-2xl mb-4 line-clamp-2">
 												{itemData?.title}
 											</h4>
 											<div className="flex space-x-3 justify-center items-center  mb-4">
@@ -131,7 +131,9 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 															"Anonymous"}
 													</span>
 													<span className="text-sm text-gray-500 ml-4">
-														{dayjs(itemData?.createdAt).format('lll')}
+														{dayjs(itemData?.createdAt).calendar(null, {
+															sameElse: 'lll',
+														})}
 													</span>
 												</div>
 											</div>

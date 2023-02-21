@@ -1,6 +1,5 @@
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import Link from "next/link";
 
 import { useAuth } from "context/AuthContext";
@@ -12,6 +11,8 @@ import LinkToast, { showLinkToast } from "components/common/Layout/LinkToast";
 import { UserCredential } from "@firebase/auth";
 import { TOAST_IDS } from "constants/toastConstants";
 import BasicHead from "components/common/Layout/BasicHead";
+import Logo from "components/common/Layout/Logo";
+import { USER_VALIDATIONS } from "constants/validationRules";
 
 function Register() {
 	const [email, setEmail] = useState<string>("");
@@ -23,31 +24,25 @@ function Register() {
 	const router = useRouter();
 
 	const handleRegistration = async (registration: Promise<UserCredential>, credentials?: UserCredential|null) => {
-		return registration
-			.then(() => router.push("/register/details"))
-			.catch(err => {
-				if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotFound) {
-					showLinkToast(
-						'error',
-						`You don't have access to the platform yet. Click here to join our waitlist.`,
-						`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
-					setIsLoading(false);
-					return;
-				}
-
-				if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotOffboarded) {
-					showLinkToast(
-						'error',
-						`You're still on the waitlist. Click here to check your status.`,
-						`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
-					setIsLoading(false);
-					return;
-				}
-
+		try {
+			await registration;
+			await router.push("/register/details");
+		} catch (err) {
+			if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotFound) {
+				showLinkToast(
+					'error',
+					`You don't have access to the platform yet. Click here to join our waitlist.`,
+					`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
+			} else if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotOffboarded) {
+				showLinkToast(
+					'error',
+					`You're still on the waitlist. Click here to check your status.`,
+					`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
+			} else {
 				console.error(err);
 				toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
-				setIsLoading(false);
-			});
+			}
+		}
 	}
 
 	const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
@@ -62,8 +57,12 @@ function Register() {
 			return;
 		}
 
-		setShouldRemember(shouldRememberCheckbox);
-		await handleRegistration(registerWithEmail(email, password));
+		try {
+			setShouldRemember(shouldRememberCheckbox);
+			await handleRegistration(registerWithEmail(email, password));
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleGmailLogin = async () => {
@@ -71,8 +70,12 @@ function Register() {
 		setIsLoading(true);
 
 		setShouldRemember(shouldRememberCheckbox);
-		const credentials = await getGoogleCredentials();
-		await handleRegistration(registerWithGoogle(credentials), credentials);
+		try {
+			const credentials = await getGoogleCredentials();
+			await handleRegistration(registerWithGoogle(credentials), credentials);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleEmailChange = (e: FormEvent<HTMLInputElement>) =>
@@ -90,14 +93,7 @@ function Register() {
 			<main className="h-full">
 				<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 					<div className="sm:mx-auto sm:w-full sm:max-w-md">
-						<Image
-							className="mx-auto h-12 w-auto"
-							src="/images/gosolve_logo.svg"
-							alt="goSolve Logo"
-							width={180}
-							height={37}
-							priority
-						/>
+						<Logo className="mx-auto h-12 w-auto" />
 						<h1 className="mt-6 text-center text-xl font-normal tracking-tight text-black">
 							Create your account
 						</h1>
@@ -144,6 +140,7 @@ function Register() {
 											name="password"
 											type="password"
 											autoComplete="current-password"
+											maxLength={USER_VALIDATIONS.passwordMaxLength}
 											required
 											className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
 											onChange={handlePasswordChange}

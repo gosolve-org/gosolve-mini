@@ -10,6 +10,7 @@ jobs:
     environment: develop
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Deploy firebase to develop
         id: deploy
         uses: ./.github/workflows/actions/deploy
@@ -20,6 +21,7 @@ jobs:
     environment: staging
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Deploy firebase to staging
         id: deploy
         uses: ./.github/workflows/actions/deploy
@@ -31,6 +33,7 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Deploy firebase to production
         id: deploy
         uses: ./.github/workflows/actions/deploy

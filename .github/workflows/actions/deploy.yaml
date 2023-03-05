@@ -1,0 +1,25 @@
+name: 'deploy'
+description: 'Deploys firebase functions and configs'
+inputs:
+  firebase_project_id:
+    required: true
+runs:
+  using: "composite"
+  steps:
+      - uses: actions/checkout@v2
+      - name: Create env file
+        run: |
+          cd firebase/functions
+          touch .env
+          echo "${{ secrets.FIREBASE_FUNCTIONS_ENV_FILE }}" > .env
+      - name: Install npm packages
+        run: |
+          cd firebase/functions
+          npm install
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions,firestore
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          PROJECT_ID: ${{ inputs.firebase_project_id }}

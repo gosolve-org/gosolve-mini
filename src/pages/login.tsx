@@ -18,6 +18,7 @@ function Login() {
 	const [shouldRememberCheckbox, setShouldRememberCheckbox] =
 		useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [loginFailed, setLoginFailed] = useState(false);
 
 	const { login, getGoogleCredentials, setShouldRemember, logout, validateUser } = useAuth();
 	const router = useRouter();
@@ -58,6 +59,7 @@ function Login() {
 			toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
 		} finally {
 			setIsLoading(false);
+			setLoginFailed(true);
 		}
 	};
 
@@ -90,6 +92,7 @@ function Login() {
 			toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
 		} finally {
 			setIsLoading(false);
+			setLoginFailed(true);
 		}
 	};
 
@@ -235,6 +238,11 @@ function Login() {
 										</button>
 									</div>
 								</div>
+								{(loginFailed) &&
+									<div className="mt-6 grid grid-cols-1 gap-3">
+										<small className="text-gray-400 text-center">Having trouble signing in? Contact us at team@gosolve.org</small>
+									</div>
+								}
 							</div>
 						</div>
 					</div>

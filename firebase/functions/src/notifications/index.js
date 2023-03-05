@@ -82,10 +82,12 @@ const handleCommentReply = async (commentId, commentAuthorUsername, commentAutho
     });
 }
 
-module.exports.createSubscriber = functions.region(REGION).https.onCall(async (_, context) => {
-    ensureAuth(context);
-    await createSubscriber(context.auth.uid, context.auth.token.email);
-});
+module.exports.createSubscriber = functions.region(REGION).firestore
+    .document('user/{docId}')
+    .onCreate(async (change) => {
+        await createSubscriber(change.id, change.data().email);
+    });
+
 
 module.exports.notifyCommentCreation = functions.region(REGION).firestore
     .document('comments/{docId}')

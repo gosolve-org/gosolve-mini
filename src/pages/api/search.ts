@@ -1,7 +1,6 @@
-import { httpsCallable } from "firebase/functions";
-import { functions } from "utils/firebase";
+import { wrappedHttpsCallable } from "utils/firebase";
 
-const searchFunction = httpsCallable(functions, 'search');
+const searchFunction = wrappedHttpsCallable('search');
 
 export const search = async (query: string, offset: number, limit: number) => {
     const results = await searchFunction({ query, offset, limit });

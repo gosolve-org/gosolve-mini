@@ -3,10 +3,8 @@ description: 'Deploys firebase functions and configs'
 inputs:
   firebase_project_id:
     required: true
-inputs:
   firebase_functions_env_file:
     required: true
-inputs:
   gcp_sa_key:
     required: true
 runs:
@@ -24,6 +22,7 @@ runs:
         run: |
           cd firebase/functions
           npm install
+        shell: bash
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:

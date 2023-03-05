@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Deploy firebase to develop
         id: deploy
-        uses: ./actions/deploy.yaml
+        uses: ./.github/workflows/actions/deploy.yaml
         with:
           firebase_project_id: gosolve-mini-dev-test
   deploy-staging:
@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Deploy firebase to staging
         id: deploy
-        uses: ./actions/deploy.yaml
+        uses: ./.github/workflows/actions/deploy.yaml
         with:
           firebase_project_id: gosolve-mini-staging-test
   deploy-production:
@@ -33,6 +33,6 @@ jobs:
     steps:
       - name: Deploy firebase to production
         id: deploy
-        uses: ./actions/deploy.yaml
+        uses: ./.github/workflows/actions/deploy.yaml
         with:
           firebase_project_id: gosolve-mini-dev-test

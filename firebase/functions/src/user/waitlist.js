@@ -5,10 +5,10 @@ const { defineString } = require("firebase-functions/params");
 const WAITLIST_API_KEY = defineString('WAITLIST_API_KEY');
 
 module.exports.getWaitlistUser = async email => {
-	const urlSearchParams = new URLSearchParams({
-		email,
-		api_key: WAITLIST_API_KEY.value()
-	});
+    const urlSearchParams = new URLSearchParams({
+        email,
+        api_key: WAITLIST_API_KEY.value()
+    });
 
     try {
         const response = await axios.get("https://api.getwaitlist.com/api/v1/waiter?" + urlSearchParams);

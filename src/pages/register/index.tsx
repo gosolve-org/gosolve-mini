@@ -38,6 +38,8 @@ function Register() {
 					'error',
 					`You're still on the waitlist. Click here to check your status.`,
 					`https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
+			} else if (err instanceof ErrorWithCode && err.code === ERROR_CODES.userAlreadyExists) {
+				toast.error('A user with this email already exists.', { containerId: TOAST_IDS.basicToastId });
 			} else {
 				console.error(err);
 				toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });

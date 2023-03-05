@@ -93,7 +93,7 @@ function Settings() {
 		setPassword(e.currentTarget.value);
 
 	const handleChangePassword = () => {
-		// TODO add modal, to retype password, reauthenticate, and call updatePassword(newPassword)
+		// TODO (only if auth method is email, NOT google) add modal, to retype password, reauthenticate, and call updatePassword(newPassword)
 	};
 
 	const handleLogoutClick = async () => {

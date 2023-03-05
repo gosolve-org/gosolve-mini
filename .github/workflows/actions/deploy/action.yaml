@@ -6,7 +6,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-      - uses: actions/checkout@v2
       - name: Create env file
         run: |
           cd firebase/functions

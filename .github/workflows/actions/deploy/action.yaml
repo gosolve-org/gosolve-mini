@@ -3,6 +3,12 @@ description: 'Deploys firebase functions and configs'
 inputs:
   firebase_project_id:
     required: true
+inputs:
+  firebase_functions_env_file:
+    required: true
+inputs:
+  gcp_sa_key:
+    required: true
 runs:
   using: "composite"
   steps:
@@ -10,7 +16,10 @@ runs:
         run: |
           cd firebase/functions
           touch .env
-          echo "${{ secrets.FIREBASE_FUNCTIONS_ENV_FILE }}" > .env
+          echo "$FIREBASE_FUNCTIONS_ENV_FILE" > .env
+        env:
+          FIREBASE_FUNCTIONS_ENV_FILE: ${{ inputs.firebase_functions_env_file }}
+        shell: bash
       - name: Install npm packages
         run: |
           cd firebase/functions
@@ -20,5 +29,5 @@ runs:
         with:
           args: deploy --only functions,firestore
         env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          GCP_SA_KEY: ${{ inputs.gcp_sa_key }}
           PROJECT_ID: ${{ inputs.firebase_project_id }}

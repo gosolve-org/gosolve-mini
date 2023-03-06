@@ -10,6 +10,12 @@ jobs:
     environment: develop
     runs-on: ubuntu-latest
     steps:
+      - name: TEST
+        run: |
+          cat "$GCP_SA_KEY" | cut -b 1-10
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        shell: bash
       - uses: actions/checkout@v2
       - name: Deploy firebase to develop
         id: deploy

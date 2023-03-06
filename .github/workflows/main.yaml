@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: TEST
         run: |
-          cat "$GCP_SA_KEY" | cut -b 1-10
+          echo "$GCP_SA_KEY" | cut -b 1-10
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         shell: bash

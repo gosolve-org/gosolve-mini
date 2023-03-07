@@ -29,5 +29,4 @@ runs:
           args: deploy --only functions,firestore
         env:
           GCP_SA_KEY: ${{ inputs.gcp_sa_key }}
-          PROJECT_ID: ${{ inputs.firebase_project_id }}
           PROJECT_PATH: ./firebase

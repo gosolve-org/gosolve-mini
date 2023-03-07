@@ -10,12 +10,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-      - name: TEST2
-        run: |
-          echo "$GCP_SA_KEY" | cut -b 1-10
-        env:
-          GCP_SA_KEY: ${{ inputs.gcp_sa_key }}
-        shell: bash
       - name: Create env file
         run: |
           cd firebase/functions
@@ -36,3 +30,4 @@ runs:
         env:
           GCP_SA_KEY: ${{ inputs.gcp_sa_key }}
           PROJECT_ID: ${{ inputs.firebase_project_id }}
+          PROJECT_PATH: ./firebase

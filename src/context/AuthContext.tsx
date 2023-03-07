@@ -187,11 +187,18 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 			throw new ErrorWithCode(ERROR_CODES.waitlistUserNotOffboarded);
 		}
 
-		const credentials = await createUserWithEmailAndPassword(
-			auth,
-			email,
-			password
-		);
+		let credentials;
+		try {
+			credentials = await createUserWithEmailAndPassword(
+				auth,
+				email,
+				password
+			);
+		} catch (err) {
+			if (!(err instanceof FirebaseError && err.code === 'auth/email-already-in-use')) {
+				throw err;
+			}
+		}
 
 		await addUser({
 			uid: credentials.user.uid,

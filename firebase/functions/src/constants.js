@@ -6,5 +6,13 @@ module.exports = {
             NEW_COMMENT_REPLY: 'new-reply-on-your-comment',
             NEW_POST_COMMENT: 'new-comment-on-your-post'
         }
+    },
+    ERROR_CODES: {
+        AUTH: {
+            USER_ALREADY_EXISTS: 'user-already-exists',
+            NOT_ON_WAITLIST: 'not-on-waitlist',
+            NOT_OFFBOARDED_FROM_WAITLIST: 'not-offboarded-from-waitlist',
+        },
+        UNKNOWN: 'unknown',
     }
 };

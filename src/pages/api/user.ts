@@ -1,27 +1,21 @@
-import { db } from "utils/firebase";
-import { setDoc, updateDoc, doc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
+import { db, wrappedHttpsCallable } from "utils/firebase";
+import { setDoc, doc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
 
 import { User } from "models/User";
 import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
 import { WaitlistUser } from "models/WaitlistUser";
-import { httpsCallable } from "firebase/functions";
-import { functions } from "utils/firebase";
 
-const updateUserFunction = httpsCallable(functions, 'updateUser');
+const updateUserFunction = wrappedHttpsCallable('updateUser');
+const registerUserFunction = wrappedHttpsCallable('registerUser');
 
-const addUser = async ({ uid, details }: { uid: string; details?: User }) => {
-	try {
-		await setDoc(doc(db, "user", uid), {
-			...details,
-			role: "user",
-			createdAt: new Date().getTime(),
-			updatedAt: new Date().getTime(),
-		}).then(() => Promise.resolve());
-	} catch (err) {
-		console.error(err);
-		throw new Error("Not allowed");
-	}
+const registerUser = async ({ email, password, userId, authMethod }: {
+	email: string,
+	password?: string,
+	userId?: string,
+	authMethod: 'email'|'google'
+}) => {
+	await registerUserFunction({ email, password, userId, authMethod });
 };
 
 const updateUser = async ({
@@ -105,4 +99,4 @@ const getWaitlistUser = async (email:string): Promise<WaitlistUser> => {
 	});
 }
 
-export { addUser, updateUser, getUser, isUserOnboarded, doesUserExist, getWaitlistUser };
+export { registerUser, updateUser, getUser, isUserOnboarded, doesUserExist, getWaitlistUser };

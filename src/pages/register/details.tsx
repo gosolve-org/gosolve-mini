@@ -8,7 +8,6 @@ import BasicToast from "components/common/Layout/BasicToast";
 import { USER_VALIDATIONS } from "constants/validationRules";
 import BasicHead from "components/common/Layout/BasicHead";
 import Logo from "components/common/Layout/Logo";
-import { createSubscriber } from "pages/api/notifications";
 
 function Details() {
 	const { user } = useAuth();
@@ -49,7 +48,6 @@ function Details() {
 		if (!validate(/^[a-zA-Z0-9\.\_\-]+$/.test(username), 'Your username can only contain letters, numbers, hyphens, underscores and periods.')) return;
 
 		try {
-			await createSubscriber();
 			await updateUser({
 				details: {
 					name,

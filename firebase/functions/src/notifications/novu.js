@@ -22,7 +22,7 @@ module.exports.createSubscriber = async (id, email) => {
         subscriber = await novu.subscribers.get(id);
     } catch (_) {}
 
-    if (subscriber && subscriber.status >= 200 && subscriber.status < 300) {
+    if (!!subscriber && subscriber.status >= 200 && subscriber.status < 300 && !!subscriber.data?.email) {
         functions.logger.warn(`Will not create subscriber with id ${id} because subscriber with this id already exists.`);
         return;
     }

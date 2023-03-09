@@ -22,3 +22,5 @@ module.exports.ensureAuth = (context) => {
             'The function must be called while authenticated.');
     }
 }
+
+module.exports.createErrorResponse = (errorCode) => ({ error: { code: errorCode } });

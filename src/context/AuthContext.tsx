@@ -19,21 +19,14 @@ import {
 } from "@firebase/auth";
 
 import { auth } from "utils/firebase";
-import { addUser, doesUserExist, getUser, getWaitlistUser, updateUser } from "pages/api/user";
+import { registerUser, doesUserExist, getUser, getWaitlistUser, updateUser } from "pages/api/user";
 import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
 import { FirebaseError } from "firebase/app";
+import { AuthUser } from "models/AuthUser";
 
 interface AuthContext {
-	user: {
-		uid: string;
-		email: string | null;
-		displayName: string | null;
-		name: string | null;
-		username: string | null;
-		birthYear: number | null;
-		photoURL: string | null;
-	} | null;
+	user: AuthUser;
 	loading: boolean;
 	login: (email: string, password: string) => Promise<UserCredential>;
 	getGoogleCredentials: () => Promise<UserCredential>;
@@ -47,27 +40,18 @@ interface AuthContext {
 const AuthContext = createContext<AuthContext>({
 	user: null,
 	loading: true,
-	login: (email: string, password: string) =>
-		signInWithEmailAndPassword(auth, email, password),
-	getGoogleCredentials: () => signInWithPopup(auth, new GoogleAuthProvider()),
-	setShouldRemember: (shouldRemember: boolean) => {},
-	logout: () => Promise.resolve(),
-	registerWithEmail: (email, password) => createUserWithEmailAndPassword(auth, email, password),
+	login: null,
+	getGoogleCredentials: null,
+	setShouldRemember: null,
+	logout: null,
+	registerWithEmail: null,
 	registerWithGoogle: null,
 	validateUser: null,
 });
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	const [loading, setLoading] = useState<boolean>(true);
-	const [user, setUser] = useState<{
-		uid: string;
-		email: string | null;
-		displayName: string | null;
-		name: string | null;
-		username: string | null;
-		birthYear: number | null;
-		photoURL: string | null;
-	} | null>(null);
+	const [user, setUser] = useState<AuthUser>(null);
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (authUser) => {
@@ -104,7 +88,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 		return await doesUserExist(credentials.user.email);
 	};
 
-	const login = async (email: string, password: string): Promise<UserCredential> => {
+	const login = async (email: string, password: string, shouldValidateUser: boolean = true): Promise<UserCredential> => {
 		try
 		{
 			const credentials = await signInWithEmailAndPassword(
@@ -113,7 +97,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 				password
 			);
 
-			if (!await validateUser(credentials)) {
+			if (shouldValidateUser && !await validateUser(credentials)) {
 				throw new ErrorWithCode(ERROR_CODES.notFound);
 			}
 	
@@ -160,45 +144,24 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	};
 
 	const registerWithGoogle = async (credentials: UserCredential): Promise<UserCredential> => {
-		const waitlistUser = await getWaitlistUser(credentials.user.email);
-		if (waitlistUser == null) {
-			throw new ErrorWithCode(ERROR_CODES.waitlistUserNotFound);
+		try {
+			await registerUser({ email: credentials.user.email, authMethod: 'google', userId: credentials.user.uid });
+		} catch (err) {
+			try {
+				await logout();
+			} catch (logoutErr) {
+				console.error('Could not log user out after unsuccesful Google registration.', logoutErr);
+			} finally {
+				throw err;
+			}
 		}
-
-		if (waitlistUser.removed_from_waitlist === false) {
-			throw new ErrorWithCode(ERROR_CODES.waitlistUserNotOffboarded);
-		}
-
-		await addUser({
-			uid: credentials.user.uid,
-			details: { email: credentials.user.email },
-		});
 
 		return credentials;
 	};
 
 	const registerWithEmail = async (email: string, password: string): Promise<UserCredential> => {
-		const waitlistUser = await getWaitlistUser(email);
-		if (waitlistUser == null) {
-			throw new ErrorWithCode(ERROR_CODES.waitlistUserNotFound);
-		}
-
-		if (waitlistUser.removed_from_waitlist === false) {
-			throw new ErrorWithCode(ERROR_CODES.waitlistUserNotOffboarded);
-		}
-
-		const credentials = await createUserWithEmailAndPassword(
-			auth,
-			email,
-			password
-		);
-
-		await addUser({
-			uid: credentials.user.uid,
-			details: { email },
-		});
-
-		return credentials;
+		await registerUser({ email, password, authMethod: 'email' });
+		return await login(email, password, false);
 	};
 
 	return (

@@ -71,7 +71,7 @@ You need a service account json for executing the firebase actions (env variable
 Go to Firebase => Project Settings => Service accounts => Manage service account permissions
 Then create a new service account and grant the following roles:
 - Service Account User
-- Cloud Functions Developer
+- Cloud Functions Admin
 - Cloud Scheduler Admin
 - Secret Manager Viewer
 - Firebase Rules Admin

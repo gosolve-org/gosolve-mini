@@ -26,7 +26,7 @@ runs:
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only functions,firestore
+          args: deploy --only functions,firestore --debug
         env:
           GCP_SA_KEY: ${{ inputs.gcp_sa_key }}
           PROJECT_ID: ${{ inputs.firebase_project_id }}

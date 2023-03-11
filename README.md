@@ -76,6 +76,7 @@ Then create a new service account and grant the following roles:
 - Secret Manager Viewer
 - Firebase Rules Admin
 - Cloud Datastore Index Admin
+- Artifact Registry Administrator
 - Viewer
 
 Create a json key for this service account, base64 encode it, and save it in the GCP_SA_KEY secret in the correct GitHub environment secret.

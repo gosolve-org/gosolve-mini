@@ -1,6 +1,8 @@
 name: 'deploy'
 description: 'Deploys firebase functions and configs'
 inputs:
+  firebase_project_id:
+    required: true
   firebase_functions_env_file:
     required: true
   gcp_sa_key:
@@ -27,4 +29,5 @@ runs:
           args: deploy --only functions,firestore
         env:
           GCP_SA_KEY: ${{ inputs.gcp_sa_key }}
+          PROJECT_ID: ${{ inputs.firebase_project_id }}
           PROJECT_PATH: ./firebase

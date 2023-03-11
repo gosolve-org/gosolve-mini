@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main-test' && github.event.inputs.environment == 'staging'
+    if: github.ref == 'refs/heads/main'
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     steps:

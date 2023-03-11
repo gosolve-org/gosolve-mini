@@ -2,7 +2,7 @@ name: Firebase Functions CI/CD - Develop
 
 on:
   push:
-    branches: [ develop-test ]
+    branches: [ develop ]
 
 jobs:
   deploy-dev:

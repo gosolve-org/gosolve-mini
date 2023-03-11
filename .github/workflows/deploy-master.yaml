@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main-test' && github.event.inputs.environment == 'staging'
+    if: github.ref == 'refs/heads/main'
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     steps:
@@ -19,5 +19,6 @@ jobs:
         id: deploy
         uses: ./.github/workflows/actions/deploy
         with:
+          firebase_project_id: ${{ vars.FIREBASE_PROJECT_ID }}
           firebase_functions_env_file: ${{ secrets.FIREBASE_FUNCTIONS_ENV_FILE }}
           gcp_sa_key: ${{ secrets.GCP_SA_KEY }}

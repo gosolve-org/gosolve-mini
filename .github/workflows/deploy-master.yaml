@@ -1,39 +1,24 @@
 name: Firebase Functions CI/CD - Master
 
 on:
-  push:
-    branches: [ main-test ]
   workflow_dispatch:
     inputs:
       environment:
-        description: 'What environment do you want to deploy to (staging or production)?'
+        description: 'What environment do you want to deploy to?'
+        type: environment
         required: true
-        default: 'staging'
 
 jobs:
-  deploy-staging:
+  deploy:
     if: github.ref == 'refs/heads/main-test' && github.event.inputs.environment == 'staging'
-    environment: staging
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Deploy firebase to staging
+      - name: Deploy firebase to ${{ inputs.environment }}
         id: deploy
         uses: ./.github/workflows/actions/deploy
         with:
-          firebase_project_id: gosolve-mini-staging-test
-          firebase_functions_env_file: ${{ secrets.FIREBASE_FUNCTIONS_ENV_FILE }}
-          gcp_sa_key: ${{ secrets.GCP_SA_KEY }}
-  deploy-production:
-    if: github.ref == 'refs/heads/main-test' && github.event.inputs.environment == 'production'
-    environment: production
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Deploy firebase to production
-        id: deploy
-        uses: ./.github/workflows/actions/deploy
-        with:
-          firebase_project_id: gosolve-mini-dev-test
+          firebase_project_id: ${{ vars.FIREBASE_PROJECT_ID }}
           firebase_functions_env_file: ${{ secrets.FIREBASE_FUNCTIONS_ENV_FILE }}
           gcp_sa_key: ${{ secrets.GCP_SA_KEY }}

@@ -51,6 +51,36 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 │   ├── utils // Utility tools
 ```
 
+## Continuous Deployment
+We don't manually make changes or manually deploy to Firebase or Netlify. The following setup is used for automatic deployments.
+
+### Front-end
+This repository is linked to our Netlify:
+- All changes to develop are automatically published to dev
+- All changes to master trigger a build for staging & production, but need to be manually published
+
+All environment variables & secrets needed for the front-end are stored in Netlify.
+
+### Firebase
+The Firebase functions, Firestore rules and indexes are deployed using GitHub Actions in this repository:
+- All changes to develop are automatically deployed to dev
+- All changes to master trigger a workflow for staging, which requires an approval. Afterwards, this workflow can be promoted to production.
+
+#### Creating a service account for the firebase project
+You need a service account json for executing the firebase actions (env variable: GCP_SA_KEY).
+Go to Firebase => Project Settings => Service accounts => Manage service account permissions
+Then create a new service account and grant the following roles:
+- Service Account User
+- Cloud Functions Admin
+- Cloud Scheduler Admin
+- Secret Manager Viewer
+- Firebase Rules Admin
+- Cloud Datastore Index Admin
+- Artifact Registry Administrator
+- Viewer
+
+Create a json key for this service account, base64 encode it, and save it in the GCP_SA_KEY secret in the correct GitHub environment secret.
+
 ## Firebase notes (not relevant for local setup)
 -   Setting up a new database requires going through the authentication and firestore database setups
     -   For authorisation, add authorised domains under authentication -> settings

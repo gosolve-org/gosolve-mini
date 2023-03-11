@@ -65,11 +65,13 @@ module.exports.registerUser = functions.region(constants.REGION).https.onCall(as
             userId = await createUserWithEmailAndPassword(email, password);
         } catch (err) {
             if (err instanceof ErrorWithCode) {
-                return createErrorResponse(err.code);
+                if (err.code !== constants.ERROR_CODES.AUTH.USER_ALREADY_EXISTS) {
+                    return createErrorResponse(err.code);
+                }
+            } else {
+                functions.logger.error(err);
+                return createErrorResponse(constants.ERROR_CODES.UNKNOWN);
             }
-
-            functions.logger.error(err);
-            return createErrorResponse(constants.ERROR_CODES.UNKNOWN);
         }
     }
 

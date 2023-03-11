@@ -1,4 +1,4 @@
-name: Firebase Functions CI/CD
+name: Firebase Functions CI/CD - Develop
 
 on:
   push:

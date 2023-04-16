@@ -38,99 +38,99 @@ function locationToDropdownItem(value: Location)
 }
 
 function TopicSelector() {
-	const router = useRouter();
+    const router = useRouter();
     const { isTabletOrMobile } = useMediaQueries();
-	const [isNavigating, setIsNavigating] = useState(false);
+    const [isNavigating, setIsNavigating] = useState(false);
 
-	const [selectedCategory, setSelectedCategory] = useState<Category>();
-	const [selectedLocation, setSelectedLocation] = useState<Location>();
+    const [selectedCategory, setSelectedCategory] = useState<Category>();
+    const [selectedLocation, setSelectedLocation] = useState<Location>();
 
-	const { handleCurrentCategoryChange, handleCurrentLocationChange, currentCategory, currentLocation } =
+    const { handleCurrentCategoryChange, handleCurrentLocationChange, currentCategory, currentLocation } =
         useContext(DataContext);
 
-	const handleNavigate = async () => {
-		if (!selectedCategory || !selectedLocation) return;
+    const handleNavigate = async () => {
+        if (!selectedCategory || !selectedLocation) return;
 
-		setIsNavigating(true);
-		handleCurrentCategoryChange(selectedCategory);
-		handleCurrentLocationChange(selectedLocation);
+        setIsNavigating(true);
+        handleCurrentCategoryChange(selectedCategory);
+        handleCurrentLocationChange(selectedLocation);
 
-		await router.push(
-			`/${toUrlPart(selectedCategory.category)}/${toUrlPart(selectedLocation.location)}`
-		);
-		setIsNavigating(false);
-	};
+        await router.push(
+            `/${toUrlPart(selectedCategory.category)}/${toUrlPart(selectedLocation.location)}`
+        );
+        setIsNavigating(false);
+    };
 
-	const [categoriesCollection] = useCollectionOnce(collection(db, "categories"));
-	const [locationsCollection] = useCollectionOnce(collection(db, "locations"));
+    const [categoriesCollection] = useCollectionOnce(collection(db, "categories"));
+    const [locationsCollection] = useCollectionOnce(collection(db, "locations"));
 
-	const [categories, setCategories] = useState<Category[]>([
-		{ id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER },
-	]);
-	const [locations, setLocations] = useState<Location[]>([
-		{ id: null, location: LOCATION_DROPDOWN_PLACEHOLDER },
-	]);
+    const [categories, setCategories] = useState<Category[]>([
+        { id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER },
+    ]);
+    const [locations, setLocations] = useState<Location[]>([
+        { id: null, location: LOCATION_DROPDOWN_PLACEHOLDER },
+    ]);
 
-	useEffect(() => {
-		setCategories(
-			categoriesCollection
-				? categoriesCollection.docs.map((doc) => {
-					const docData = doc.data();
+    useEffect(() => {
+        setCategories(
+            categoriesCollection
+                ? categoriesCollection.docs.map((doc) => {
+                    const docData = doc.data();
 
-					return {
-						id: doc.id,
-						category: docData?.category,
-						hidden: docData?.hidden,
-					};
-				  })
-				: [{ id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER }]
-		);
-	}, [categoriesCollection]);
+                    return {
+                        id: doc.id,
+                        category: docData?.category,
+                        hidden: docData?.hidden,
+                    };
+                  })
+                : [{ id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER }]
+        );
+    }, [categoriesCollection]);
 
-	useEffect(() => {
-		setLocations(
-			locationsCollection
-				? locationsCollection.docs.map((doc) => {
-					const docData = doc.data();
+    useEffect(() => {
+        setLocations(
+            locationsCollection
+                ? locationsCollection.docs.map((doc) => {
+                    const docData = doc.data();
 
-					return {
-						id: doc.id,
-						location: docData?.location,
-						hidden: docData?.hidden,
-					};
-				  })
-				: [{ id: null, location: LOCATION_DROPDOWN_PLACEHOLDER }]
-		);
-	}, [locationsCollection]);
+                    return {
+                        id: doc.id,
+                        location: docData?.location,
+                        hidden: docData?.hidden,
+                    };
+                  })
+                : [{ id: null, location: LOCATION_DROPDOWN_PLACEHOLDER }]
+        );
+    }, [locationsCollection]);
 
-	useEffect(() => {
-		const category = categories.find(
-			(category) => category.category === currentCategory?.category
-		);
-		if (category?.id) handleCurrentCategoryChange(category);
-	}, [ categories, currentCategory, handleCurrentCategoryChange ]);
+    useEffect(() => {
+        const category = categories.find(
+            (category) => category.category === currentCategory?.category
+        );
+        if (category?.id) handleCurrentCategoryChange(category);
+    }, [ categories, currentCategory, handleCurrentCategoryChange ]);
 
-	useEffect(() => {
-		const location = locations.find(
-			(location) => location.location === currentLocation?.location
-		);
-		if (location?.id) handleCurrentLocationChange(location);
-	}, [ locations, currentLocation, handleCurrentLocationChange ]);
+    useEffect(() => {
+        const location = locations.find(
+            (location) => location.location === currentLocation?.location
+        );
+        if (location?.id) handleCurrentLocationChange(location);
+    }, [ locations, currentLocation, handleCurrentLocationChange ]);
 
-	useEffect(() => {
-		const category = categories.find(
-			(category) => category.category === currentCategory?.category
-		);
+    useEffect(() => {
+        const category = categories.find(
+            (category) => category.category === currentCategory?.category
+        );
 
-		const location = locations.find(
-			(location) => location.location === currentLocation?.location
-		);
+        const location = locations.find(
+            (location) => location.location === currentLocation?.location
+        );
 
-		if (category?.hidden || location?.hidden) return;
+        if (category?.hidden || location?.hidden) return;
 
-		setSelectedCategory(category);
-		setSelectedLocation(location);
-	}, [ currentCategory, currentLocation, categories, locations ]);
+        setSelectedCategory(category);
+        setSelectedLocation(location);
+    }, [ currentCategory, currentLocation, categories, locations ]);
 
     return (
         <div className={"flex justify-center items-center ".concat(isTabletOrMobile ? "flex-col" : "flex-row")}>

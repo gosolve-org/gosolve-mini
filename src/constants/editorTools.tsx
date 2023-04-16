@@ -16,24 +16,24 @@ import Delimiter from "@editorjs/delimiter";
 import InlineCode from "@editorjs/inline-code";
 
 export const EDITOR_JS_TOOLS = {
-	embed: Embed,
-	table: Table,
-	marker: Marker,
-	list: {
-		class: List,
-		inlineToolbar: true,
-		config: {
-			defaultStyle: 'unordered'
-		}
-	},
-	warning: Warning,
-	code: Code,
-	// linkTool: LinkTool, // This is for rich embedded links, requires a backend resource to fetch necessary data of links
-	// image: Image, // Requires a backend resource
-	raw: Raw,
-	header: Header,
-	quote: Quote,
-	checklist: CheckList,
-	delimiter: Delimiter,
-	inlineCode: InlineCode,
+    embed: Embed,
+    table: Table,
+    marker: Marker,
+    list: {
+        class: List,
+        inlineToolbar: true,
+        config: {
+            defaultStyle: 'unordered'
+        }
+    },
+    warning: Warning,
+    code: Code,
+    // linkTool: LinkTool, // This is for rich embedded links, requires a backend resource to fetch necessary data of links
+    // image: Image, // Requires a backend resource
+    raw: Raw,
+    header: Header,
+    quote: Quote,
+    checklist: CheckList,
+    delimiter: Delimiter,
+    inlineCode: InlineCode,
 };

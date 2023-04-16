@@ -6,16 +6,16 @@ import { Tab } from "models/Tab";
 import { useContext, useEffect } from "react";
 
 function TopicCommunityPage() {
-	const { handleCurrentTabChange } = useContext(DataContext);
+    const { handleCurrentTabChange } = useContext(DataContext);
 
-	useEffect(() => {
-		handleCurrentTabChange(Tab.Community);
-	}, [ handleCurrentTabChange ]);
+    useEffect(() => {
+        handleCurrentTabChange(Tab.Community);
+    }, [ handleCurrentTabChange ]);
 
-	return (<>
-		<BasicHead title="goSolve | Community" />
-		<CommunityOverview resourceType={ResourceType.Topic} />
-	</>);
+    return (<>
+        <BasicHead title="goSolve | Community" />
+        <CommunityOverview resourceType={ResourceType.Topic} />
+    </>);
 }
 
 export default TopicCommunityPage;

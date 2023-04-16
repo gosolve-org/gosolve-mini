@@ -13,25 +13,25 @@ import '../styles/novu.css';
 import { NavigationContextProvider } from 'context/NavigationContext';
 
 function App({ Component, pageProps }: AppProps) {
-	const router = useRouter();
+    const router = useRouter();
 
-	return (
-		<MediaQueryContextProvider>
-			<AuthContextProvider>
-				{UNPROTECTED_ROUTES.includes(router.pathname) ? (
-					<Component {...pageProps} />
-				) : (
-					<ProtectedRoute>
-						<DataContextProvider>
-							<NavigationContextProvider>
-								<Component {...pageProps} />
-							</NavigationContextProvider>
-						</DataContextProvider>
-					</ProtectedRoute>
-				)}
-			</AuthContextProvider>
-		</MediaQueryContextProvider>
-	);
+    return (
+        <MediaQueryContextProvider>
+            <AuthContextProvider>
+                {UNPROTECTED_ROUTES.includes(router.pathname) ? (
+                    <Component {...pageProps} />
+                ) : (
+                    <ProtectedRoute>
+                        <DataContextProvider>
+                            <NavigationContextProvider>
+                                <Component {...pageProps} />
+                            </NavigationContextProvider>
+                        </DataContextProvider>
+                    </ProtectedRoute>
+                )}
+            </AuthContextProvider>
+        </MediaQueryContextProvider>
+    );
 }
 
 export default App;

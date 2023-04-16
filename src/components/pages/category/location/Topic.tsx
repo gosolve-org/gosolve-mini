@@ -1,11 +1,11 @@
 import { useState, useContext, useCallback } from "react";
 import {
-	collection,
-	query,
-	where,
-	doc,
-	limit,
-	orderBy,
+    collection,
+    query,
+    where,
+    doc,
+    limit,
+    orderBy,
 } from "firebase/firestore";
 import Link from "next/link";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
@@ -25,7 +25,7 @@ import { useMediaQueries } from "context/MediaQueryContext";
 import MobileHorizontalScroll from "components/common/Layout/MobileHorizontalScroll";
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
-	ssr: false,
+    ssr: false,
 });
 
 const cardTitleStyle = {
@@ -33,70 +33,70 @@ const cardTitleStyle = {
 };
 
 function Topic() {
-	const { user } = useAuth();
-	const { currentCategory, currentLocation } = useContext(DataContext);
+    const { user } = useAuth();
+    const { currentCategory, currentLocation } = useContext(DataContext);
     const { isMobile } = useMediaQueries();
 
-	const [addActionModalOpen, setActionModalOpen] = useState(false);
-	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
-		useState(false);
+    const [addActionModalOpen, setActionModalOpen] = useState(false);
+    const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
+        useState(false);
 
-	const [topicsCollection, topicsLoading] = useCollectionOnceWithDependencies(
-		() => query(
-			collection(db, "topics"),
-			where("categoryId", "==", currentCategory.id),
-			where("locationId", "==", currentLocation.id)
-		), [ currentCategory?.id, currentLocation?.id ]
-	);
+    const [topicsCollection, topicsLoading] = useCollectionOnceWithDependencies(
+        () => query(
+            collection(db, "topics"),
+            where("categoryId", "==", currentCategory.id),
+            where("locationId", "==", currentLocation.id)
+        ), [ currentCategory?.id, currentLocation?.id ]
+    );
 
-	const topicContent = topicsCollection?.docs?.[0]?.data()?.content;
-	const topicId = topicsCollection?.docs?.[0]?.id || "";
+    const topicContent = topicsCollection?.docs?.[0]?.data()?.content;
+    const topicId = topicsCollection?.docs?.[0]?.id || "";
 
-	const [userProfile, userLoading] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
+    const [userProfile, userLoading] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
 
-	const [actionsCollection, actionsLoading] = useCollectionOnceWithDependencies(
-		() => query(
-			collection(db, "actions"),
-			where("topicId", "==", topicId),
-			orderBy("updatedAt", "desc"),
-			limit(3)
-		), [ topicId ]
-	);
+    const [actionsCollection, actionsLoading] = useCollectionOnceWithDependencies(
+        () => query(
+            collection(db, "actions"),
+            where("topicId", "==", topicId),
+            orderBy("updatedAt", "desc"),
+            limit(3)
+        ), [ topicId ]
+    );
 
-	const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
-		() => query(
-			collection(db, "posts"),
-			where("topicId", "==", topicId),
-			orderBy("updatedAt", "desc"),
-			limit(3)
-		), [ topicId ]
-	);
+    const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
+        () => query(
+            collection(db, "posts"),
+            where("topicId", "==", topicId),
+            orderBy("updatedAt", "desc"),
+            limit(3)
+        ), [ topicId ]
+    );
 
-	const canUserEdit =
-		userProfile?.data()?.role === "admin" ||
-		userProfile?.data()?.role === "editor";
+    const canUserEdit =
+        userProfile?.data()?.role === "admin" ||
+        userProfile?.data()?.role === "editor";
 
-	const handleAddActionClick = () => setActionModalOpen(true);
-	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
+    const handleAddActionClick = () => setActionModalOpen(true);
+    const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
-	const handleSaveData = useCallback(async (savedData: string) => {
-		await updateTopic({
-			docId: topicId,
-			details: {
-				title: `${currentCategory.category} in ${currentLocation.location}`,
-				content: savedData,
-				categoryId: currentCategory.id,
-				locationId: currentLocation.id,
-			},
-			location: currentLocation.location,
-			category: currentCategory.category
-		})
-			.then(() => toast.success("Saved!"))
-			.catch((err) => {
-				console.error(err);
-				toast.error("Something went wrong");
-			});
-	}, [ topicId, currentCategory, currentLocation ]);
+    const handleSaveData = useCallback(async (savedData: string) => {
+        await updateTopic({
+            docId: topicId,
+            details: {
+                title: `${currentCategory.category} in ${currentLocation.location}`,
+                content: savedData,
+                categoryId: currentCategory.id,
+                locationId: currentLocation.id,
+            },
+            location: currentLocation.location,
+            category: currentCategory.category
+        })
+            .then(() => toast.success("Saved!"))
+            .catch((err) => {
+                console.error(err);
+                toast.error("Something went wrong");
+            });
+    }, [ topicId, currentCategory, currentLocation ]);
 
     const renderActions = () => {
         const cards = actionsCollection?.docs?.map((item) => {

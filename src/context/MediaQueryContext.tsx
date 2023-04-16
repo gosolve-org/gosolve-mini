@@ -12,7 +12,7 @@ interface MediaQueryContext {
 }
 
 export const MediaQueryContext = createContext<MediaQueryContext>({
-	isDesktopOrLaptop: true,
+    isDesktopOrLaptop: true,
     isBigScreen: false,
     isTabletOrMobile: false,
     isTablet: false,
@@ -30,9 +30,9 @@ export const MediaQueryContextProvider = ({ children }: { children: ReactNode })
     const isPortrait = useMediaQuery({ orientation: 'portrait' });
     const isRetina = useMediaQuery({ query: '(min-resolution: 2dppx)' });
 
-	return (
-		<MediaQueryContext.Provider
-			value={{
+    return (
+        <MediaQueryContext.Provider
+            value={{
                 isDesktopOrLaptop,
                 isBigScreen,
                 isTabletOrMobile,
@@ -40,19 +40,19 @@ export const MediaQueryContextProvider = ({ children }: { children: ReactNode })
                 isMobile,
                 isPortrait,
                 isRetina
-			}}
-		>
-			{children}
-		</MediaQueryContext.Provider>
-	);
+            }}
+        >
+            {children}
+        </MediaQueryContext.Provider>
+    );
 };
 
 export const useMediaQueries = () => {
-	const context = useContext(MediaQueryContext);
+    const context = useContext(MediaQueryContext);
 
-	if (context === undefined) {
-		throw new Error("useMediaQueries must be used within a MediaQueryContextProvider");
-	}
+    if (context === undefined) {
+        throw new Error("useMediaQueries must be used within a MediaQueryContextProvider");
+    }
 
-	return context;
+    return context;
 };

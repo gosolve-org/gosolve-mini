@@ -15,7 +15,7 @@ export const NavigationContext = createContext<NavigationContext>({
 
 export const NavigationContextProvider = ({ children }: { children: ReactNode }) => {
     const router = useRouter();
-	const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState<boolean>(false);
+    const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState<boolean>(false);
 
     const openBurgerMenu = () => setIsBurgerMenuOpen(true);
     const closeBurgerMenu = () => setIsBurgerMenuOpen(false);
@@ -35,15 +35,15 @@ export const NavigationContextProvider = ({ children }: { children: ReactNode })
         };
     }, [isBurgerMenuOpen, setIsBurgerMenuOpen, router.events]);
 
-	return (
-		<NavigationContext.Provider
-			value={{
+    return (
+        <NavigationContext.Provider
+            value={{
                 isBurgerMenuOpen,
                 openBurgerMenu,
                 closeBurgerMenu,
-			}}
-		>
-			{children}
-		</NavigationContext.Provider>
-	);
+            }}
+        >
+            {children}
+        </NavigationContext.Provider>
+    );
 };

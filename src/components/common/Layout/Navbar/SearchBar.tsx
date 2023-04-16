@@ -3,16 +3,16 @@ import { useRouter } from "next/router";
 import { FormEvent, KeyboardEvent, useEffect, useState } from "react";
 
 function SearchBar() {
-	const router = useRouter();
-	const [searchQuery, setSearchQuery] = useState("");
+    const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState("");
 
-	const readableSearchQuery = router?.query?.q?.toString().split("+").join(" ") ?? "";
+    const readableSearchQuery = router?.query?.q?.toString().split("+").join(" ") ?? "";
 
-	useEffect(() => {
-		setSearchQuery(readableSearchQuery);
-	}, [ readableSearchQuery ]);
+    useEffect(() => {
+        setSearchQuery(readableSearchQuery);
+    }, [ readableSearchQuery ]);
 
-	const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
+    const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
         setSearchQuery(e.currentTarget.value);
 
     const handleSearchSubmit = () => {

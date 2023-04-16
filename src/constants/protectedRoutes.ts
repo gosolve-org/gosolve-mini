@@ -1,7 +1,7 @@
 const UNPROTECTED_ROUTES = [
-	"/login",
-	"/register",
-	"/privacy",
+    "/login",
+    "/register",
+    "/privacy",
 ];
 
 export { UNPROTECTED_ROUTES };

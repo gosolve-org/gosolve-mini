@@ -10,7 +10,7 @@ interface ModalProps {
 
 function Modal({ open, children, onClose } : ModalProps) {
     return (
-		<Transition.Root show={open} as={Fragment}>
+        <Transition.Root show={open} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={onClose}>
                 <Transition.Child
                     as={Fragment}
@@ -51,12 +51,12 @@ function Modal({ open, children, onClose } : ModalProps) {
                                     </button>
                                 </div>
                                 {children}
-							</Dialog.Panel>
-						</Transition.Child>
-					</div>
-				</div>
-			</Dialog>
-		</Transition.Root>
+                            </Dialog.Panel>
+                        </Transition.Child>
+                    </div>
+                </div>
+            </Dialog>
+        </Transition.Root>
     );
 }
 

@@ -1,16 +1,16 @@
 import { Transition, Listbox } from "@headlessui/react";
 import {
-	CheckIcon,
-	ChevronDownIcon,
+    CheckIcon,
+    ChevronDownIcon,
 } from "@heroicons/react/20/solid";
 import { Fragment } from "react";
 
 const topicSelectorStyle = {
-	minWidth: '150px',
+    minWidth: '150px',
 };
 
 function classNames(...classes: string[]) {
-	return classes.filter(Boolean).join(" ");
+    return classes.filter(Boolean).join(" ");
 }
 
 export interface DropdownItem

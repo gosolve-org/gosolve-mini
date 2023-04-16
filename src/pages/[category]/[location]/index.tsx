@@ -4,15 +4,15 @@ import { Tab } from "models/Tab";
 import { useContext, useEffect } from "react";
 
 function TopicPage() {
-	const { handleCurrentTabChange } = useContext(DataContext);
+    const { handleCurrentTabChange } = useContext(DataContext);
 
-	useEffect(() => {
-		handleCurrentTabChange(Tab.Topic);
-	}, [ handleCurrentTabChange ]);
+    useEffect(() => {
+        handleCurrentTabChange(Tab.Topic);
+    }, [ handleCurrentTabChange ]);
 
-	return (
-		<Topic />
-	);
+    return (
+        <Topic />
+    );
 }
 
 export default TopicPage;

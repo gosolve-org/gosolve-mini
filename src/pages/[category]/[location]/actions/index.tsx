@@ -5,16 +5,16 @@ import { Tab } from "models/Tab";
 import { useContext, useEffect } from "react";
 
 function TopicActionsOverviewPage() {
-	const { handleCurrentTabChange } = useContext(DataContext);
+    const { handleCurrentTabChange } = useContext(DataContext);
 
-	useEffect(() => {
-		handleCurrentTabChange(Tab.Actions);
-	}, [ handleCurrentTabChange ]);
+    useEffect(() => {
+        handleCurrentTabChange(Tab.Actions);
+    }, [ handleCurrentTabChange ]);
 
-	return (<>
-		<BasicHead title="goSolve | Actions" />
-		<ActionsOverview />
-	</>);
+    return (<>
+        <BasicHead title="goSolve | Actions" />
+        <ActionsOverview />
+    </>);
 }
 
 export default TopicActionsOverviewPage;

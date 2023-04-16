@@ -21,11 +21,11 @@ function ReplyForm({
     const [isLoading, setIsLoading] = useState(false);
     const [reply, setReply] = useState('');
 
-	const handleReplyChange = (e: FormEvent<HTMLTextAreaElement>) =>
+    const handleReplyChange = (e: FormEvent<HTMLTextAreaElement>) =>
         setReply(e.currentTarget.value);
 
-	const handleReplySubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
-		e.preventDefault();
+    const handleReplySubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setIsLoading(true);
 
         try {
@@ -38,7 +38,7 @@ function ReplyForm({
         } finally {
             setIsLoading(false);
         }
-	};
+    };
 
     return (
     <>

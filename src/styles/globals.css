@@ -2,37 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 @layer components {
-	#__next {
-		@apply h-full;
-	}
-	html,
-	body {
-		@apply h-full;
-	}
-	h1 {
-		@apply text-2xl;
-	}
-	h2 {
-		@apply text-lg;
-	}
-	h3 {
-		@apply text-base;
-	}
-	h4 {
-		@apply text-base;
-	}
-	h5 {
-		@apply text-base;
-	}
-	h6 {
-		@apply text-base;
-	}
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		@apply font-bold;
-	}
+    #__next {
+        @apply h-full;
+    }
+    html,
+    body {
+        @apply h-full;
+    }
+    h1 {
+        @apply text-2xl;
+    }
+    h2 {
+        @apply text-lg;
+    }
+    h3 {
+        @apply text-base;
+    }
+    h4 {
+        @apply text-base;
+    }
+    h5 {
+        @apply text-base;
+    }
+    h6 {
+        @apply text-base;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-bold;
+    }
+}
+
+@layer utilities {
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* For IE, Edge and Firefox */
+    .scrollbar-hide {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    
+    .row-fullscreen {
+        width: 100vw;
+        /* Calculates the difference between the viewport width and the element width, and divides it by -2 */
+        margin-left: calc((100vw - 100%) / -2);
+    }
+    
+    .width-card-lg {
+        width: 350px;
+    }
 }

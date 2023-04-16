@@ -1,11 +1,11 @@
 import { useState, useContext, useCallback } from "react";
 import {
-	collection,
-	query,
-	where,
-	doc,
-	limit,
-	orderBy,
+    collection,
+    query,
+    where,
+    doc,
+    limit,
+    orderBy,
 } from "firebase/firestore";
 import Link from "next/link";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
@@ -21,9 +21,11 @@ import dynamic from "next/dynamic";
 import { ResourceType } from "models/ResourceType";
 import { toUrlPart } from "utils/textUtils";
 import { DataContext } from "context/DataContext";
+import { useMediaQueries } from "context/MediaQueryContext";
+import MobileHorizontalScroll from "components/common/Layout/MobileHorizontalScroll";
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
-	ssr: false,
+    ssr: false,
 });
 
 const cardTitleStyle = {
@@ -31,74 +33,145 @@ const cardTitleStyle = {
 };
 
 function Topic() {
-	const { user } = useAuth();
-	const { currentCategory, currentLocation } = useContext(DataContext);
+    const { user } = useAuth();
+    const { currentCategory, currentLocation } = useContext(DataContext);
+    const { isMobile } = useMediaQueries();
 
-	const [addActionModalOpen, setActionModalOpen] = useState(false);
-	const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
-		useState(false);
+    const [addActionModalOpen, setActionModalOpen] = useState(false);
+    const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
+        useState(false);
 
-	const [topicsCollection, topicsLoading] = useCollectionOnceWithDependencies(
-		() => query(
-			collection(db, "topics"),
-			where("categoryId", "==", currentCategory.id),
-			where("locationId", "==", currentLocation.id)
-		), [ currentCategory?.id, currentLocation?.id ]
-	);
+    const [topicsCollection, topicsLoading] = useCollectionOnceWithDependencies(
+        () => query(
+            collection(db, "topics"),
+            where("categoryId", "==", currentCategory.id),
+            where("locationId", "==", currentLocation.id)
+        ), [ currentCategory?.id, currentLocation?.id ]
+    );
 
-	const topicContent = topicsCollection?.docs?.[0]?.data()?.content;
-	const topicId = topicsCollection?.docs?.[0]?.id || "";
+    const topicContent = topicsCollection?.docs?.[0]?.data()?.content;
+    const topicId = topicsCollection?.docs?.[0]?.id || "";
 
-	const [userProfile, userLoading] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
+    const [userProfile, userLoading] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
 
-	const [actionsCollection, actionsLoading] = useCollectionOnceWithDependencies(
-		() => query(
-			collection(db, "actions"),
-			where("topicId", "==", topicId),
-			orderBy("updatedAt", "desc"),
-			limit(3)
-		), [ topicId ]
-	);
+    const [actionsCollection, actionsLoading] = useCollectionOnceWithDependencies(
+        () => query(
+            collection(db, "actions"),
+            where("topicId", "==", topicId),
+            orderBy("updatedAt", "desc"),
+            limit(3)
+        ), [ topicId ]
+    );
 
-	const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
-		() => query(
-			collection(db, "posts"),
-			where("topicId", "==", topicId),
-			orderBy("updatedAt", "desc"),
-			limit(3)
-		), [ topicId ]
-	);
+    const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
+        () => query(
+            collection(db, "posts"),
+            where("topicId", "==", topicId),
+            orderBy("updatedAt", "desc"),
+            limit(3)
+        ), [ topicId ]
+    );
 
-	const canUserEdit =
-		userProfile?.data()?.role === "admin" ||
-		userProfile?.data()?.role === "editor";
+    const canUserEdit =
+        userProfile?.data()?.role === "admin" ||
+        userProfile?.data()?.role === "editor";
 
-	const handleAddActionClick = () => setActionModalOpen(true);
-	const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
+    const handleAddActionClick = () => setActionModalOpen(true);
+    const handleAddCommunityClick = () => setAddCommunityPostModalOpen(true);
 
-	const handleSaveData = useCallback(async (savedData: string) => {
-		await updateTopic({
-			docId: topicId,
-			details: {
-				title: `${currentCategory.category} in ${currentLocation.location}`,
-				content: savedData,
-				categoryId: currentCategory.id,
-				locationId: currentLocation.id,
-			},
-			location: currentLocation.location,
-			category: currentCategory.category
-		})
-			.then(() => toast.success("Saved!"))
-			.catch((err) => {
-				console.error(err);
-				toast.error("Something went wrong");
-			});
-	}, [ topicId, currentCategory, currentLocation ]);
+    const handleSaveData = useCallback(async (savedData: string) => {
+        await updateTopic({
+            docId: topicId,
+            details: {
+                title: `${currentCategory.category} in ${currentLocation.location}`,
+                content: savedData,
+                categoryId: currentCategory.id,
+                locationId: currentLocation.id,
+            },
+            location: currentLocation.location,
+            category: currentCategory.category
+        })
+            .then(() => toast.success("Saved!"))
+            .catch((err) => {
+                console.error(err);
+                toast.error("Something went wrong");
+            });
+    }, [ topicId, currentCategory, currentLocation ]);
+
+    const renderActions = () => {
+        const cards = actionsCollection?.docs?.map((item) => {
+            const itemData = item.data();
+            return (
+                <Link
+                    key={item.id}
+                    href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions/${item.id}`}
+                >
+                    <li className="rounded-lg bg-white px-4 py-5 shadow-md hover:bg-gray-50 list-none width-card-lg sm:w-auto">
+                        <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
+                            {itemData.title}
+                        </div>
+
+                        <div className="mt-4 truncate text-sm font-light text-gray-400">
+                            {
+                                itemData.authorUsername
+                            }
+                        </div>
+                    </li>
+                </Link>
+            );
+        });
+
+        return (isMobile
+            ? <>
+                <MobileHorizontalScroll className="row-fullscreen left-0 mt-5" childrenClassName="mx-2">
+                    {cards}
+                </MobileHorizontalScroll>
+            </>
+            : <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                {cards}
+            </ul>
+        );
+    };
+
+    const renderCommunityPosts = () => {
+        const cards = postsCollection?.docs?.map((item) => {
+            const itemData = item.data();
+            return (
+                <Link
+                    key={item.id}
+                    href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community/${item.id}`}
+                >
+                    <li className="rounded-lg bg-white px-4 py-5 shadow-md hover:bg-gray-50 list-none width-card-lg sm:w-auto">
+                        <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
+                            {itemData.title}
+                        </div>
+
+                        <div className="mt-4 truncate text-sm font-light text-gray-400">
+                            {
+                                itemData.authorUsername
+                            }
+                        </div>
+                    </li>
+                </Link>
+            );
+        });
+
+        return (isMobile
+            ? <>
+                <MobileHorizontalScroll className="row-fullscreen left-0 mt-5" childrenClassName="mx-2">
+                    {cards}
+                </MobileHorizontalScroll>
+            </>
+            : <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                {cards}
+            </ul>
+        );
+    }
 
     return (
         <Layout>
             <BasicHead title={`goSolve | ${currentCategory?.category ?? ''} in ${currentLocation?.location ?? ''}`} />
-            <div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
+            <div className="flex min-h-full flex-col justify-center items-center py-6 sm:py-12 sm:px-6 lg:px-8">
                 <div className="w-full max-w-4xl">
                     {!!currentCategory?.id && !!currentLocation?.id && !currentCategory.hidden && !currentLocation.hidden &&
                         <div className="bg-gray-100 p-6 rounded-lg">
@@ -142,37 +215,16 @@ function Topic() {
                                 </div>
                                 {!actionsLoading ? (
                                     actionsCollection?.docs?.length !== 0
-                                        ? (<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                                            {actionsCollection?.docs?.map((item) => {
-                                                const itemData = item.data();
-                                                return (
-                                                    <Link
-                                                        key={item.id}
-                                                        href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions/${item.id}`}
-                                                    >
-                                                        <li className="rounded-lg bg-white px-4 py-5 shadow hover:bg-gray-50">
-                                                            <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
-                                                                {itemData.title}
-                                                            </div>
-
-                                                            <div className="mt-4 truncate text-sm font-light text-gray-400">
-                                                                {
-                                                                    itemData.authorUsername
-                                                                }
-                                                            </div>
-                                                        </li>
-                                                    </Link>
-                                                );
-                                            })}
-                                        </ul>) : (
-                                            <div className="mt-5 truncate text-sm font-light text-gray-400">
+                                        ? renderActions()
+                                        : (
+                                            <div className="mt-5 text-sm font-light text-gray-400">
                                             {getRandomItem(canUserEdit ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}
                                             </div>
                                         )
                                 ) : null}
                             </div>
 
-                            <div className="mt-10">
+                            <div className="mt-5 sm:mt-10">
                                 <div className="flex items-center">
                                     <h2 className="text-xl font-medium leading-6 text-black">
                                         Community
@@ -207,29 +259,8 @@ function Topic() {
                                 </div>
                                 {!postsLoading ? (
                                     postsCollection?.docs?.length !== 0
-                                        ? (<ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                                            {postsCollection?.docs?.map((item) => {
-                                                const itemData = item.data();
-                                                return (
-                                                    <Link
-                                                        key={item.id}
-                                                        href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community/${item.id}`}
-                                                    >
-                                                        <li className="rounded-lg bg-white px-4 py-5 shadow hover:bg-gray-50">
-                                                            <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
-                                                                {itemData.title}
-                                                            </div>
-
-                                                            <div className="mt-4 truncate text-sm font-light text-gray-400">
-                                                                {
-                                                                    itemData.authorUsername
-                                                                }
-                                                            </div>
-                                                        </li>
-                                                    </Link>
-                                                );
-                                            })}
-                                        </ul>) : (
+                                        ? renderCommunityPosts()
+                                        : (
                                             <div className="mt-5 truncate text-sm font-light text-gray-400">
                                             {getRandomItem(NO_POSTS_PLACEHOLDERS)}
                                             </div>
@@ -239,7 +270,7 @@ function Topic() {
                         </div>
                     }
 
-                    <div className="mt-10">
+                    <div className="mt-5 sm:mt-10 px-3 px-sm-0">
                         {!topicsLoading && !userLoading ? (
                             <EditorJs
                                 readOnly={!canUserEdit}
@@ -253,12 +284,12 @@ function Topic() {
 
             <AddActionModal
                 open={addActionModalOpen}
-                setOpen={setActionModalOpen}
+                onClose={() => setActionModalOpen(false)}
             />
 
             <AddCommunityPostModal
                 open={addCommunityPostModalOpen}
-                setOpen={setAddCommunityPostModalOpen}
+                onClose={() => setAddCommunityPostModalOpen(false)}
                 parentResourceType={ResourceType.Topic}
                 parentResourceId={topicId}
             />

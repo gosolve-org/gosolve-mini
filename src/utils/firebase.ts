@@ -23,7 +23,7 @@ export const functions = getFunctions(app);
 if (process.env.NEXT_PUBLIC_FIREBASE_EMULATORS === 'true' || process.env.NEXT_PUBLIC_FIREBASE_EMULATORS?.toString() === 'true') {
 	connectFunctionsEmulator(functions, "localhost", 5001);
 	connectFirestoreEmulator(db, "localhost", 8080);
-	connectAuthEmulator(auth, "http://localhost:9099");
+	connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
 }
 
 export const useCollectionOnceWithDependencies = (

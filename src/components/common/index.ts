@@ -4,4 +4,3 @@ export { default as Comment } from "./Comment";
 export { default as Pagination } from "./Pagination";
 export { default as AddCommunityPostModal } from "./AddCommunityPostModal";
 export { default as AddActionModal } from "./AddActionModal";
-export { default as AddCommentModal } from "./AddCommentModal";

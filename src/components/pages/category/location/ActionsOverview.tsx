@@ -1,6 +1,6 @@
 import { useState, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
-import { collection, query, where, doc, orderBy, Query, DocumentData, QuerySnapshot, FirestoreError } from "firebase/firestore";
+import { collection, query, where, doc, orderBy } from "firebase/firestore";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
@@ -21,13 +21,13 @@ function ActionsOverview() {
 	const routerQuery = router.query;
 	const { currentCategory, currentLocation } = useContext(DataContext);
 
-	const [addActionModalOpen, setActionModalOpen] = useState(false);
+	const [addActionModalOpen, setAddActionModalOpen] = useState(false);
 
 	const pageQuery = routerQuery?.page
 		? parseInt(routerQuery?.page.toString()) || 1
 		: 1;
 
-	const handleAddActionClick = () => setActionModalOpen(true);
+	const handleAddActionClick = () => setAddActionModalOpen(true);
 
 	const [topicsCollection, topicsLoading] = useCollectionOnceWithDependencies(
 		() => query(
@@ -62,10 +62,10 @@ function ActionsOverview() {
 
 	return (
 		<Layout>
-			<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
+			<div className="flex min-h-full flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
 				<div className="w-full max-w-4xl">
 					<div className="flex items-center">
-						<h2 className="text-2xl font-semibold leading-6 text-black">
+						<h2 className="text-2xl font-xl font-semibold leading-6 text-black">
 							Actions
 						</h2>
 						{
@@ -101,7 +101,7 @@ function ActionsOverview() {
 													{itemData.title}
 												</div>
 
-												<div className="mt-5 truncate text-sm font-light text-gray-400">
+												<div className="mt-5 text-sm font-light text-gray-400">
 													{itemData.authorUsername}
 												</div>
 											</li>
@@ -126,7 +126,7 @@ function ActionsOverview() {
 
 			<AddActionModal
 				open={addActionModalOpen}
-				setOpen={setActionModalOpen}
+				onClose={() => setAddActionModalOpen(false)}
 			/>
 		</Layout>
 	);

@@ -34,7 +34,7 @@ function Action() {
 	const canUserEdit =
 		userProfile?.id === user?.uid &&
 		(userProfile?.data()?.role === "admin" ||
-			(userProfile?.data()?.role === "editor" && userProfile?.id === actionSnapshot?.data().authorId));
+			(userProfile?.data()?.role === "editor" && userProfile?.id === actionSnapshot?.data()?.authorId));
 
 	const handleSaveData = async (savedData: string) => {
 		await updateAction({
@@ -61,9 +61,9 @@ function Action() {
 	return (
 		<Layout>
 			<BasicHead title={`goSolve | ${actionSnapshot?.data()?.title ?? ''}`} />
-			<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
+			<div className="flex min-h-full flex-col justify-center items-center py-4 px-4 sm:py-12 sm:px-6 lg:px-8">
 				<div className="w-full max-w-4xl">
-					<div className="mt-10">
+					<div className="lg:mt-10">
 						{!actionsLoading && !userLoading ? (
 							<EditorJs
 								readOnly={!canUserEdit}

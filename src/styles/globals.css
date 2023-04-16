@@ -36,3 +36,25 @@
 		@apply font-bold;
 	}
 }
+
+@layer utilities {
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
+	}
+	
+	/* For IE, Edge and Firefox */
+	.scrollbar-hide {
+		-ms-overflow-style: none;  /* IE and Edge */
+		scrollbar-width: none;  /* Firefox */
+	}
+	
+	.row-fullscreen {
+		width: 100vw;
+		/* Calculates the difference between the viewport width and the element width, and divides it by -2 */
+		margin-left: calc((100vw - 100%) / -2);
+	}
+	
+	.width-card-lg {
+		width: 350px;
+	}
+}

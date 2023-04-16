@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Tab } from "models/Tab";
 import { toUrlPart } from "utils/textUtils";
 import { DataContext } from "context/DataContext";
+import { useMediaQueries } from "context/MediaQueryContext";
 
 const DEFAULT_PAGE_TITLE = 'Welcome to goSolve mini';
 const TAB_WIDTH = 200;
@@ -23,14 +24,15 @@ function classNames(...classes: string[]) {
 
 function TopicHeader() {
 	const { currentTab, currentCategory, currentLocation, handleCurrentTabChange } = useContext(DataContext);
+	const { isMobile } = useMediaQueries();
 
 	const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
 		handleCurrentTabChange(Tab[e.currentTarget.value]);
 
 	return (
-		<div className="flex flex-col justify-center h-52 items-center bg-sky-100">
+		<div className="flex flex-col justify-end sm:justify-center h-40 items-center bg-sky-100">
 			<div className="mt-5 sm:mx-auto sm:w-full">
-				<h1 className="w-full px-4 py-2 text-center text-3xl font-small tracking-tight text-black ">
+				<h1 className="w-full px-4 py-2 text-center text-3xl tracking-tight text-black ">
 					{currentCategory?.hidden || currentLocation?.hidden
 						? DEFAULT_PAGE_TITLE
 						: (currentCategory?.id && currentLocation?.id
@@ -40,8 +42,11 @@ function TopicHeader() {
 					}
 				</h1>
 			</div>
-			<div className="mt-5" style={tabsContainerStyle(tabs.filter(el => (!currentCategory?.hidden && !currentLocation?.hidden) || el.showOnHiddenTopics).length)}>
-				<div className="sm:hidden">
+			<div
+				className="mt-5 w-full sm:w-auto"
+				style={!isMobile ? tabsContainerStyle(tabs.filter(el => (!currentCategory?.hidden && !currentLocation?.hidden) || el.showOnHiddenTopics).length) : {}}
+			>
+				<div className="hidden">
 					<label htmlFor="tabs" className="sr-only">
 						Select a tab
 					</label>
@@ -58,7 +63,7 @@ function TopicHeader() {
 						))}
 					</select>
 				</div>
-				<div className="hidden sm:block">
+				<div className="block">
 					<nav
 						className="isolate flex divide-x divide-gray-200 rounded-lg shadow"
 						aria-label="Tabs"
@@ -73,8 +78,8 @@ function TopicHeader() {
 										tab.name === currentTab
 											? "text-gray-900"
 											: "text-gray-500 hover:text-gray-700",
-										tabIdx === 0 ? "rounded-l-lg" : "",
-										tabIdx === tabArr.length - 1
+										tabIdx === 0 && !isMobile ? "rounded-l-lg" : "",
+										tabIdx === tabArr.length - 1 && !isMobile
 											? "rounded-r-lg"
 											: "",
 										"group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"

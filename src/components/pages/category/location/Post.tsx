@@ -80,7 +80,7 @@ function Post({ postId } : PostProps) {
 
 							{commentsCollection
 								?.docs
-								?.filter(el => el?.data()?.parentId === parentComment.id)
+								?.filter(el => el?.data() && el?.data().parentId === parentComment.id)
 								.sort((a, b) => a.data().createdAt - b.data().createdAt)
 								.map((childComment) => {
 									const childCommentData = childComment.data();
@@ -198,7 +198,7 @@ function ReplyFormContainer({
 		<div
 			className={`mt-6 w-full ${hidden ? 'hidden' : 'flex'}`}
 		>
-			<div className="flex-shrink-0 w-12"></div>
+			<div className="flex-shrink-0 w-6 sm:w-12"></div>
 			<div className="flex flex-col w-full" ref={replyForm}>
 				<ReplyForm
 					handleSubmit={handleSubmit}

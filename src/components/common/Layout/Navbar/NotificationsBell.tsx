@@ -1,13 +1,12 @@
-import { IMessage, NotificationBell, NovuProvider, PopoverNotificationCenter } from "../../../../external/novu-notification-center";
+import { IMessage, NotificationBell, NovuProvider, PopoverNotificationCenter } from "../../../../../external/novu-notification-center";
 import Tippy from "@tippyjs/react";
-import { ReactElement, useContext } from "react";
+import { ReactElement } from "react";
 import { useAuth } from "context/AuthContext";
 
 function NotificationsBell({ bellIcon }: { bellIcon: ReactElement }) {
     const auth = useAuth();
 
     const onNotificationClick = (message: IMessage) => {
-        // your logic to handle the notification click
         if (message?.cta?.data?.url) {
           window.location.href = message.cta.data.url;
         }

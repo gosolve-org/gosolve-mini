@@ -88,7 +88,7 @@ function Details() {
 				<div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 					<div className="sm:mx-auto sm:w-full sm:max-w-md">
 						<Logo className="mx-auto h-18 w-auto" />
-						<h2 className="mt-6 px-4 py-2 text-center text-m font-small tracking-tight text-black ">
+						<h2 className="mt-6 px-4 py-2 text-center text-m tracking-tight text-black ">
 							Thanks for joining goSolve
 						</h2>
 					</div>

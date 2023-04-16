@@ -45,7 +45,7 @@ function Comment({
 
 	return (
 		<div className="mt-6 flex w-full" key={id} ref={containerEl}>
-			{isChild ? <div className="flex-shrink-0 w-12"></div> : null}
+			{isChild ? <div className="flex-shrink-0 w-6 sm:w-12"></div> : null}
 
 			<div className="flex flex-col w-full">
 				<div>

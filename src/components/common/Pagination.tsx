@@ -159,7 +159,7 @@ function Pagination({ pageSize = 10, totalCount = 0 }: PaginationProps) {
 					</Link>
 				) : null}
 			</div>
-			<div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+			<div className="hidden sm:flex sm:flex-1 items-center sm:justify-between">
 				<div>
 					<p className="text-sm text-gray-700">
 						Showing{" "}

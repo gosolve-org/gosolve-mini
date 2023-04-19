@@ -61,7 +61,7 @@ function TopicSelector() {
         setIsNavigating(false);
     };
 
-    const [categoriesCollection, x, y] = useCollectionOnce(collection(db, "categories"));
+    const [categoriesCollection] = useCollectionOnce(collection(db, "categories"));
     const [locationsCollection] = useCollectionOnce(collection(db, "locations"));
 
     const [categories, setCategories] = useState<Category[]>([

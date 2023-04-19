@@ -157,16 +157,16 @@ function Post({ postId } : PostProps) {
                 <div className="flex flex-col w-full max-w-2xl mt-20">
                     <h4 className="text-xl">{`Discussion (${discussionCount})`}</h4>
 
-					{isAuthenticated() &&
-						<>
-							<ReplyForm 
-								handleSubmit={handleCommentSubmit}
-								buttonText="Post comment"
-								placeholderText="Add your comment"
-							/>
-							<div className="mt-8"></div>
-						</>
-					}
+                    {isAuthenticated() &&
+                        <>
+                            <ReplyForm 
+                                handleSubmit={handleCommentSubmit}
+                                buttonText="Post comment"
+                                placeholderText="Add your comment"
+                            />
+                            <div className="mt-8"></div>
+                        </>
+                    }
 
                     <div className="flex w-full max-w-2xl mt-2">
                         <div className="w-full">

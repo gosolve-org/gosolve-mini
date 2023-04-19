@@ -23,7 +23,7 @@ function Comment({
     isChild = false,
     handleReplyButtonClick,
 }: CommentProps) {
-	const { isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuth();
     const [isContentClamped, setIsContentClamped] = useState(false);
     const [isContentExpanded, setIsContentExpanded] = useState(false);
     const [isStartState, setIsStartState] = useState(true);

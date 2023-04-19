@@ -11,6 +11,7 @@ import { TOAST_IDS } from "constants/toastConstants";
 import { getWaitlistUser } from "./api/user";
 import BasicHead from "components/common/Layout/BasicHead";
 import Logo from "components/common/Layout/Logo";
+import { ArrowRightIcon } from "@heroicons/react/20/solid";
 
 function Login() {
     const [email, setEmail] = useState<string>("");
@@ -110,7 +111,7 @@ function Login() {
             <BasicHead title="goSolve | Login" />
             <main className="h-full">
                 <div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
-                    <div className="sm:mx-auto sm:w-full sm:max-w-md">
+                    <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8">
                         <Logo className="mx-auto h-18 w-auto" />
                         <h2 className="mt-6 px-4 py-2 text-center text-m font-normal tracking-tight rounded-md text-black bg-gray-100">
                             goSolve mini is a limited test version of the goSolve
@@ -119,8 +120,8 @@ function Login() {
                         </h2>
                     </div>
 
-                    <div className="mt-8 sm:mx-auto w-full sm:max-w-md">
-                        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                    <div className="sm:mx-auto w-full sm:max-w-md mb-4">
+                        <div className="bg-white py-8 shadow sm:rounded-lg px-4 sm:px-10">
                             <form
                                 className="space-y-6"
                                 action="#"
@@ -244,6 +245,19 @@ function Login() {
                                     </div>
                                 }
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="sm:mx-auto w-full sm:max-w-md relative">
+                        <div
+                            onClick={() => router.push('/')}
+                            className="bg-white hover:bg-gray-100 cursor-pointer py-4 shadow sm:rounded-lg px-4 sm:px-10 text-gray-400 text-center"
+                        >
+                            {`Explore goSolve as guest`}
+                            <ArrowRightIcon
+                                className="h-4 w-4 inline-block items-center ml-1"
+                                aria-hidden="true"
+                            />
                         </div>
                     </div>
                 </div>

@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import calendar from "dayjs/plugin/calendar";
 import { DataContext } from "context/DataContext";
+import { useAuth } from "context/AuthContext";
 dayjs.extend(localizedFormat);
 dayjs.extend(calendar);
 
@@ -25,6 +26,7 @@ interface CommunityOverviewProps {
 }
 
 function CommunityOverview({ resourceType } : CommunityOverviewProps) {
+    const { isAuthenticated } = useAuth();
     const { currentCategory, currentLocation } = useContext(DataContext);
     const [addCommunityPostModalOpen, setAddCommunityPostModalOpen] =
         useState(false);
@@ -82,18 +84,21 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
                         <h2 className="text-2xl font-xl font-semibold leading-6 text-black">
                             Community
                         </h2>
-                        <span className="mx-3.5">
-                            <button
-                                onClick={handleAddCommunityClick}
-                                type="button"
-                                className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                            >
-                                <PlusIcon
-                                    className="h-4 w-4"
-                                    aria-hidden="true"
-                                />
-                            </button>
-                        </span>
+
+                        {isAuthenticated() &&
+                            <span className="mx-3.5">
+                                <button
+                                    onClick={handleAddCommunityClick}
+                                    type="button"
+                                    className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                >
+                                    <PlusIcon
+                                        className="h-4 w-4"
+                                        aria-hidden="true"
+                                    />
+                                </button>
+                            </span>
+                        }
                     </div>
 
                     {!postsLoading && (!topicsLoading || resourceType != ResourceType.Topic) ? (postsCollection?.docs?.length > 0 ?

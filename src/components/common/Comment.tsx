@@ -3,6 +3,7 @@ import { withBreaks } from "utils/textUtils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "context/AuthContext";
 dayjs.extend(relativeTime);
 
 interface CommentProps {
@@ -22,6 +23,7 @@ function Comment({
     isChild = false,
     handleReplyButtonClick,
 }: CommentProps) {
+    const { isAuthenticated } = useAuth();
     const [isContentClamped, setIsContentClamped] = useState(false);
     const [isContentExpanded, setIsContentExpanded] = useState(false);
     const [isStartState, setIsStartState] = useState(true);
@@ -88,7 +90,7 @@ function Comment({
                     }
                 </div>
 
-                {handleReplyButtonClick && !isChild ? (
+                {isAuthenticated() && handleReplyButtonClick && !isChild ? (
                     <button
                         onClick={() => handleReplyButtonClick(id)}
                         type="button"

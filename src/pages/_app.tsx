@@ -5,12 +5,13 @@ import { useRouter } from "next/router";
 
 import { AuthContextProvider } from "context/AuthContext";
 import ProtectedRoute from "components/common/ProtectedRoute";
-import { UNPROTECTED_ROUTES } from "constants/protectedRoutes";
+import { PROTECTED_ROUTES } from "constants/protectedRoutes";
 import { DataContextProvider } from "context/DataContext";
 import { MediaQueryContextProvider } from "context/MediaQueryContext";
 import '../styles/burger-menu.css';
 import '../styles/novu.css';
 import { NavigationContextProvider } from 'context/NavigationContext';
+import Route from 'components/common/Route';
 
 function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
@@ -18,9 +19,7 @@ function App({ Component, pageProps }: AppProps) {
     return (
         <MediaQueryContextProvider>
             <AuthContextProvider>
-                {UNPROTECTED_ROUTES.includes(router.pathname) ? (
-                    <Component {...pageProps} />
-                ) : (
+                {PROTECTED_ROUTES.includes(router.pathname) ? (
                     <ProtectedRoute>
                         <DataContextProvider>
                             <NavigationContextProvider>
@@ -28,6 +27,14 @@ function App({ Component, pageProps }: AppProps) {
                             </NavigationContextProvider>
                         </DataContextProvider>
                     </ProtectedRoute>
+                ) : (
+                    <Route>
+                        <DataContextProvider>
+                            <NavigationContextProvider>
+                                <Component {...pageProps} />
+                            </NavigationContextProvider>
+                        </DataContextProvider>
+                    </Route>
                 )}
             </AuthContextProvider>
         </MediaQueryContextProvider>

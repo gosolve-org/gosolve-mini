@@ -33,23 +33,28 @@ service cloud.firestore {
         }
 
         match /locations/{document=**} {
+            allow read;
             allow create, update: if isAdmin() || isEditor();
-            allow read: if isAuthenticated();
         }
 
         match /categories/{document=**} {
+            allow read;
             allow create, update: if isAdmin() || isEditor();
-            allow read: if isAuthenticated();
         }
         
         match /topics/{document=**} {
+            allow read;
             allow create, update: if isAdmin() || isEditor();
-            allow read: if isAuthenticated();
+        }
+        
+        match /topicHistory/{document=**} {
+            allow read;
+            allow create: if isAdmin() || isEditor();
         }
         
         match /actions/{document=**} {
+            allow read;
             allow create: if isAdmin() || isEditor();
-            allow read: if isAuthenticated();
         }
         
         match /actions/{actionId} {
@@ -61,15 +66,13 @@ service cloud.firestore {
         }
         
         match /posts/{document=**} {
-            allow create, read: if isAuthenticated();
+            allow read;
+            allow create: if isAuthenticated();
         }
         
         match /comments/{document=**} {
-            allow create, read: if isAuthenticated();
-        }
-        
-        match /topicHistory/{document=**} {
-            allow create, read: if isAuthenticated();
+            allow read;
+            allow create: if isAuthenticated();
         }
     }
 }

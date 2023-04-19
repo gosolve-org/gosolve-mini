@@ -19,7 +19,7 @@ const EditorJs = dynamic(() => import("components/common/Editor"), {
 });
 
 function Action() {
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
     const router = useRouter();
     const { currentCategory, currentLocation } = useContext(DataContext);
 
@@ -40,7 +40,7 @@ function Action() {
         await updateAction({
             docId: actionId,
             details: {
-                authorId: user?.uid,
+                authorId: user.uid,
                 title: actionSnapshot?.data()?.title,
                 topicId: actionSnapshot?.data()?.topicId,
                 content: savedData,
@@ -64,7 +64,7 @@ function Action() {
             <div className="flex min-h-full flex-col justify-center items-center py-4 px-4 sm:py-12 sm:px-6 lg:px-8">
                 <div className="w-full max-w-4xl">
                     <div className="lg:mt-10">
-                        {!actionsLoading && !userLoading ? (
+                        {!actionsLoading && (!userLoading || !isAuthenticated()) ? (
                             <EditorJs
                                 readOnly={!canUserEdit}
                                 saveData={handleSaveData}

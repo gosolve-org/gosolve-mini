@@ -61,7 +61,7 @@ function AddActionModal({ open, onClose }: AddActionModalProps) {
         try {
             const docId = await addAction({
                 details: {
-                    authorId: user?.uid,
+                    authorId: user.uid,
                     title: actionTitle,
                     topicId,
                     authorUsername: user.username,

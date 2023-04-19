@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 const { REGION } = require('../constants');
 const constants = require('../constants');
-const { toUrlPart, ensureAuth } = require('../utils');
+const { toUrlPart } = require('../utils');
 const { triggerNotification, createSubscriber } = require('./novu');
 const { createDb, getPost, getTopic, getAction } = require('../db');
 

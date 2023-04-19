@@ -58,7 +58,7 @@ function AddCommunityPostModal({ open, onClose, parentResourceType, parentResour
             const docId = await addPost({
                 details: {
                     ...originDetails,
-                    authorId: user?.uid || "",
+                    authorId: user.uid,
                     title,
                     content: description,
                     authorUsername: user.username,

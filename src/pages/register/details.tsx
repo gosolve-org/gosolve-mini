@@ -10,7 +10,7 @@ import BasicHead from "components/common/Layout/BasicHead";
 import Logo from "components/common/Layout/Logo";
 
 function Details() {
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
 
     const [name, setName] = useState<string>(user?.name || user?.displayName || "");
     const [username, setUsername] = useState<string>(user?.username || "");
@@ -22,7 +22,7 @@ function Details() {
     const handleSubmitDetails = async (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!user?.uid) {
+        if (!isAuthenticated()) {
             router.push('/login');
         }
 

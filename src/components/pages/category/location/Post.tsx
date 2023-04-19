@@ -20,7 +20,7 @@ interface PostProps {
 }
 
 function Post({ postId } : PostProps) {
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
     const [replyParentCommentId, setReplyParentCommentId] = useState(null);
     const [replyClickCounter, setReplyClickCounter] = useState(0);
     const [discussionCount, setDiscussionCount] = useState(0);
@@ -156,13 +156,19 @@ function Post({ postId } : PostProps) {
 
                 <div className="flex flex-col w-full max-w-2xl mt-20">
                     <h4 className="text-xl">{`Discussion (${discussionCount})`}</h4>
-                    <ReplyForm 
-                        handleSubmit={handleCommentSubmit}
-                        buttonText="Post comment"
-                        placeholderText="Add your comment"
-                    />
 
-                    <div className="flex w-full max-w-2xl mt-10">
+					{isAuthenticated() &&
+						<>
+							<ReplyForm 
+								handleSubmit={handleCommentSubmit}
+								buttonText="Post comment"
+								placeholderText="Add your comment"
+							/>
+							<div className="mt-8"></div>
+						</>
+					}
+
+                    <div className="flex w-full max-w-2xl mt-2">
                         <div className="w-full">
                             {!commentsLoading && renderedComments}
                         </div>

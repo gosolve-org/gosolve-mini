@@ -16,7 +16,7 @@ import { DataContext } from "context/DataContext";
 const PAGE_SIZE = 12;
 
 function ActionsOverview() {
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
     const router = useRouter();
     const routerQuery = router.query;
     const { currentCategory, currentLocation } = useContext(DataContext);
@@ -68,8 +68,8 @@ function ActionsOverview() {
                         <h2 className="text-2xl font-xl font-semibold leading-6 text-black">
                             Actions
                         </h2>
-                        {
-                            canUserEdit && <span className="mx-3.5">
+                        {isAuthenticated() && canUserEdit &&
+                            <span className="mx-3.5">
                                 <button
                                     onClick={handleAddActionClick}
                                     type="button"
@@ -120,7 +120,6 @@ function ActionsOverview() {
                             </div>
                         )
                     ) : null}
-
                 </div>
             </div>
 

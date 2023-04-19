@@ -33,7 +33,7 @@ const cardTitleStyle = {
 };
 
 function Topic() {
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
     const { currentCategory, currentLocation } = useContext(DataContext);
     const { isMobile } = useMediaQueries();
 
@@ -181,8 +181,8 @@ function Topic() {
                                         Actions
                                     </h2>
 
-                                    {
-                                        canUserEdit && <span className="ml-3.5">
+                                    {isAuthenticated() && canUserEdit &&
+                                        <span className="ml-3.5">
                                             <button
                                                 onClick={handleAddActionClick}
                                                 type="button"
@@ -230,18 +230,20 @@ function Topic() {
                                         Community
                                     </h2>
 
-                                    <span className="ml-3.5">
-                                        <button
-                                            onClick={handleAddCommunityClick}
-                                            type="button"
-                                            className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                        >
-                                            <PlusIcon
-                                                className="h-4 w-4"
-                                                aria-hidden="true"
-                                            />
-                                        </button>
-                                    </span>
+                                    {isAuthenticated() &&
+                                        <span className="ml-3.5">
+                                            <button
+                                                onClick={handleAddCommunityClick}
+                                                type="button"
+                                                className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                            >
+                                                <PlusIcon
+                                                    className="h-4 w-4"
+                                                    aria-hidden="true"
+                                                />
+                                            </button>
+                                        </span>
+                                    }
 
                                     <span className="mx-3.5">
                                         <Link
@@ -271,7 +273,7 @@ function Topic() {
                     }
 
                     <div className="mt-5 sm:mt-10 px-3 px-sm-0">
-                        {!topicsLoading && !userLoading ? (
+                        {!topicsLoading && (!userLoading || !isAuthenticated()) ? (
                             <EditorJs
                                 readOnly={!canUserEdit}
                                 saveData={handleSaveData}

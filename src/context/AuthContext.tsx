@@ -27,6 +27,7 @@ import { AuthUser } from "models/AuthUser";
 
 interface AuthContext {
     user: AuthUser;
+    isAuthenticated: () => boolean;
     loading: boolean;
     login: (email: string, password: string) => Promise<UserCredential>;
     getGoogleCredentials: () => Promise<UserCredential>;
@@ -34,11 +35,12 @@ interface AuthContext {
     logout: () => Promise<void>;
     registerWithEmail: (email: string, password: string) => Promise<UserCredential>;
     registerWithGoogle: (credentials: UserCredential) => Promise<UserCredential>;
-    validateUser: (credentials: UserCredential) => Promise<boolean>
+    validateUser: (credentials: UserCredential) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContext>({
     user: null,
+    isAuthenticated: null,
     loading: true,
     login: null,
     getGoogleCredentials: null,
@@ -52,6 +54,8 @@ const AuthContext = createContext<AuthContext>({
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [user, setUser] = useState<AuthUser>(null);
+
+    const isAuthenticated = () => !!user;
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (authUser) => {
@@ -169,6 +173,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             value={{
                 loading,
                 user,
+                isAuthenticated,
                 login,
                 validateUser,
                 getGoogleCredentials,

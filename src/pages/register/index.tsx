@@ -2,16 +2,16 @@ import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-import { useAuth } from "context/AuthContext";
+import { useAuth } from "contexts/AuthContext";
 import { toast } from "react-toastify";
-import BasicToast from "components/common/Layout/BasicToast";
+import BasicToast from "components/common/layout/BasicToast";
 import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
-import LinkToast, { showLinkToast } from "components/common/Layout/LinkToast";
+import LinkToast, { showLinkToast } from "components/common/layout/LinkToast";
 import { UserCredential } from "@firebase/auth";
 import { TOAST_IDS } from "constants/toastConstants";
-import BasicHead from "components/common/Layout/BasicHead";
-import Logo from "components/common/Layout/Logo";
+import BasicHead from "components/common/layout/BasicHead";
+import Logo from "components/common/layout/Logo";
 import { USER_VALIDATIONS } from "constants/validationRules";
 
 function Register() {

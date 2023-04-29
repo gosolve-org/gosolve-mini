@@ -5,11 +5,11 @@ import { updatePassword } from "@firebase/auth";
 import { toast } from "react-toastify";
 
 import { db, useDocumentOnceWithDependencies } from "utils/firebase";
-import { Layout } from "components/common";
-import { useAuth } from "context/AuthContext";
+import Layout from "components/common/layout/Layout";
+import { useAuth } from "contexts/AuthContext";
 import { updateUser } from "./api/user";
 import { USER_VALIDATIONS } from "constants/validationRules";
-import BasicHead from "components/common/Layout/BasicHead";
+import BasicHead from "components/common/layout/BasicHead";
 import Link from "next/link";
 
 function Settings() {

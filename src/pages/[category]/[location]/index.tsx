@@ -1,17 +1,21 @@
-import Topic from "components/pages/category/location/Topic";
-import { DataContext } from "context/DataContext";
+import Topic from "components/pages/Topic";
+import { useNav } from "contexts/NavigationContext";
+import { ResourceContextProvider } from "contexts/ResourceContext";
+import { ResourceType } from "models/ResourceType";
 import { Tab } from "models/Tab";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 
 function TopicPage() {
-    const { handleCurrentTabChange } = useContext(DataContext);
+    const { handleCurrentTabChange } = useNav();
 
     useEffect(() => {
         handleCurrentTabChange(Tab.Topic);
     }, [ handleCurrentTabChange ]);
 
     return (
-        <Topic />
+        <ResourceContextProvider resourceType={ResourceType.Topic}>
+            <Topic />
+        </ResourceContextProvider>
     );
 }
 

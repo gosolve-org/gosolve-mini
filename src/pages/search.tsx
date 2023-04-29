@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-import { Layout, Pagination, Loader } from "components/common";
-import BasicHead from "components/common/Layout/BasicHead";
+import { Layout, Pagination, Loader } from "components/common/layout/Layout";
+import BasicHead from "components/common/layout/BasicHead";
 import { search } from "./api/search";
 import { toast } from "react-toastify";
-import BasicToast from "components/common/Layout/BasicToast";
+import BasicToast from "components/common/layout/BasicToast";
 import { ChatBubbleLeftEllipsisIcon, InformationCircleIcon, RocketLaunchIcon } from "@heroicons/react/20/solid";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";

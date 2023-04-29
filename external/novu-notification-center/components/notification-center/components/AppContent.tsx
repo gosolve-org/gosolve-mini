@@ -2,7 +2,7 @@ import React from 'react';
 import { MantineProvider } from '@mantine/core';
 import { css } from '@emotion/css';
 
-import { Layout } from './layout/Layout';
+import Layout from './layout/Layout';
 import { Main } from './Main';
 import { useNovuTheme } from '../../../hooks';
 import { ScreenProvider } from '../../../store/screens-provider.context';

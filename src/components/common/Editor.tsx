@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createReactEditorJS } from "react-editor-js";
 import { EDITOR_JS_TOOLS } from "constants/editorTools";
 import { useLeavePageConfirm } from "utils/customHooks";
+import { useResource } from "contexts/ResourceContext";
 
 interface EditorProps {
     defaultValue?: string;
@@ -17,9 +18,12 @@ const Editor = ({
     saveData,
     readOnly = true,
 }: EditorProps) => {
+    const { focusedEditorElementIndex } = useResource();
+
     const ReactEditorJS = createReactEditorJS();
 
     const editorJS = useRef(null);
+    const containerRef = useRef(null);
 
     const [hasChanges, setHasChanges] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -48,8 +52,23 @@ const Editor = ({
         // setData(savedData);
     }, []);
 
+    useEffect(() => {
+        if (focusedEditorElementIndex === null || editorJS.current == null) {
+            return;
+        }
+
+        const blockEls = [...containerRef.current.querySelectorAll('.ce-block')];
+        if (blockEls.length <= focusedEditorElementIndex) {
+            return;
+        }
+
+        const elToFocus = blockEls[focusedEditorElementIndex];
+        elToFocus.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        elToFocus.focus({ preventScroll: true });
+    }, [ focusedEditorElementIndex, editorJS, containerRef ]);
+
     return (
-        <div className="content">
+        <div className="content" ref={containerRef}>
             <div>
                 {!readOnly && hasChanges ? (
                     <div className="mt-6 flex justify-center items-center w-full gap-4">

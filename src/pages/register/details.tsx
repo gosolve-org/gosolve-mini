@@ -1,13 +1,13 @@
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 
-import { useAuth } from "context/AuthContext";
+import { useAuth } from "contexts/AuthContext";
 import { updateUser } from "pages/api/user";
 import { toast } from "react-toastify";
-import BasicToast from "components/common/Layout/BasicToast";
+import BasicToast from "components/common/layout/BasicToast";
 import { USER_VALIDATIONS } from "constants/validationRules";
-import BasicHead from "components/common/Layout/BasicHead";
-import Logo from "components/common/Layout/Logo";
+import BasicHead from "components/common/layout/BasicHead";
+import Logo from "components/common/layout/Logo";
 
 function Details() {
     const { user, isAuthenticated } = useAuth();

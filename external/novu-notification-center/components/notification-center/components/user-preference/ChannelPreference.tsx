@@ -9,7 +9,7 @@ import { switchStyles, Text } from './styles';
 import { Check } from '../../../../shared/icons/Check';
 import { colors } from '../../../../shared/config/colors';
 import { useStyles } from '../../../../store/styles';
-import { Loader } from 'components/common';
+import { Loader } from 'components/common/layout/Layout';
 
 const iconClassName = (
   active: boolean,

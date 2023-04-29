@@ -1,0 +1,99 @@
+import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
+import AddCommunityPostModal from "components/posts/AddPostModal";
+import { NO_POSTS_PLACEHOLDERS } from "constants/placeholderTexts";
+import { useAuth } from "contexts/AuthContext";
+import { useNav } from "contexts/NavigationContext";
+import { useResource } from "contexts/ResourceContext";
+import { collection, limit, orderBy, query, where } from "firebase/firestore";
+import Link from "next/link";
+import { useState } from "react";
+import { getRandomItem } from "utils/basicUtils";
+import { db, useCollectionOnceWithDependencies } from "utils/firebase";
+import { toUrlPart } from "utils/textUtils";
+import SideBarItem from "../SideBarItem";
+import SideBarPostCard from "./SideBarPostCard";
+
+function SideBarPostsOverview()
+{
+    const { isAuthenticated } = useAuth();
+    const { topicId, resourceType } = useResource();
+    const { currentCategory, currentLocation } = useNav();
+
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+    const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
+        () => query(
+            collection(db, "posts"),
+            where("topicId", "==", topicId),
+            orderBy("updatedAt", "desc"),
+            limit(3)
+        ), [ topicId ]
+    );
+
+    return (
+        <SideBarItem>
+            <div className="bg-gray-100 p-6 rounded-lg">
+                <div className="flex items-center">
+                    <h2 className="text-xl font-medium leading-6 text-black">
+                        Community
+                    </h2>
+
+                    {isAuthenticated() &&
+                        <span className="ml-3.5">
+                            <button
+                                onClick={() => setIsAddModalOpen(true)}
+                                type="button"
+                                className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            >
+                                <PlusIcon
+                                    className="h-4 w-4"
+                                    aria-hidden="true"
+                                />
+                            </button>
+                        </span>
+                    }
+
+                    <span className="mx-3.5">
+                        <Link
+                            href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community`}
+                            type="button"
+                            className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                            View all
+                            <ArrowRightIcon
+                                className="h-3 w-3 ml-1"
+                                aria-hidden="true"
+                            />
+                        </Link>
+                    </span>
+                </div>
+
+                {!postsLoading ? (
+                        postsCollection?.docs?.length !== 0
+                            ? (
+                                <ul className="mt-5">
+                                    {postsCollection.docs
+                                        .map(doc => ({ id: doc.id, data: doc.data() }))
+                                        .map(doc => <SideBarPostCard key={doc.id} id={doc.id} title={doc.data.title} authorUsername={doc.data.authorUsername} resourceType={resourceType} />)
+                                    }
+                                </ul>
+                            )
+                            : (
+                                <div className="mt-5 truncate text-sm font-light text-gray-400">
+                                    {getRandomItem(NO_POSTS_PLACEHOLDERS)}
+                                </div>
+                            )
+                    ) : null}
+            </div>
+
+            <AddCommunityPostModal
+                open={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                parentResourceType={resourceType}
+                parentResourceId={topicId}
+            />
+        </SideBarItem>
+    );
+}
+
+export default SideBarPostsOverview;

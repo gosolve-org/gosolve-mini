@@ -12,7 +12,7 @@ import { ResourceType } from "models/ResourceType";
 import { toast } from "react-toastify";
 import { toUrlPart } from "utils/textUtils";
 import { POST_VALIDATIONS } from "constants/validationRules";
-import Modal from "../common/Layout/Modal";
+import Modal from "../common/layout/Modal";
 import { useNav } from "contexts/NavigationContext";
 
 interface AddCommunityPostProps {

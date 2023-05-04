@@ -10,7 +10,6 @@ import NotificationsBell from "./NotificationsBell";
 import { useMediaQueries } from "contexts/MediaQueryContext";
 import BurgerMenu from "./BurgerMenu";
 import SearchBar from "./SearchBar";
-import TopicSelector from "./TopicSelector";
 import { useNav } from "contexts/NavigationContext";
 import { useRouter } from "next/router";
 
@@ -27,37 +26,32 @@ function Navbar() {
     return (
         <>
             {isTabletOrMobile && <BurgerMenu isOpen={isBurgerMenuOpen} onOpen={openBurgerMenu} onClose={closeBurgerMenu}></BurgerMenu>}
-            <div className="mx-auto  px-1 sm:px-2 lg:px-4 bg-white shadow-sm lg:static lg:overflow-y-visible">
-                <div className="relative flex justify-between lg:gap-8 xl:grid xl:grid-cols-12">
-
-                    { isTabletOrMobile
-                        ? (
-                            <div className="flex md:inset-y-0 md:left-0 lg:static xl:col-span-2">
+            <div className="mx-auto px-1 sm:px-2 lg:px-4 bg-white shadow-sm lg:static lg:overflow-y-visible">
+                <div className="relative flex justify-between">
+                    <div className="flex grow basis-0 md:inset-y-0 md:left-0 lg:static">
+                        {isTabletOrMobile
+                            ? (
                                 <div className="flex flex-shrink-0 items-center ml-1">
                                     <Bars3Icon onClick={openBurgerMenu} className="h-7 w-7 text-black"></Bars3Icon>
                                 </div>
-                            </div>
-                        )
-                        : (
-                            <div className="flex md:inset-y-0 md:left-0 lg:static xl:col-span-2">
+                            )
+                            : (
                                 <div className="flex flex-shrink-0 items-center">
                                     <Link href="/">
                                         <ResponsiveLogo className="block h-6 w-auto" />
                                     </Link>
                                 </div>
-                            </div>
-                        )
-                    }
+                            )
+                        }
+                    </div>
 
                     {!isTabletOrMobile &&                
-                        <div className="flex min-w-0 w-full flex-1 flex-row justify-center items-center px-6 py-2 md:px-8 lg:px-0 xl:col-span-8">
+                        <div className="flex min-w-0 flex-row justify-center items-center px-6 py-2 md:px-8 lg:px-0">
                             <SearchBar />
-                            <span className="w-0.5 h-5 mx-5 bg-gray-200"></span>
-                            <TopicSelector />
                         </div>
                     }
 
-                    <div className="flex items-center justify-end xl:col-span-2 py-2">
+                    <div className="flex grow basis-0 items-center justify-end py-2">
                         {/* NOTIFICATIONS BELL */}
                         {isAuthenticated() &&
                             <div className="mr-2">

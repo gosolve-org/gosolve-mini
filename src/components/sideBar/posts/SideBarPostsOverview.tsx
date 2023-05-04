@@ -1,7 +1,9 @@
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/20/solid";
+import MobileHorizontalScroll from "components/common/layout/MobileHorizontalScroll";
 import AddCommunityPostModal from "components/posts/AddPostModal";
 import { NO_POSTS_PLACEHOLDERS } from "constants/placeholderTexts";
 import { useAuth } from "contexts/AuthContext";
+import { useMediaQueries } from "contexts/MediaQueryContext";
 import { useNav } from "contexts/NavigationContext";
 import { useResource } from "contexts/ResourceContext";
 import { collection, limit, orderBy, query, where } from "firebase/firestore";
@@ -18,6 +20,7 @@ function SideBarPostsOverview()
     const { isAuthenticated } = useAuth();
     const { topicId, resourceType } = useResource();
     const { currentCategory, currentLocation } = useNav();
+    const { isTabletOrMobile } = useMediaQueries();
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
@@ -28,6 +31,26 @@ function SideBarPostsOverview()
             orderBy("updatedAt", "desc"),
             limit(3)
         ), [ topicId ]
+    );
+
+    const createPostCards = () => postsCollection.docs
+        .map(doc => ({ id: doc.id, data: doc.data() }))
+        .map(doc => <SideBarPostCard key={doc.id} id={doc.id} title={doc.data.title} authorUsername={doc.data.authorUsername} resourceType={resourceType} />);
+
+    const createViewAllButton = () => (
+        <span>
+            <Link
+                href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community`}
+                type="button"
+                className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+                View all
+                <ArrowRightIcon
+                    className="h-3 w-3 ml-1"
+                    aria-hidden="true"
+                />
+            </Link>
+        </span>
     );
 
     return (
@@ -53,30 +76,26 @@ function SideBarPostsOverview()
                         </span>
                     }
 
-                    <span className="mx-3.5">
-                        <Link
-                            href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community`}
-                            type="button"
-                            className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            View all
-                            <ArrowRightIcon
-                                className="h-3 w-3 ml-1"
-                                aria-hidden="true"
-                            />
-                        </Link>
-                    </span>
+                    {isTabletOrMobile &&
+                        <>
+                            <div className="flex-grow"></div>
+                            <div>
+                                {createViewAllButton()}
+                            </div>
+                        </>
+                    }
                 </div>
 
                 {!postsLoading ? (
                         postsCollection?.docs?.length !== 0
                             ? (
-                                <ul className="mt-5">
-                                    {postsCollection.docs
-                                        .map(doc => ({ id: doc.id, data: doc.data() }))
-                                        .map(doc => <SideBarPostCard key={doc.id} id={doc.id} title={doc.data.title} authorUsername={doc.data.authorUsername} resourceType={resourceType} />)
-                                    }
-                                </ul>
+                                isTabletOrMobile
+                                    ? <MobileHorizontalScroll className="row-fullscreen left-0 mt-5" childrenClassName="mx-2">
+                                        {createPostCards()}
+                                    </MobileHorizontalScroll>
+                                    : <ul className="mt-5">
+                                        {createPostCards()}
+                                    </ul>
                             )
                             : (
                                 <div className="mt-5 truncate text-sm font-light text-gray-400">
@@ -84,6 +103,12 @@ function SideBarPostsOverview()
                                 </div>
                             )
                     ) : null}
+
+                {!isTabletOrMobile && postsCollection?.docs?.length > 0 &&
+                    <div className="mt-6">
+                        {createViewAllButton()}
+                    </div>
+                }
             </div>
 
             <AddCommunityPostModal

@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { slide as Menu } from 'react-burger-menu';
 import Logo from '../../common/layout/Logo';
 import SearchBar from './SearchBar';
-import TopicSelector from './TopicSelector';
 
 interface BurgerMenuProps {
     isOpen: boolean;
@@ -22,8 +21,6 @@ function BurgerMenu({ isOpen = false, onOpen, onClose }: BurgerMenuProps) {
                 </div>
                 <div className='flex-col flex-grow min-w-0 w-full flex-1 justify-center items-center'>
                     <SearchBar />
-                    <span className="flex h-0.5 w-full my-5 bm-menu-divider"></span>
-                    <TopicSelector />
                 </div>
                 <div className='mb-4'>
                     <div className='py-2'>

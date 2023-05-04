@@ -1,3 +1,4 @@
+import { useMediaQueries } from "contexts/MediaQueryContext";
 import { useNav } from "contexts/NavigationContext";
 import { useResource } from "contexts/ResourceContext";
 import { ResourceType } from "models/ResourceType";
@@ -12,6 +13,7 @@ function SideBarPostCard({ id, title, authorUsername, resourceType }: { id: stri
 {
     const { actionId } = useResource();
     const { currentCategory, currentLocation } = useNav();
+    const { isTabletOrMobile } = useMediaQueries();
 
     let url;
     switch (resourceType)
@@ -31,7 +33,7 @@ function SideBarPostCard({ id, title, authorUsername, resourceType }: { id: stri
             key={id}
             href={url}
         >
-            <li className="rounded-lg bg-white px-4 py-5 shadow-md hover:bg-gray-50 list-none width-card-lg sm:w-auto">
+            <li className={`rounded-lg bg-white px-4 py-5 shadow-md hover:bg-gray-50 list-none width-card-lg xl:w-auto ${!isTabletOrMobile && 'mb-4'}`}>
                 <div className="text-sm font-medium text-black line-clamp-2" style={cardTitleStyle}>
                     {title}
                 </div>

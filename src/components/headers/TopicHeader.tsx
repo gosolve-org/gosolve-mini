@@ -30,9 +30,16 @@ function TopicHeader() {
         handleCurrentTabChange(Tab[e.currentTarget.value]);
 
     return (
-        <div className="flex flex-col justify-end sm:justify-center h-40 items-center bg-sky-100">
+        <div
+            className="flex flex-col justify-end sm:pb-4 h-40 sm:h-60 2xl:h-80 items-center"
+            style={{
+                backgroundImage: 'url("/images/categories/climate-change.jpg")',
+                backgroundSize: '100% auto',
+                backgroundPosition: 'center',
+            }}
+        >
             <div className="mt-5 sm:mx-auto sm:w-full">
-                <h1 className="w-full px-4 py-2 text-center text-3xl tracking-tight text-black ">
+                <h1 className="w-full px-4 py-2 text-center text-3xl tracking-tight text-white ">
                     {currentCategory?.hidden || currentLocation?.hidden
                         ? DEFAULT_PAGE_TITLE
                         : (currentCategory?.id && currentLocation?.id
@@ -79,9 +86,7 @@ function TopicHeader() {
                                             ? "text-gray-900"
                                             : "text-gray-500 hover:text-gray-700",
                                         tabIdx === 0 && !isMobile ? "rounded-l-lg" : "",
-                                        tabIdx === tabArr.length - 1 && !isMobile
-                                            ? "rounded-r-lg"
-                                            : "",
+                                        tabIdx === tabArr.length - 1 && !isMobile ? "rounded-r-lg" : "",
                                         "group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
                                     )}
                                     aria-current={

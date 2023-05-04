@@ -48,7 +48,7 @@ function ResourceContent()
             await updateTopic({
                 docId: topicId,
                 details: {
-                    title: `${currentCategory?.category} in ${currentLocation?.location}`,
+                    title: `${currentCategory.category} in ${currentLocation.location}`,
                     content: savedData,
                     categoryId: currentCategory.id,
                     locationId: currentLocation.id,
@@ -68,7 +68,7 @@ function ResourceContent()
             console.error("Can't save content, unknown resource type:", resourceType);
             toast.error("Something went wrong");
         }
-    }, []);
+    }, [currentCategory, currentLocation, resourceType, topicId, title, createdAt, user, actionId, setContent]);
 
     return (
         <>

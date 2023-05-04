@@ -1,14 +1,12 @@
 import {
     useState,
     FormEvent,
-    useContext,
     SyntheticEvent,
     useRef,
-    useEffect,
 } from "react";
 import { useRouter } from "next/router";
 import { Dialog } from "@headlessui/react";
-import { collection, query, where, doc } from "firebase/firestore";
+import { collection, query, where } from "firebase/firestore";
 
 import { addAction } from "pages/api/action";
 import { useAuth } from "contexts/AuthContext";
@@ -17,7 +15,7 @@ import { toast } from "react-toastify";
 import { toUrlPart } from "utils/textUtils";
 import { ACTION_VALIDATIONS } from "constants/validationRules";
 import { useNav } from "contexts/NavigationContext";
-import Modal from "components/common/Layout/Modal";
+import Modal from "../common/layout/Modal";
 
 interface AddActionModalProps {
     open: boolean;

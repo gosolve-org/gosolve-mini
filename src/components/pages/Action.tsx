@@ -10,6 +10,7 @@ import { useAuth } from "contexts/AuthContext";
 import actionEditorTemplate from "editorTemplates/actionEditorTemplate.json"
 import BasicHead from "components/common/layout/BasicHead";
 import { useNav } from "contexts/NavigationContext";
+import Resource from "components/common/Resource";
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
     ssr: false,
@@ -58,17 +59,9 @@ function Action() {
     return (
         <Layout>
             <BasicHead title={`goSolve | ${actionSnapshot?.data()?.title ?? ''}`} />
-            <div className="flex min-h-full flex-col justify-center items-center py-4 px-4 sm:py-12 sm:px-6 lg:px-8">
-                <div className="w-full max-w-4xl">
-                    <div className="lg:mt-10">
-                        {!actionsLoading && (!userLoading || !isAuthenticated()) ? (
-                            <EditorJs
-                                readOnly={!canUserEdit}
-                                saveData={handleSaveData}
-                                defaultValue={actionContent}
-                            />
-                        ) : null}
-                    </div>
+            <div className="flex min-h-full flex-col justify-center items-center py-6 sm:py-12 sm:px-6 lg:px-8">
+                <div className="w-full max-w-screen-2xl">
+                    <Resource />
                 </div>
             </div>
         </Layout>

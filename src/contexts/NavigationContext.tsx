@@ -1,8 +1,11 @@
+import { collection } from "firebase/firestore";
 import { Category } from "models/Category";
 import { Location } from "models/Location";
 import { Tab } from "models/Tab";
 import { useRouter } from "next/router";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { useCollectionOnce } from "react-firebase-hooks/firestore";
+import { db } from "utils/firebase";
 import { urlPartToReadable } from "utils/textUtils";
 
 interface NavigationContext {
@@ -51,9 +54,45 @@ export const NavigationContextProvider = ({ children }: { children: ReactNode })
         };
     }, [isBurgerMenuOpen, setIsBurgerMenuOpen, router.events]);
 
+    const [categoriesCollection] = useCollectionOnce(collection(db, "categories"));
+    const [locationsCollection] = useCollectionOnce(collection(db, "locations"));
     const [currentCategory, setCurrentCategory] = useState<Category>();
     const [currentLocation, setCurrentLocation] = useState<Location>();
+    const [categories, setCategories] = useState<Category[]>();
+    const [locations, setLocations] = useState<Location[]>();
     const [currentTab, setCurrentTab] = useState(null);
+
+    useEffect(() => {
+        if (!categoriesCollection) {
+            return;
+        }
+        setCategories(
+            categoriesCollection.docs.map((doc) => {
+                const docData = doc.data();
+
+                return {
+                    id: doc.id,
+                    category: docData?.category,
+                    hidden: docData?.hidden,
+                };
+            }));
+    }, [categoriesCollection]);
+
+    useEffect(() => {
+        if (!locationsCollection) {
+            return;
+        }
+        setLocations(
+            locationsCollection.docs.map((doc) => {
+                const docData = doc.data();
+
+                return {
+                    id: doc.id,
+                    location: docData?.location,
+                    hidden: docData?.hidden,
+                };
+            }));
+    }, [locationsCollection]);
 
     const handleCurrentCategoryChange = (category: Category) =>
         setCurrentCategory(category);
@@ -75,6 +114,20 @@ export const NavigationContextProvider = ({ children }: { children: ReactNode })
             location: urlPartToReadable(router?.query?.location?.toString()) ?? '...'
         });
     }, [ router?.query?.location ]);
+
+    useEffect(() => {
+        const category = categories?.find(
+            (category) => category.category === currentCategory?.category
+        );
+        if (category?.id) handleCurrentCategoryChange(category);
+    }, [ categories, currentCategory, handleCurrentCategoryChange ]);
+
+    useEffect(() => {
+        const location = locations?.find(
+            (location) => location.location === currentLocation?.location
+        );
+        if (location?.id) handleCurrentLocationChange(location);
+    }, [ locations, currentLocation, handleCurrentLocationChange ]);
 
     return (
         <NavigationContext.Provider

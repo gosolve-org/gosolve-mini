@@ -98,7 +98,7 @@ function SideBarActionsOverview()
                                 </ul>
                         )
                         : (
-                            <div className="text-sm font-light text-gray-400">
+                            <div className="mt-5 text-sm font-light text-gray-400">
                                 {getRandomItem(hasEditorRights() ? NO_ACTIONS_PLACEHOLDERS_FOR_EDITORS : NO_ACTIONS_PLACEHOLDERS_FOR_USERS)}
                             </div>
                         )

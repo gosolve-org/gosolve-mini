@@ -98,7 +98,7 @@ function SideBarPostsOverview()
                                     </ul>
                             )
                             : (
-                                <div className="mt-5 truncate text-sm font-light text-gray-400">
+                                <div className="mt-5 text-sm font-light text-gray-400">
                                     {getRandomItem(NO_POSTS_PLACEHOLDERS)}
                                 </div>
                             )

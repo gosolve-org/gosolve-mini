@@ -18,6 +18,8 @@ import Layout from "components/common/layout/Layout";
 import AddCommunityPostModal from "components/posts/AddPostModal";
 import Pagination from "components/common/Pagination";
 import { useNav } from "contexts/NavigationContext";
+import { useResource } from "contexts/ResourceContext";
+import TopicHeader from "components/headers/TopicHeader";
 dayjs.extend(localizedFormat);
 dayjs.extend(calendar);
 
@@ -80,24 +82,28 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
 
     return (
         <Layout>
-            <div className="flex min-h-full flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
-                <div className="w-full max-w-4xl">
+            <div className={`flex min-h-full flex-col justify-center items-center py-12 ${resourceType == ResourceType.Topic ? 'px-4 sm:px-6 lg:px-8' : 'px-4 xl:px-6'}`}>
+                <div className={`w-full ${resourceType == ResourceType.Topic ? 'max-w-4xl' : 'max-w-screen-2xl sm:pl-10'}`}>
                     <div className="flex items-center">
-                        <h2 className="text-2xl font-xl font-semibold leading-6 text-black">
-                            Community
-                        </h2>
+                        {resourceType == ResourceType.Topic &&
+                            <h2 className="text-2xl font-xl font-semibold leading-6 text-black mr-3.5">
+                                Community
+                            </h2>
+                        }
 
                         {isAuthenticated() &&
-                            <span className="mx-3.5">
+                            <span>
                                 <button
                                     onClick={handleAddCommunityClick}
                                     type="button"
-                                    className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                    className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 shadow-sm hover:bg-indigo-500 hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                 >
-                                    <PlusIcon
-                                        className="h-4 w-4"
-                                        aria-hidden="true"
-                                    />
+                                    {resourceType == ResourceType.Topic || true &&
+                                        <PlusIcon
+                                            className="h-4 w-4 text-black hover:text-white"
+                                            aria-hidden="true"
+                                        />
+                                    }
                                 </button>
                             </span>
                         }

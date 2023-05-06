@@ -74,6 +74,7 @@ export const NavigationContextProvider = ({ children }: { children: ReactNode })
                     id: doc.id,
                     category: docData?.category,
                     hidden: docData?.hidden,
+                    imageName: docData?.imageName,
                 };
             }));
     }, [categoriesCollection]);
@@ -104,7 +105,8 @@ export const NavigationContextProvider = ({ children }: { children: ReactNode })
     useEffect(() => {
         setCurrentCategory({
             id: null,
-            category: urlPartToReadable(router?.query?.category?.toString()) ?? '...'
+            category: urlPartToReadable(router?.query?.category?.toString()) ?? '...',
+            imageName: null,
         });
     }, [ router?.query?.category ]);
 

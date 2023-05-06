@@ -7,6 +7,7 @@ import { useMediaQueries } from "contexts/MediaQueryContext";
 import { useNav } from "contexts/NavigationContext";
 import { useResource } from "contexts/ResourceContext";
 import { collection, limit, orderBy, query, where } from "firebase/firestore";
+import { ResourceType } from "models/ResourceType";
 import Link from "next/link";
 import { useState } from "react";
 import { getRandomItem } from "utils/basicUtils";
@@ -18,20 +19,32 @@ import SideBarPostCard from "./SideBarPostCard";
 function SideBarPostsOverview()
 {
     const { isAuthenticated } = useAuth();
-    const { topicId, resourceType } = useResource();
+    const { topicId, resourceType, actionId } = useResource();
     const { currentCategory, currentLocation } = useNav();
     const { isTabletOrMobile } = useMediaQueries();
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-    const [postsCollection, postsLoading] = useCollectionOnceWithDependencies(
+    const [topicPostsCollection, topicPostsLoading] = useCollectionOnceWithDependencies(
         () => query(
             collection(db, "posts"),
             where("topicId", "==", topicId),
             orderBy("updatedAt", "desc"),
             limit(3)
-        ), [ topicId ]
+        ), [ topicId, resourceType == ResourceType.Topic ]
     );
+
+    const [actionPostsCollection, actionPostsLoading] = useCollectionOnceWithDependencies(
+        () => query(
+            collection(db, "posts"),
+            where("actionId", "==", actionId),
+            orderBy("updatedAt", "desc"),
+            limit(3)
+        ), [ actionId, resourceType == ResourceType.Action ]
+    );
+
+    const postsCollection = resourceType == ResourceType.Action ? actionPostsCollection : topicPostsCollection;
+    const postsLoading = resourceType == ResourceType.Action ? actionPostsLoading : topicPostsLoading;
 
     const createPostCards = () => postsCollection.docs
         .map(doc => ({ id: doc.id, data: doc.data() }))
@@ -40,7 +53,10 @@ function SideBarPostsOverview()
     const createViewAllButton = () => (
         <span>
             <Link
-                href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community`}
+                href={resourceType == ResourceType.Action
+                    ? `/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/actions/${actionId}/community`
+                    : `/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/community`
+                }
                 type="button"
                 className="text-xs font-light inline-flex items-center rounded-lg border border-gray-300 bg-white py-1.5 px-3 text-black shadow-sm hover:bg-indigo-500 hover:border-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >

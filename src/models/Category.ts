@@ -3,4 +3,5 @@ export interface Category {
     category: string;
     parentId?: string;
     hidden?: boolean;
+    imageName: string;
 }

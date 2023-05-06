@@ -42,18 +42,20 @@ function Resource()
     const renderForDesktop = () => (
         <div className="flex">
             {/* LEFT BAR */}
-            <div
-                className="shrink-0"
-                style={{
-                    width: `${sideBarWidth}px`,
-                }}
-            >
-                <SideBar>
-                    <div className="pt-20 sticky top-0">
-                        <SideBarTableOfContents />
-                    </div>
-                </SideBar>
-            </div>
+            {resourceType === ResourceType.Topic &&
+                <div
+                    className="shrink-0"
+                    style={{
+                        width: `${sideBarWidth}px`,
+                    }}
+                >
+                    <SideBar>
+                        <div className="pt-20 sticky top-0">
+                            <SideBarTableOfContents />
+                        </div>
+                    </SideBar>
+                </div>
+            }
 
             {/* CONTENT */}
             <div className="grow">

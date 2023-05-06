@@ -64,7 +64,7 @@ function TopicSelector() {
     const [locationsCollection] = useCollectionOnce(collection(db, "locations"));
 
     const [categories, setCategories] = useState<Category[]>([
-        { id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER },
+        { id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER, imageName: null },
     ]);
     const [locations, setLocations] = useState<Location[]>([
         { id: null, location: LOCATION_DROPDOWN_PLACEHOLDER },
@@ -80,9 +80,10 @@ function TopicSelector() {
                         id: doc.id,
                         category: docData?.category,
                         hidden: docData?.hidden,
+                        imageName: docData?.imageName,
                     };
                   })
-                : [{ id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER }]
+                : [{ id: null, category: CATEGORY_DROPDOWN_PLACEHOLDER, imageName: null }]
         );
     }, [categoriesCollection]);
 

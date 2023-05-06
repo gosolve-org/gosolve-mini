@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader } from 'components/common';
+import Loader from 'components/common/layout/Loader';
 
 export const NotificationLoader = () => {
   return (

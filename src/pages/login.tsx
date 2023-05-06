@@ -1,16 +1,16 @@
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 
-import { useAuth } from "context/AuthContext";
-import BasicToast from "components/common/Layout/BasicToast";
+import { useAuth } from "contexts/AuthContext";
+import BasicToast from "components/common/layout/BasicToast";
 import { toast } from "react-toastify";
 import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
-import LinkToast, { showLinkToast } from "components/common/Layout/LinkToast";
+import LinkToast, { showLinkToast } from "components/common/layout/LinkToast";
 import { TOAST_IDS } from "constants/toastConstants";
 import { getWaitlistUser } from "./api/user";
-import BasicHead from "components/common/Layout/BasicHead";
-import Logo from "components/common/Layout/Logo";
+import BasicHead from "components/common/layout/BasicHead";
+import Logo from "components/common/layout/Logo";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 
 function Login() {

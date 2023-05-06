@@ -1,4 +1,4 @@
-import { useMediaQueries } from "context/MediaQueryContext";
+import { useMediaQueries } from "contexts/MediaQueryContext";
 import Image from "next/image";
 
 function ResponsiveLogo({ className }: { className: string }) {

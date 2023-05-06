@@ -2,16 +2,15 @@ import 'styles/globals.css';
 import "react-toastify/dist/ReactToastify.css";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
-
-import { AuthContextProvider } from "context/AuthContext";
-import ProtectedRoute from "components/common/ProtectedRoute";
+import { AuthContextProvider } from "contexts/AuthContext";
+import ProtectedRoute from "components/nav/ProtectedRoute";
 import { PROTECTED_ROUTES } from "constants/protectedRoutes";
-import { DataContextProvider } from "context/DataContext";
-import { MediaQueryContextProvider } from "context/MediaQueryContext";
+import { MediaQueryContextProvider } from "contexts/MediaQueryContext";
 import '../styles/burger-menu.css';
 import '../styles/novu.css';
-import { NavigationContextProvider } from 'context/NavigationContext';
-import Route from 'components/common/Route';
+import '../styles/editorjs.css';
+import { NavigationContextProvider } from 'contexts/NavigationContext';
+import Route from 'components/nav/Route';
 
 function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
@@ -21,19 +20,15 @@ function App({ Component, pageProps }: AppProps) {
             <AuthContextProvider>
                 {PROTECTED_ROUTES.includes(router.pathname) ? (
                     <ProtectedRoute>
-                        <DataContextProvider>
-                            <NavigationContextProvider>
-                                <Component {...pageProps} />
-                            </NavigationContextProvider>
-                        </DataContextProvider>
+                        <NavigationContextProvider>
+                            <Component {...pageProps} />
+                        </NavigationContextProvider>
                     </ProtectedRoute>
                 ) : (
                     <Route>
-                        <DataContextProvider>
-                            <NavigationContextProvider>
-                                <Component {...pageProps} />
-                            </NavigationContextProvider>
-                        </DataContextProvider>
+                        <NavigationContextProvider>
+                            <Component {...pageProps} />
+                        </NavigationContextProvider>
                     </Route>
                 )}
             </AuthContextProvider>

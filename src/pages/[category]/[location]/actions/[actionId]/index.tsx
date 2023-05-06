@@ -1,16 +1,22 @@
-import Action from "components/pages/category/location/Action";
-import { DataContext } from "context/DataContext";
+import Action from "components/pages/Action";
+import { useNav } from "contexts/NavigationContext";
+import { ResourceContextProvider } from "contexts/ResourceContext";
+import { ResourceType } from "models/ResourceType";
 import { Tab } from "models/Tab";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 
 function TopicActionPage() {
-    const { handleCurrentTabChange } = useContext(DataContext);
+    const { handleCurrentTabChange } = useNav();
 
     useEffect(() => {
         handleCurrentTabChange(Tab.Action);
     }, [ handleCurrentTabChange ]);
 
-    return <Action />;
+    return (
+        <ResourceContextProvider resourceType={ResourceType.Action}>
+            <Action />
+        </ResourceContextProvider>
+    );
 }
 
 export default TopicActionPage;

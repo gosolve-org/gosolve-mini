@@ -76,9 +76,7 @@ export const ResourceContextProvider = ({ children, resourceType }: { children: 
     }
 
     useEffect(() => {
-        if (foundContent != null) {
-            setContent(foundContent);
-        }
+        setContent(foundContent);
     }, [setContent, foundContent]);
 
 

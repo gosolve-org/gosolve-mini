@@ -17,7 +17,6 @@ function ResourceContent()
     const { isAuthenticated, hasEditorRights, isUserProfileLoading, user } = useAuth();
     const { resourceType, content, setContent, authorId, actionId, topicId, title, createdAt } = useResource();
     const { currentCategory, currentLocation } = useNav();
-
     const canUserEdit = hasEditorRights() && (resourceType !== ResourceType.Action || user?.uid === authorId);
 
     const handleSaveData = useCallback(async (savedData: string) => {

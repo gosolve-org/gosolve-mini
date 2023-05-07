@@ -72,13 +72,13 @@ function ResourceContent()
 
     return (
         <>
-            {!!content && (!isUserProfileLoading || !isAuthenticated()) ? (
+            {!!content && (!isUserProfileLoading || !isAuthenticated()) &&
                 <EditorJs
                     readOnly={!canUserEdit}
                     saveData={handleSaveData}
                     defaultValue={content}
                 />
-            ) : null}
+            }
         </>
     );
 }

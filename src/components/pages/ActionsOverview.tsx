@@ -14,7 +14,6 @@ import Layout from "components/common/layout/Layout";
 import Pagination from "components/common/Pagination";
 import AddActionModal from "components/actions/AddActionModal";
 import { useNav } from "contexts/NavigationContext";
-import TopicHeader from "components/headers/TopicHeader";
 
 const PAGE_SIZE = 12;
 

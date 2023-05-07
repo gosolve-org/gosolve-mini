@@ -1,20 +1,24 @@
-import BasicHead from "components/common/Layout/BasicHead";
-import ActionsOverview from "components/pages/category/location/ActionsOverview";
-import { DataContext } from "context/DataContext";
+import BasicHead from "components/common/layout/BasicHead";
+import ActionsOverview from "components/pages/ActionsOverview";
+import { useNav } from "contexts/NavigationContext";
+import { ResourceContextProvider } from "contexts/ResourceContext";
+import { ResourceType } from "models/ResourceType";
 import { Tab } from "models/Tab";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 
 function TopicActionsOverviewPage() {
-	const { handleCurrentTabChange } = useContext(DataContext);
+    const { handleCurrentTabChange } = useNav();
 
-	useEffect(() => {
-		handleCurrentTabChange(Tab.Actions);
-	}, [ handleCurrentTabChange ]);
+    useEffect(() => {
+        handleCurrentTabChange(Tab.Actions);
+    }, [ handleCurrentTabChange ]);
 
-	return (<>
-		<BasicHead title="goSolve | Actions" />
-		<ActionsOverview />
-	</>);
+    return (
+        <ResourceContextProvider resourceType={ResourceType.Action}>
+            <BasicHead title="goSolve | Actions" />
+            <ActionsOverview />
+        </ResourceContextProvider>
+    );
 }
 
 export default TopicActionsOverviewPage;

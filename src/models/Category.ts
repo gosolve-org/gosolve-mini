@@ -1,6 +1,7 @@
 export interface Category {
-	id: string;
-	category: string;
-	parentId?: string;
-	hidden?: boolean;
+    id: string;
+    category: string;
+    parentId?: string;
+    hidden?: boolean;
+    imageName: string;
 }

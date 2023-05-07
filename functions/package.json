@@ -1,9 +1,0 @@
-{
-  "name": "gosolve-mini-functions",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {},
-  "dependencies": {
-    "firebase-functions": "^4.2.0"
-  }
-}

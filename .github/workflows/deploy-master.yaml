@@ -1,0 +1,24 @@
+name: Firebase Functions CI/CD - Master
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'What environment do you want to deploy to?'
+        type: environment
+        required: true
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy firebase to ${{ inputs.environment }}
+        id: deploy
+        uses: ./.github/workflows/actions/deploy
+        with:
+          firebase_project_id: ${{ vars.FIREBASE_PROJECT_ID }}
+          firebase_functions_env_file: ${{ secrets.FIREBASE_FUNCTIONS_ENV_FILE }}
+          gcp_sa_key: ${{ secrets.GCP_SA_KEY }}

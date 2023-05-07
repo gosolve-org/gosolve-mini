@@ -1,0 +1,11 @@
+/* START WIDTH HACK - EditorJS sets a fixed width of 650px, we wan't this customizable. https://github.com/codex-team/editor.js/discussions/1891 */
+.ce-block__content, .ce-toolbar__content
+{
+    max-width:calc(100% - 80px) !important;
+}
+
+.cdx-block
+{
+    max-width: 100% !important;
+}
+/* END WIDTH HACK */

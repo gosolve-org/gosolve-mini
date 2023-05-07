@@ -1,7 +1,6 @@
-const UNPROTECTED_ROUTES = [
-	"/login",
-	"/register",
-	"/privacy",
+const PROTECTED_ROUTES = [
+    "/settings",
+    "/register/details"
 ];
 
-export { UNPROTECTED_ROUTES };
+export { PROTECTED_ROUTES };

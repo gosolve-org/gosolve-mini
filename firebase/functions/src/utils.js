@@ -1,3 +1,5 @@
+const functions = require('firebase-functions');
+
 module.exports.toUrlPart = (content) => content?.split(" ").join("-");
 
 module.exports.getFirestoreEventType = (before, after) => {
@@ -13,7 +15,6 @@ module.exports.getFirestoreEventType = (before, after) => {
 module.exports.editorJsContentToRawText = (editorJsContent) => {
     return editorJsContent;
 };
-
 
 module.exports.ensureAuth = (context) => {
     if (!context?.auth?.uid) {

@@ -34,17 +34,19 @@ function TopicHeader() {
     return (
         <div className="relative w-full">
             <div className="w-full h-40 sm:h-60 2xl:h-80 absolute left-0" style={{ zIndex: -1 }}>
-                <Image
-                    src={`${CATEGORY_IMAGE_DIR_URI}/${currentCategory?.imageName}.webp`}
-                    sizes="100vw"
-                    alt={currentCategory?.category}
-                    fill={true}
-                    priority={true}
-                    quality={100}
-                    style={{
-                        objectFit: 'cover',
-                    }}
-                />
+                {!!currentCategory?.imageName &&
+                    <Image
+                        src={`${CATEGORY_IMAGE_DIR_URI}/${currentCategory?.imageName}.webp`}
+                        sizes="100vw"
+                        alt={currentCategory?.category}
+                        fill={true}
+                        priority={true}
+                        quality={100}
+                        style={{
+                            objectFit: 'cover',
+                        }}
+                    />
+                }
             </div>
             <div className="flex flex-col justify-end sm:pb-4 h-40 sm:h-60 2xl:h-80 items-center">
                 <div className="mt-5 sm:mx-auto sm:w-full">

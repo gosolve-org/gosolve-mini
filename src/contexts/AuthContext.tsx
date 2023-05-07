@@ -19,7 +19,7 @@ import {
 } from "@firebase/auth";
 
 import { auth, db, useDocumentOnceWithDependencies } from "utils/firebase";
-import { registerUser, doesUserExist, getUser, getWaitlistUser, updateUser } from "pages/api/user";
+import { registerUser, doesUserExist, getUser, getWaitlistUser } from "pages/api/user";
 import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
 import { FirebaseError } from "firebase/app";

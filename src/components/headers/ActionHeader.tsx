@@ -1,7 +1,6 @@
 import { FormEvent } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 
@@ -10,8 +9,6 @@ import { Tab } from "models/Tab";
 import { toUrlPart } from "utils/textUtils";
 import { useMediaQueries } from "contexts/MediaQueryContext";
 import { useNav } from "contexts/NavigationContext";
-import Image from "next/image";
-import { CATEGORY_IMAGE_DIR_URI } from "constants/uris";
 
 const TAB_WIDTH = 200;
 

@@ -21,19 +21,14 @@ function ResourceContent()
 
     const handleSaveData = useCallback(async (savedData: string) => {
         if (resourceType === ResourceType.Action) {
-            await updateAction({
-                docId: actionId,
-                details: {
-                    authorId: user.uid,
-                    title: title,
-                    topicId: topicId,
-                    content: savedData,
-                    authorUsername: user.username,
-                    createdAt: createdAt,
-                    updatedAt: new Date()
-                },
-                category: currentCategory?.category,
-                location: currentLocation?.location
+            await updateAction(actionId, {
+                authorId: user.uid,
+                title: title,
+                topicId: topicId,
+                content: savedData,
+                authorUsername: user.username,
+                createdAt: createdAt,
+                updatedAt: new Date()
             })
                 .then(() => {
                     toast.success("Saved!");
@@ -44,16 +39,11 @@ function ResourceContent()
                     console.error(err);
                 });
         } else if (resourceType === ResourceType.Topic) {
-            await updateTopic({
-                docId: topicId,
-                details: {
-                    title: `${currentCategory.category} in ${currentLocation.location}`,
-                    content: savedData,
-                    categoryId: currentCategory.id,
-                    locationId: currentLocation.id,
-                },
-                location: currentLocation.location,
-                category: currentCategory.category
+            await updateTopic(topicId, {
+                title: `${currentCategory.category} in ${currentLocation.location}`,
+                content: savedData,
+                categoryId: currentCategory.id,
+                locationId: currentLocation.id,
             })
                 .then(() => {
                     toast.success("Saved!");

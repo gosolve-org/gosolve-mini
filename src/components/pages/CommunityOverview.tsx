@@ -18,8 +18,6 @@ import Layout from "components/common/layout/Layout";
 import AddCommunityPostModal from "components/posts/AddPostModal";
 import Pagination from "components/common/Pagination";
 import { useNav } from "contexts/NavigationContext";
-import { useResource } from "contexts/ResourceContext";
-import TopicHeader from "components/headers/TopicHeader";
 dayjs.extend(localizedFormat);
 dayjs.extend(calendar);
 

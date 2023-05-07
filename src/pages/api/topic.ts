@@ -16,7 +16,7 @@ const addTopicHistory = async ({ details }: { details: Topic }) => {
     }
 };
 
-const addTopic = async ({ details, category, location }: { details: Topic, category: string, location: string }) => {
+const addTopic = async (details: Topic) => {
     try {
         const id = await addDoc(collection(db, "topics"), {
             ...details,
@@ -33,19 +33,9 @@ const addTopic = async ({ details, category, location }: { details: Topic, categ
     }
 };
 
-const updateTopic = async ({
-    docId,
-    details,
-    category,
-    location
-}: {
-    docId: string;
-    details: Topic;
-    category: string;
-    location: string;
-}) => {
+const updateTopic = async (docId: string, details: Topic) => {
     try {
-        if (!docId) await addTopic({ details, category, location });
+        if (!docId) await addTopic(details);
         else {
             const topicRef = doc(db, "topics", docId);
             const docSnap = await getDoc(topicRef);
@@ -60,7 +50,7 @@ const updateTopic = async ({
 
                 return docId;
             } else {
-                return await addTopic({ details, category, location });
+                return await addTopic(details);
             }
         }
 

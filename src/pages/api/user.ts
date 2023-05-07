@@ -1,5 +1,5 @@
 import { db, wrappedHttpsCallable } from "utils/firebase";
-import { setDoc, doc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
 
 import { User } from "models/User";
 import { ErrorWithCode } from "models/ErrorWithCode";

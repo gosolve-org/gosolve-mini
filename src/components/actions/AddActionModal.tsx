@@ -58,15 +58,11 @@ function AddActionModal({ open, onClose }: AddActionModalProps) {
 
         try {
             const docId = await addAction({
-                details: {
-                    authorId: user.uid,
-                    title: actionTitle,
-                    topicId,
-                    authorUsername: user.username,
-                    createdAt: new Date()
-                },
-                location: currentLocation.location,
-                category: currentCategory.category
+                authorId: user.uid,
+                title: actionTitle,
+                topicId,
+                authorUsername: user.username,
+                createdAt: new Date()
             });
 
             await router.push(

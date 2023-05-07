@@ -5,7 +5,7 @@ import { useCollectionOnce } from "react-firebase-hooks/firestore";
 import { collection } from "firebase/firestore";
 import { db } from "utils/firebase";
 import { toUrlPart } from "utils/textUtils";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Dropdown, { DropdownItem } from "./Dropdown";
 import { useMediaQueries } from "contexts/MediaQueryContext";

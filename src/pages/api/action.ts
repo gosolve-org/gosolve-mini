@@ -3,7 +3,7 @@ import { collection, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
 
 import { Action } from "models/Action";
 
-const addAction = async ({ details, location, category }: { details: Action, location: string, category: string }) => {
+const addAction = async (details: Action) => {
     try {
         return await addDoc(collection(db, "actions"), {
             ...details,
@@ -16,17 +16,7 @@ const addAction = async ({ details, location, category }: { details: Action, loc
     }
 };
 
-const updateAction = async ({
-    docId,
-    details,
-    location,
-    category
-}: {
-    docId: string;
-    details?: Action;
-    location: string;
-    category: string;
-}) => {
+const updateAction = async (docId: string, details: Action) => {
     try {
         const actionRef = doc(db, "actions", docId);
         const docSnap = await getDoc(actionRef);
@@ -39,7 +29,7 @@ const updateAction = async ({
 
             return docId;
         } else {
-            return await addAction({ details, location, category });
+            return await addAction(details);
         }
     } catch (err) {
         console.error(err);

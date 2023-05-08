@@ -6,6 +6,7 @@ import { useMediaQueries } from "contexts/MediaQueryContext";
 import { useNav } from "contexts/NavigationContext";
 import Image from "next/image";
 import { CATEGORY_IMAGE_DIR_URI } from "constants/uris";
+import { useServerProps } from "contexts/ServerPropsContext";
 
 const DEFAULT_PAGE_TITLE = 'Welcome to goSolve mini';
 const TAB_WIDTH = 200;
@@ -27,6 +28,7 @@ function classNames(...classes: string[]) {
 function TopicHeader() {
     const { currentTab, currentCategory, currentLocation, handleCurrentTabChange } = useNav();
     const { isMobile } = useMediaQueries();
+    const { bannerBlurBase64 } = useServerProps();
 
     const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
         handleCurrentTabChange(Tab[e.currentTarget.value]);
@@ -45,6 +47,8 @@ function TopicHeader() {
                         style={{
                             objectFit: 'cover',
                         }}
+                        placeholder="blur"
+                        blurDataURL={bannerBlurBase64}
                     />
                 }
             </div>

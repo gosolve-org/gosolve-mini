@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 // reactStrictMode: true when this fixed: https://github.com/Jungwoo-An/react-editor-js/issues/213
+
+const { withPlaiceholder } = require("@plaiceholder/next");
+
 const nextConfig = {
     reactStrictMode: false,
     redirects: async () => {
@@ -26,4 +29,4 @@ const nextConfig = {
     }
 };
 
-module.exports = nextConfig;
+module.exports = withPlaiceholder(nextConfig);

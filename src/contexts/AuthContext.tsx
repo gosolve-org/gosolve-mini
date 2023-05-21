@@ -118,7 +118,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             if ((err instanceof FirebaseError && err.code === 'auth/user-not-found')
                 || (err instanceof ErrorWithCode && err.code === ERROR_CODES.notFound)) {
                     const waitlistUser = await getWaitlistUser(email);
-                    if (waitlistUser?.removed_from_waitlist === false) {
+                    if (!!waitlistUser && waitlistUser.removed_date == null) {
                         throw new ErrorWithCode(ERROR_CODES.waitlistUserNotOffboarded);
                     } else {
                         throw new ErrorWithCode(ERROR_CODES.notFound);

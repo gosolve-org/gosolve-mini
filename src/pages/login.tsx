@@ -73,7 +73,7 @@ function Login() {
     
             if (!await validateUser(credentials)) {
                 const waitlistUser = await getWaitlistUser(credentials.user.email);
-                if (waitlistUser?.removed_from_waitlist === false) {
+                if (!!waitlistUser && waitlistUser.removed_date === null) {
                     showLinkToast(
                         'error',
                         `You're still on the waitlist. Click here to check your status.`,

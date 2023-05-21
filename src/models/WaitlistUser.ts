@@ -6,5 +6,5 @@ export interface WaitlistUser {
     referral_link: string;
     total_waiters_currently: number;
     verified: boolean;
-    removed_from_waitlist: boolean;
+    removed_date: string;
 }

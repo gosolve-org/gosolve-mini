@@ -26,18 +26,26 @@ if (process.env.NEXT_PUBLIC_FIREBASE_EMULATORS === 'true' || process.env.NEXT_PU
     connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
 }
 
+interface FirestoreCollectionHookOptions {
+    useCache: boolean;
+}
 export const useCollectionOnceWithDependencies = (
     query: () => Query<DocumentData>,
-    dependencies: any[]):[QuerySnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
+    dependencies: any[],
+    options?: FirestoreCollectionHookOptions):[QuerySnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
         const [collection, isLoading, err, reloadData] = useCollectionOnce(dependencies.every(Boolean) && query ? query() : null);
         return [collection, (isLoading || dependencies.some(el => !el) || collection?.docs === undefined), err, reloadData];
     };
 
+interface FirestoreDocumentHookOptions {
+    useCache: boolean;
+    onceOptions?: OnceOptions | undefined;
+}
 export const useDocumentOnceWithDependencies = (
     docRef: () => DocumentReference,
     dependencies: any[],
-    options?: OnceOptions | undefined):[DocumentSnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
-        const [snapshot, isLoading, err, reloadData] = useDocumentOnce(dependencies.every(Boolean) && docRef ? docRef() : null, options);
+    options?: FirestoreDocumentHookOptions):[DocumentSnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
+        const [snapshot, isLoading, err, reloadData] = useDocumentOnce(dependencies.every(Boolean) && docRef ? docRef() : null, options.onceOptions);
         return [snapshot, (isLoading || dependencies.some(el => !el)), err, reloadData];
     };
 

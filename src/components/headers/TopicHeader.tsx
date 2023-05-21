@@ -33,7 +33,10 @@ function TopicHeader() {
 
     return (
         <div className="relative w-full">
-            <div className="w-full h-40 sm:h-60 2xl:h-80 absolute left-0" style={{ zIndex: -1 }}>
+            <div
+                className="w-full h-40 sm:h-60 2xl:h-80 absolute left-0 select-none"
+                style={{ zIndex: -1 }}
+            >
                 {!!currentCategory?.imageName &&
                     <Image
                         src={`${CATEGORY_IMAGE_DIR_URI}/${currentCategory?.imageName}.webp`}

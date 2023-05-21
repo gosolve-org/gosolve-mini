@@ -12,7 +12,6 @@ import BurgerMenu from "./BurgerMenu";
 import SearchBar from "./SearchBar";
 import { useNav } from "contexts/NavigationContext";
 import { useRouter } from "next/router";
-import TopicSelector from "./TopicSelector";
 
 function Navbar() {
     const { user, isAuthenticated } = useAuth();
@@ -49,8 +48,6 @@ function Navbar() {
                     {!isTabletOrMobile &&                
                         <div className="flex min-w-0 flex-row justify-center items-center px-6 py-2 md:px-8 lg:px-0">
                             <SearchBar />
-                            <span className="w-0.5 h-5 mx-5 bg-gray-200"></span>
-                            <TopicSelector />
                         </div>
                     }
 

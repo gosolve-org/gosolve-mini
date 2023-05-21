@@ -55,7 +55,7 @@ module.exports.registerUser = functions.region(constants.REGION).https.onCall(as
         if (!waitlistUser) {
             return createErrorResponse(constants.ERROR_CODES.AUTH.NOT_ON_WAITLIST);
         }
-        if (waitlistUser?.removed_from_waitlist !== true) {
+        if (waitlistUser.removed_date == null) {
             return createErrorResponse(constants.ERROR_CODES.AUTH.NOT_OFFBOARDED_FROM_WAITLIST);
         }
     }

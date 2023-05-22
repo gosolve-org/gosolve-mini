@@ -1,0 +1,5 @@
+locations.json
+logs.txt
+locations_*.json
+!locations_continents.json
+!locations_countries.json

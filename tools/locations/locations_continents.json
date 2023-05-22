@@ -1,0 +1,79 @@
+[
+    {
+        "id": "6255146",
+        "name": "Africa",
+        "asciiName": "Africa",
+        "alternateNames":[],
+        "featureClass": "L",
+        "featureClassWeight": 10,
+        "featureCode": "CONT",
+        "continentCode": "AF",
+        "adminDivisionTargetLevel": -2
+    },
+    {
+        "id": "6255147",
+        "name": "Asia",
+        "asciiName": "Asia",
+        "alternateNames":[],
+        "featureClass": "L",
+        "featureClassWeight": 10,
+        "featureCode": "CONT",
+        "continentCode": "AS",
+        "adminDivisionTargetLevel": -2
+    },
+    {
+        "id": "6255148",
+        "name": "Europe",
+        "asciiName": "Europe",
+        "alternateNames":[],
+        "featureClass": "L",
+        "featureClassWeight": 10,
+        "featureCode": "CONT",
+        "continentCode": "EU",
+        "adminDivisionTargetLevel": -2
+    },
+    {
+        "id": "6255149",
+        "name": "North America",
+        "asciiName": "North America",
+        "alternateNames":[],
+        "featureClass": "L",
+        "featureClassWeight": 10,
+        "featureCode": "CONT",
+        "continentCode": "NA",
+        "adminDivisionTargetLevel": -2
+    },
+    {
+        "id": "6255151",
+        "name": "Oceania",
+        "asciiName": "Oceania",
+        "alternateNames":[],
+        "featureClass": "L",
+        "featureClassWeight": 10,
+        "featureCode": "CONT",
+        "continentCode": "OC",
+        "adminDivisionTargetLevel": -2
+    },
+    {
+        "id": "6255150",
+        "name": "South America",
+        "asciiName": "South America",
+        "alternateNames":[],
+        "featureClass": "L",
+        "featureClassWeight": 10,
+        "featureCode": "CONT",
+        "continentCode": "SA",
+        "adminDivisionTargetLevel": -2
+    },
+    {
+        "id": "6255152",
+        "name": "Antarctica",
+        "asciiName": "Antarctica",
+        "alternateNames":[],
+        "featureClass": "L",
+        "featureClassWeight": 10,
+        "featureCode": "CONT",
+        "continentCode": "AN",
+        "adminDivisionTargetLevel": -2
+    }
+]

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const countries = require('./countries2.json');
+const countries = require('./countries.json');
 const { run } = require('./import-file');
 
 const logFilePath = path.join(__dirname, 'logs.txt');

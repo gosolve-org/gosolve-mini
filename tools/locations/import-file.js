@@ -17,6 +17,16 @@ const FEATURE_CLASS_WEIGHTS = {
     'S': 80, // spot, building, farm
     'U': 90, // undersea
 };
+const FEATURE_CODE_FILTERS = {
+    'A': ['ADM1', 'ADM2', 'ADM3', 'ADM4', 'ADM5', 'ADMD'],
+    //'H': ['GLCR', 'GULF', 'HBR', 'OCN', 'SEA'],
+    //'L': ['AREA', 'CST', 'PRK'],
+    // Unsure if these P - PPL places are needed in search. For now, they are filtered out.
+    // These add a total of 2.725.010 locations and will require a big machine upgrade.
+    //'P': ['PPL'], // populated place: a city, town, village, or other agglomeration of buildings where people live and work
+    //'S': ['AIRP', 'PYR', 'PYRS'],
+    //'T': ['BCH', 'BCHS', 'CNYN', 'DSRT', 'ISL', 'ISLS'],
+};
 const FEATURE_CLASS_WEIGHT_DEFAULT = 500;
 const ADMINISTRATIVE_DIVISION_TARGET_LEVEL = 0;
 
@@ -42,19 +52,27 @@ module.exports.run = (countryCode) => {
     console.log('Import loaded 1/4');
     let locations = locationLines.map(locationLine => {
         const parts = locationLine.split('\t');
+        const featureClass = parts[6];
+        const featureCode = parts[7];
+
+        if (!FEATURE_CODE_FILTERS[featureClass]
+            || !FEATURE_CODE_FILTERS[featureClass].includes(featureCode)) {
+                return null;
+            }
+
         const location = {
             id: parts[0],
             name: parts[1],
             nameLowerCase: parts[1]?.toLowerCase(),
             asciiName: parts[2],
-            alternateNames: parts[3]?.split(','),
+            //alternateNames: parts[3]?.split(','),
             _geo: {
                 lat: Number(parts[4]) || null,
                 lng: Number(parts[5]) || null,
             },
-            featureClass: parts[6],
-            featureClassWeight: FEATURE_CLASS_WEIGHTS[parts[6]] || FEATURE_CLASS_WEIGHT_DEFAULT,
-            featureCode: parts[7],
+            featureClass,
+            featureClassWeight: FEATURE_CLASS_WEIGHTS[featureClass] || FEATURE_CLASS_WEIGHT_DEFAULT,
+            featureCode,
             countryCode: parts[8],
             alternateCountryCodes: parts[9],
             adminCode1: parts[10],
@@ -122,7 +140,7 @@ module.exports.run = (countryCode) => {
     });
     console.log('Duplicate removal complete 3/4');
 
-    const exportFilePath = path.join(__dirname, `locations_${countryCode}.json`);
+    const exportFilePath = path.join(__dirname, 'locationData', `locations_${countryCode}.json`);
     if (locations.length > 100000) {
         fs.writeFileSync(exportFilePath, "", { encoding:'utf8', flag:'w' });
         const stream = fs.createWriteStream(exportFilePath, {flags:'a'});
@@ -138,6 +156,6 @@ module.exports.run = (countryCode) => {
     } else {
         fs.writeFileSync(exportFilePath, JSON.stringify(locations), { encoding:'utf8', flag:'w' });
     }
-    console.log(`Added ${locations.length} locations for ${countryCode}. 4/4`);
+    console.log(`Added ${locations.length} locations for ${countryCode}. (${Math.floor(locations.length / locationLines.length * 100)}% of all location data) 4/4`);
     console.log(`${locations.filter(l => !!l._geo).length}/${locations.length} contain geo info.`);
 };

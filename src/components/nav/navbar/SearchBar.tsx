@@ -1,66 +1,43 @@
 import { HashtagIcon, MagnifyingGlassIcon, MapPinIcon } from "@heroicons/react/20/solid";
-import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Category } from "models/Category";
-import { Location } from "models/Location";
+import { ArrowUpRightIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { LINKS } from "constants/links";
+import { CategorySearchResult, LocationSearchResult, useInstantSearch } from "contexts/InstantSearchContext";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 
-const categories: Category[] = [
-    {
-        id: "0",
-        category: 'goSolve',
-        imageName: '',
-        hidden: true,
-    },
-    {
-        id: "1",
-        category: 'Climate Change',
-        imageName: '',
-        hidden: false,
-    },
-    {
-        id: "2",
-        category: 'Poverty',
-        imageName: '',
-        hidden: false,
-    }
-];
-const locations: Location[] = [
-    {
-        id: "0",
-        location: "Global",
-        hidden: true,
-    },
-    {
-        id: "1",
-        location: "United States",
-        hidden: false,
-    },
-    {
-        id: "2",
-        location: "Belgium",
-        hidden: false,
-    }
-];
+enum HintType {
+    Category,
+    Location,
+    Search,
+    SearchTopic,
+    Suggestion,
+}
 
 function SearchBar() {
     const router = useRouter();
-    const [categoryFilter, _setCategoryFilter] = useState<Category>(null);
-    const [locationFilter, _setLocationFilter] = useState<Location>(null);
-    const [hiddenCategory, _setHiddenCategory] = useState<Category>(null);
-    const [hiddenLocation, _setHiddenLocation] = useState<Location>(null);
+    const [categoryFilter, _setCategoryFilter] = useState<CategorySearchResult>(null);
+    const [locationFilter, _setLocationFilter] = useState<LocationSearchResult>(null);
+    const [hiddenCategory, _setHiddenCategory] = useState<CategorySearchResult>(null);
+    const [hiddenLocation, _setHiddenLocation] = useState<LocationSearchResult>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [isFocused, setIsFocused] = useState(false);
     const containerRef = useRef(null);
     const inputRef = useRef(null);
     const hintContainerRef = useRef(null);
+    const {
+        search,
+        loading,
+        categoryResults,
+        locationResults,
+    } = useInstantSearch();
 
-    const setCategoryFilter = useCallback((category: Category) => {
+    const setCategoryFilter = useCallback((category: CategorySearchResult) => {
         _setCategoryFilter(category);
         setTimeout(() => _setHiddenCategory(category), 0);
     }, [ _setCategoryFilter, _setHiddenCategory ]);
 
-    const setLocationFilter = useCallback((location: Location) => {
+    const setLocationFilter = useCallback((location: LocationSearchResult) => {
         _setLocationFilter(location);
         setTimeout(() => _setHiddenLocation(location), 0);
     }, [ _setLocationFilter, _setHiddenLocation ]);
@@ -147,13 +124,19 @@ function SearchBar() {
 
                 if (e.code === 'Enter' || (e.code === 'Tab' && !e.shiftKey)) {
                     e.preventDefault();
-                    if (activeElement.dataset.type === 'location') {
-                        const location = locations.find(l => l.id === activeElement.dataset.id);
+                    if (activeElement.dataset.type?.toLocaleLowerCase() ===
+                        HintType.Location.toString().toLowerCase()
+                    ) {
+                        const location = locationResults.find(l => l.id == activeElement.dataset.id);
                         setLocationFilter(location);
+                        clearInput(!!categoryFilter, true);
                         inputRef.current.focus();
-                    } else if (activeElement.dataset.type === 'category') {
-                        const category = categories.find(c => c.id === activeElement.dataset.id);
+                    } else if (activeElement.dataset.type?.toLowerCase() ===
+                        HintType.Category.toString().toLowerCase()
+                    ) {
+                        const category = categoryResults.find(c => c.id == activeElement.dataset.id);
                         setCategoryFilter(category);
+                        clearInput(true, !!locationFilter);
                         inputRef.current.focus();
                     }
                 }
@@ -165,7 +148,7 @@ function SearchBar() {
         return () => {
             document.removeEventListener('keydown', handleDocumentKeyUp);
         };
-    }, [ isFocused, hintContainerRef, inputRef, locations, categories, setLocationFilter, setCategoryFilter ]);
+    }, [ isFocused, hintContainerRef, inputRef, locationResults, categoryResults, setLocationFilter, setCategoryFilter ]);
 
     useEffect(() => {
         const handeInputKeyDown = (e) => {
@@ -173,8 +156,10 @@ function SearchBar() {
                 if (e.target.selectionStart === 0) {
                     if (categoryFilter) {
                         setCategoryFilter(null);
+                        search(null, false, !!locationFilter);
                     } else if (locationFilter) {
                         setLocationFilter(null);
+                        search(null, !!categoryFilter, false);
                     }
                 }
             }
@@ -188,7 +173,10 @@ function SearchBar() {
     }, [inputRef, categoryFilter, locationFilter, setCategoryFilter, setLocationFilter]);
 
     const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
+    {
+        search(e.currentTarget.value, !!categoryFilter, !!locationFilter);
         setSearchQuery(e.currentTarget.value);
+    }
 
     const handleSearchSubmit = () => {
         if (searchQuery) {
@@ -196,12 +184,17 @@ function SearchBar() {
         }
     };
 
-    const clearSearch = () => {
+    const clearInput = (isCategoryFilterApplied = false, isLocationFilterApplied = false) => {
         setSearchQuery("");
-        setCategoryFilter(null);
-        setLocationFilter(null);
+        search(null, isCategoryFilterApplied, isLocationFilterApplied);
         inputRef.current.value = "";
         inputRef.current.focus();
+    };
+
+    const clearSearch = () => {
+        setCategoryFilter(null);
+        setLocationFilter(null);
+        clearInput();
     };
 
     const handleSearchKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -210,66 +203,161 @@ function SearchBar() {
         }
     };
 
-    const renderHint = (id, type, children, onClick) => (
-        <div
-            tabIndex={0}
-            key={id}
-            data-id={id}
-            data-hint="hint"
-            data-type={type}
-            onMouseDown={() => {
-                onClick();
-                setTimeout(() => inputRef.current.focus(), 0);
-            }}
-            className="flex py-1.5 w-full hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-        >
-            <div className="w-3"></div>
-            <span className="flex items-center">
-                <PlusIcon className="h-4 w-4 text-gray-400" />
-            </span>
-            <div className="w-2"></div>
-            <div className="grow flex cursor-default">{children}</div>
-            <div className="w-3"></div>
-        </div>
-    );
+    enum HintIcon
+    {
+        Plus,
+        MagnifyingGlass,
+        ArrowUpRight,
+    }
+    interface HintOptions {
+        icon?: HintIcon;
+        bgOnActive?: boolean;
+        cursorPointer?: boolean;
+        style?: string;
+    }
+    const renderHint = (id, type: HintType, children, onClick, options?: HintOptions) => {
+        let icon;
+        switch(options?.icon) {
+            case HintIcon.Plus:
+                icon = <PlusIcon className="h-4 w-4 text-gray-400" />;
+                break;
+            case HintIcon.MagnifyingGlass:
+                icon = <MagnifyingGlassIcon className="h-4 w-4 text-gray-400" />;
+                break;
+            case HintIcon.ArrowUpRight:
+                icon = <ArrowUpRightIcon className="h-4 w-4 text-gray-400" />;
+                break;
+            default:
+                icon = <div className="w-4"></div>;
+                break;
+        }
 
-    const renderCategoryHint = (category: Category) => renderHint(
+        return (
+            <div
+                tabIndex={0}
+                key={`${type}-${id}`}
+                data-id={id}
+                data-hint="hint"
+                data-type={type}
+                onMouseDown={() => {
+                    onClick();
+                    setTimeout(() => inputRef.current.focus(), 0);
+                    if (type === HintType.Category) {
+                        clearInput(true, !!locationFilter);
+                    } else if (type === HintType.Location) {
+                        clearInput(!!categoryFilter, true);
+                    }
+                }}
+                className={"flex w-full focus:outline-none "
+                    + (options?.style ?? "py-1.5")
+                    + (options?.bgOnActive !== false ? " hover:bg-gray-100 focus:bg-gray-100" : "")
+                    + (options?.cursorPointer ? " cursor-pointer" : "")
+                }
+            >
+                <div className="w-3"></div>
+                <span className="flex items-center">{icon}</span>
+                <div className="w-2"></div>
+                <div className={`grow flex ${!options?.cursorPointer && 'cursor-default'}`}>
+                    {children}
+                </div>
+                <div className="w-3"></div>
+            </div>
+        );
+    };
+
+    const renderCategoryHint = (category: CategorySearchResult) => renderHint(
         category.id,
-        'category',
+        HintType.Category,
         <>
-            <span className="grow text-gray-500 text-sm flex items-center">{category.category}</span>
-            <span className="bg-gos-green px-2 py-1 rounded-full text-xs text-white flex items-center">
-                <HashtagIcon className="h-3 w-3 text-white mr-1" />
+            <span className="bg-gos-blue px-1.5 mr-1 py-1 rounded-full text-xs text-white flex items-center">
+                <HashtagIcon className="h-3 w-3 text-white mr-0.5" />
                 Category
             </span>
+            <span className="grow text-gray-500 text-sm flex items-center">{category.name}</span>
         </>,
         () => setCategoryFilter(category),
+        { icon: HintIcon.Plus },
     );
 
-    const renderLocationHint = (location: Location) => renderHint(
+    const renderLocationHint = (location: LocationSearchResult) => renderHint(
         location.id,
-        'location',
+        HintType.Location,
         <>
-            <span className="grow text-gray-500 text-sm flex items-center">{location.location}</span>
-            <span className="bg-gos-green px-2 py-1 rounded-full text-xs text-white flex items-center">
-                <MapPinIcon className="h-3 w-3 text-white mr-1" />
+            <span className="bg-gos-green px-1.5 mr-1 py-1 rounded-full text-xs text-white flex items-center">
+                <MapPinIcon className="h-3 w-3 text-white mr-0.5" />
                 Location
             </span>
+            <span className="grow text-gray-500 text-sm flex items-center">{location.country}</span>
         </>,
         () => setLocationFilter(location),
+        { icon: HintIcon.Plus },
+    );
+
+    const renderSearchHint = () => renderHint(
+        'searchHint',
+        HintType.Search,
+        <>
+            <span className="text-gray-500 text-sm">Search for "{searchQuery.trim()}"</span>
+        </>,
+        () => console.log('TODO: Implement search'),
+        {
+            bgOnActive: true,
+            icon: HintIcon.MagnifyingGlass,
+            cursorPointer: true,
+            style: 'py-3 border border-x-0 border-b-1 '
+                + (categoryResults.length == 0 && locationResults.length == 0 ? 'border-t-0' : 'border-t-1'),
+        },
+    );
+
+    const renderSearchTopicHint = () => renderHint(
+        'searchTopicHint',
+        HintType.SearchTopic,
+        <>
+            <span className="text-gray-400 text-sm">
+                Go to
+                <span className="text-gray-500 font-semibold"> {categoryFilter.name} </span>
+                in
+                <span className="text-gray-500 font-semibold"> {locationFilter.name} </span>
+            </span>
+        </>,
+        () => console.log('TODO: Implement redirect to correct topic'),
+        {
+            bgOnActive: true,
+            icon: HintIcon.ArrowUpRight,
+            cursorPointer: true,
+            style: 'py-3 border border-x-0 border-b-1 '
+                + (categoryResults.length == 0 && locationResults.length == 0 ? 'border-t-0' : 'border-t-1'),
+        },
+    );
+
+    const renderSuggestionHint = () => renderHint(
+        'suggestionHint',
+        HintType.Suggestion,
+        <>
+            <span
+                className="mt-1 text-xs font-light text-gray-400 focus:text-gray-500 hover:text-gray-500"
+            >
+                <Link href={LINKS.suggestionForm} target="_blank">
+                    Missing something? Suggest a new category or location here.
+                </Link>
+            </span>
+        </>,
+        () => {},
+        { bgOnActive: false, icon: null },
     );
 
     const renderInputFilters = () => (
         <div className="flex">
             {locationFilter &&
-                <span className="ml-2 my-1 bg-gos-green px-2 py-1 rounded-full text-xs text-white flex items-center whitespace-nowrap">
-                    <MapPinIcon className="h-3 w-3 text-white mr-1" />
-                    {locationFilter.location}
+                <span className="ml-2 my-1 bg-gos-green px-1.5 py-1 rounded-full text-xs text-white flex items-center whitespace-nowrap">
+                    <MapPinIcon className="h-3 w-3 text-white mr-0.5" />
+                    {locationFilter.country}
                     <label
                         tabIndex={0}
                         onClick={() => {
                             setLocationFilter(null);
                             setTimeout(() => inputRef.current.focus(), 0);
+                            search(searchQuery, !!categoryFilter, false);
                         }}
                         className="cursor-pointer"
                         htmlFor="search"
@@ -279,14 +367,15 @@ function SearchBar() {
                 </span>
             }
             {categoryFilter &&
-                <span className={`${locationFilter ? 'ml-1' : 'ml-2'} my-1 bg-gos-green px-2 py-1 rounded-full text-xs text-white flex items-center whitespace-nowrap`}>
-                    <HashtagIcon className="h-3 w-3 text-white mr-1" />
-                    {categoryFilter.category}
+                <span className={`${locationFilter ? 'ml-1' : 'ml-2'} my-1 bg-gos-blue px-1.5 py-1 rounded-full text-xs text-white flex items-center whitespace-nowrap`}>
+                    <HashtagIcon className="h-3 w-3 text-white mr-0.5" />
+                    {categoryFilter.name}
                     <label
                         tabIndex={0}
                         onClick={() => {
                             setCategoryFilter(null);
                             setTimeout(() => inputRef.current.focus(), 0);
+                            search(searchQuery, false, !!locationFilter);
                         }}
                         className="cursor-pointer"
                         htmlFor="search"
@@ -357,14 +446,22 @@ function SearchBar() {
                 tabIndex={-1}
                 className={`absolute z-50 bg-white shadow-md w-full border border-t-0 border-gray-300 rounded-b-3xl ${!isFocused ? 'hidden' : ''}`}
             >
-                <div className="ml-3 mr-3 border-t border-gray-300"></div>
-                <div ref={hintContainerRef} className="mb-5">
-                    {categories
-                        .filter(c => c !== hiddenCategory)
-                        .map((category, i) => renderCategoryHint(category))}
-                    {locations
-                        .filter(l => l !== hiddenLocation)
-                        .map((location, i) => renderLocationHint(location))}
+                <div className="border-t"></div>
+                <div className="mb-1">
+                    <div ref={hintContainerRef}>
+                        {categoryResults
+                            .filter(c => c !== hiddenCategory)
+                            .map(renderCategoryHint)}
+                        {locationResults
+                            .filter(l => l !== hiddenLocation)
+                            .map(renderLocationHint)}
+                        {!!searchQuery && searchQuery.trim().length > 0 && renderSearchHint()}
+                        {!!categoryFilter
+                            && !!locationFilter
+                            && (!searchQuery || searchQuery.trim().length === 0)
+                            && renderSearchTopicHint()}
+                    </div>
+                    {renderSuggestionHint()}
                 </div>
             </div>
         </div>

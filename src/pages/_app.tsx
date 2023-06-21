@@ -11,6 +11,7 @@ import '../styles/novu.css';
 import '../styles/editorjs.css';
 import { NavigationContextProvider } from 'contexts/NavigationContext';
 import Route from 'components/nav/Route';
+import { GeoLocationContextProvider } from 'contexts/GeoLocationContext';
 
 function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
@@ -18,19 +19,21 @@ function App({ Component, pageProps }: AppProps) {
     return (
         <MediaQueryContextProvider>
             <AuthContextProvider>
-                {PROTECTED_ROUTES.includes(router.pathname) ? (
-                    <ProtectedRoute>
-                        <NavigationContextProvider>
-                            <Component {...pageProps} />
-                        </NavigationContextProvider>
-                    </ProtectedRoute>
-                ) : (
-                    <Route>
-                        <NavigationContextProvider>
-                            <Component {...pageProps} />
-                        </NavigationContextProvider>
-                    </Route>
-                )}
+                <GeoLocationContextProvider>
+                    {PROTECTED_ROUTES.includes(router.pathname) ? (
+                        <ProtectedRoute>
+                            <NavigationContextProvider>
+                                <Component {...pageProps} />
+                            </NavigationContextProvider>
+                        </ProtectedRoute>
+                    ) : (
+                        <Route>
+                            <NavigationContextProvider>
+                                <Component {...pageProps} />
+                            </NavigationContextProvider>
+                        </Route>
+                    )}
+                </GeoLocationContextProvider>
             </AuthContextProvider>
         </MediaQueryContextProvider>
     );

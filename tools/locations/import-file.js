@@ -4,19 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const countries = require('./countries.json');
-const continents = require('./continents.json');
 
-const FEATURE_CLASS_WEIGHTS = {
-    'A': 10, // country, state, region,...
-    'P': 20, // city, village,...
-    'H': 30, // stream, lake, ...
-    'T': 40, // mountain,hill,rock,...
-    'V': 50, // forest,heath,...
-    'L': 60, // parks,area, ...
-    'R': 70, // road, railroad
-    'S': 80, // spot, building, farm
-    'U': 90, // undersea
-};
 const FEATURE_CODE_FILTERS = {
     'A': ['ADM1', 'ADM2', 'ADM3', 'ADM4', 'ADM5', 'ADMD'],
     //'H': ['GLCR', 'GULF', 'HBR', 'OCN', 'SEA'],
@@ -27,8 +15,10 @@ const FEATURE_CODE_FILTERS = {
     //'S': ['AIRP', 'PYR', 'PYRS'],
     //'T': ['BCH', 'BCHS', 'CNYN', 'DSRT', 'ISL', 'ISLS'],
 };
-const FEATURE_CLASS_WEIGHT_DEFAULT = 500;
-const ADMINISTRATIVE_DIVISION_TARGET_LEVEL = 0;
+
+const ADMIN_DIVISION_TARGET_LEVEL = 0;
+
+const COUNTRIES_TO_IGNORE_IF_ADM4 = ["ID", "LK", "PH", "MG", "CN", "DO", "VN"];
 
 module.exports.run = (countryCode) => {
     const TXT_IMPORT_PATH = `/Users/tomd/Downloads/${countryCode}/${countryCode}.txt`;
@@ -42,8 +32,7 @@ module.exports.run = (countryCode) => {
      * 3: code for third level administrative division, varchar(20)
      * 4: code for fourth level administrative division, varchar(20)
      */
-    const country = countries[countryCode];
-    const continent = continents[countryCode];
+    const country = countries[countryCode].name;
 
     console.log(`Reading file for country ${countryCode}.`);
 
@@ -55,23 +44,26 @@ module.exports.run = (countryCode) => {
         const featureClass = parts[6];
         const featureCode = parts[7];
 
+        if (featureCode === 'ADM4' && COUNTRIES_TO_IGNORE_IF_ADM4.includes(countryCode)) {
+            return null;
+        }
+
         if (!FEATURE_CODE_FILTERS[featureClass]
             || !FEATURE_CODE_FILTERS[featureClass].includes(featureCode)) {
                 return null;
             }
 
         const location = {
-            id: parts[0],
+            id: Number(parts[0]),
             name: parts[1],
             nameLowerCase: parts[1]?.toLowerCase(),
-            asciiName: parts[2],
+            asciiName: parts[1] !== parts[2] ? parts[2] : null,
             //alternateNames: parts[3]?.split(','),
             _geo: {
                 lat: Number(parts[4]) || null,
                 lng: Number(parts[5]) || null,
             },
             featureClass,
-            featureClassWeight: FEATURE_CLASS_WEIGHTS[featureClass] || FEATURE_CLASS_WEIGHT_DEFAULT,
             featureCode,
             countryCode: parts[8],
             alternateCountryCodes: parts[9],
@@ -79,9 +71,11 @@ module.exports.run = (countryCode) => {
             adminCode2: parts[11],
             adminCode3: parts[12],
             adminCode4: parts[13],
-            adminDivisionTargetLevel: ADMINISTRATIVE_DIVISION_TARGET_LEVEL,
+            population: !isNaN(parts[14]) ? Number(parts[14]) : null,
+            //elevation: parts[15],
+            //dem: parts[16],
+            adminDivisionTargetLevel: ADMIN_DIVISION_TARGET_LEVEL,
             country,
-            continent,
         };
 
         if (location.name == null || location.name.trim().length === 0) return null;
@@ -139,6 +133,7 @@ module.exports.run = (countryCode) => {
         delete l.nameLowerCase;
     });
     console.log('Duplicate removal complete 3/4');
+
 
     const exportFilePath = path.join(__dirname, 'locationData', `locations_${countryCode}.json`);
     if (locations.length > 100000) {

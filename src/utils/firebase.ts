@@ -45,7 +45,7 @@ export const useDocumentOnceWithDependencies = (
     docRef: () => DocumentReference,
     dependencies: any[],
     options?: FirestoreDocumentHookOptions):[DocumentSnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
-        const [snapshot, isLoading, err, reloadData] = useDocumentOnce(dependencies.every(Boolean) && docRef ? docRef() : null, options.onceOptions);
+        const [snapshot, isLoading, err, reloadData] = useDocumentOnce(dependencies.every(Boolean) && docRef ? docRef() : null, options?.onceOptions);
         return [snapshot, (isLoading || dependencies.some(el => !el)), err, reloadData];
     };
 

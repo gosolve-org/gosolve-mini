@@ -1,79 +1,93 @@
 [
     {
-        "id": "6255146",
+        "id": 6255146,
         "name": "Africa",
-        "asciiName": "Africa",
+        "asciiName": null,
         "alternateNames":[],
         "featureClass": "L",
         "featureClassWeight": 10,
         "featureCode": "CONT",
+        "featureCodeWeight": 0,
         "continentCode": "AF",
-        "adminDivisionTargetLevel": -2
+        "adminDivisionTargetLevel": -2,
+        "population": 1460481772
     },
     {
-        "id": "6255147",
+        "id": 6255147,
         "name": "Asia",
-        "asciiName": "Asia",
+        "asciiName": null,
         "alternateNames":[],
         "featureClass": "L",
         "featureClassWeight": 10,
         "featureCode": "CONT",
+        "featureCodeWeight": 0,
         "continentCode": "AS",
-        "adminDivisionTargetLevel": -2
+        "adminDivisionTargetLevel": -2,
+        "population": 4758344217
     },
     {
-        "id": "6255148",
+        "id": 6255148,
         "name": "Europe",
-        "asciiName": "Europe",
+        "asciiName": null,
         "alternateNames":[],
         "featureClass": "L",
         "featureClassWeight": 10,
         "featureCode": "CONT",
+        "featureCodeWeight": 0,
         "continentCode": "EU",
-        "adminDivisionTargetLevel": -2
+        "adminDivisionTargetLevel": -2,
+        "population": 748982888
     },
     {
-        "id": "6255149",
+        "id": 6255149,
         "name": "North America",
-        "asciiName": "North America",
+        "asciiName": null,
         "alternateNames":[],
         "featureClass": "L",
         "featureClassWeight": 10,
         "featureCode": "CONT",
+        "featureCodeWeight": 0,
         "continentCode": "NA",
-        "adminDivisionTargetLevel": -2
+        "adminDivisionTargetLevel": -2,
+        "population": 378904407
     },
     {
-        "id": "6255151",
+        "id": 6255151,
         "name": "Oceania",
-        "asciiName": "Oceania",
+        "asciiName": null,
         "alternateNames":[],
         "featureClass": "L",
         "featureClassWeight": 10,
         "featureCode": "CONT",
+        "featureCodeWeight": 0,
         "continentCode": "OC",
-        "adminDivisionTargetLevel": -2
+        "adminDivisionTargetLevel": -2,
+        "population": 43155000
     },
     {
-        "id": "6255150",
+        "id": 6255150,
         "name": "South America",
-        "asciiName": "South America",
+        "asciiName": null,
         "alternateNames":[],
         "featureClass": "L",
         "featureClassWeight": 10,
         "featureCode": "CONT",
+        "featureCodeWeight": 0,
         "continentCode": "SA",
-        "adminDivisionTargetLevel": -2
+        "adminDivisionTargetLevel": -2,
+        "population": 441284731
     },
     {
-        "id": "6255152",
+        "id": 6255152,
         "name": "Antarctica",
-        "asciiName": "Antarctica",
+        "asciiName": null,
         "alternateNames":[],
         "featureClass": "L",
         "featureClassWeight": 10,
         "featureCode": "CONT",
+        "featureCodeWeight": 0,
         "continentCode": "AN",
-        "adminDivisionTargetLevel": -2
+        "adminDivisionTargetLevel": -2,
+        "population": 5000
     }
 ]

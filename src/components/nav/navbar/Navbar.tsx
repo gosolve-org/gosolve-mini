@@ -12,6 +12,7 @@ import BurgerMenu from "./BurgerMenu";
 import SearchBar from "./SearchBar";
 import { useNav } from "contexts/NavigationContext";
 import { useRouter } from "next/router";
+import { InstantSearchContextProvider } from "contexts/InstantSearchContext";
 
 function Navbar() {
     const { user, isAuthenticated } = useAuth();
@@ -24,7 +25,7 @@ function Navbar() {
     };
 
     return (
-        <>
+        <InstantSearchContextProvider>
             {isTabletOrMobile && <BurgerMenu isOpen={isBurgerMenuOpen} onOpen={openBurgerMenu} onClose={closeBurgerMenu}></BurgerMenu>}
             <div className="mx-auto px-1 sm:px-2 lg:px-4 bg-white shadow-sm lg:static lg:overflow-y-visible">
                 <div className="relative flex justify-between">
@@ -118,7 +119,7 @@ function Navbar() {
                     </div>
                 </div>
             </div>
-        </>
+        </InstantSearchContextProvider>
     );
 }
 

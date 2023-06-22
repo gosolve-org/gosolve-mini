@@ -6,7 +6,7 @@ const path = require('path');
 const countries = require('./countries.json');
 
 const FEATURE_CODE_FILTERS = {
-    'A': ['ADM1', 'ADM2', 'ADM3', 'ADM4', 'ADM5', 'ADMD'],
+    'A': ['ADM1', 'ADM2'/*, 'ADM3', 'ADM4', 'ADM5', 'ADMD'*/],
     //'H': ['GLCR', 'GULF', 'HBR', 'OCN', 'SEA'],
     //'L': ['AREA', 'CST', 'PRK'],
     // Unsure if these P - PPL places are needed in search. For now, they are filtered out.
@@ -15,12 +15,14 @@ const FEATURE_CODE_FILTERS = {
     //'S': ['AIRP', 'PYR', 'PYRS'],
     //'T': ['BCH', 'BCHS', 'CNYN', 'DSRT', 'ISL', 'ISLS'],
 };
+const FEATURE_CODE_BIG_CITY_EXCEPTIONS = ['ADM1', 'ADM2', 'ADM3', 'ADM4', 'ADM5', 'ADMD'];
 
 const ADMIN_DIVISION_TARGET_LEVEL = 0;
 
-const COUNTRIES_TO_IGNORE_IF_ADM4 = ["ID", "LK", "PH", "MG", "CN", "DO", "VN"];
+// For now, we are ignoring all ADM4 divisions
+//const COUNTRIES_TO_IGNORE_IF_ADM4 = ["ID", "LK", "PH", "MG", "CN", "DO", "VN"];
 
-module.exports.run = (countryCode) => {
+module.exports.run = (countryCode, bigCities) => {
     const TXT_IMPORT_PATH = `/Users/tomd/Downloads/${countryCode}/${countryCode}.txt`;
     /**
      * Administrative division levels:
@@ -44,14 +46,20 @@ module.exports.run = (countryCode) => {
         const featureClass = parts[6];
         const featureCode = parts[7];
 
-        if (featureCode === 'ADM4' && COUNTRIES_TO_IGNORE_IF_ADM4.includes(countryCode)) {
-            return null;
-        }
-
-        if (!FEATURE_CODE_FILTERS[featureClass]
-            || !FEATURE_CODE_FILTERS[featureClass].includes(featureCode)) {
-                return null;
+        if (!FEATURE_CODE_FILTERS[featureClass] || !FEATURE_CODE_FILTERS[featureClass].includes(featureCode)) {
+            if (!FEATURE_CODE_BIG_CITY_EXCEPTIONS.includes(featureCode)) {
+                if (!bigCities.includes(parts[1]) &&
+                    (parts[1] === parts[2] || !bigCities.includes(parts[2])) &&
+                    !bigCities.some(city => parts[3].toLowerCase().includes(city.toLowerCase()))) {
+                        return null;
+                }
             }
+            if (!FEATURE_CODE_BIG_CITY_EXCEPTIONS.includes(featureCode) || (
+                !bigCities.includes(parts[1]) &&
+                (parts[1] === parts[2] || !bigCities.includes(parts[2])))) {
+                    return null;
+            }
+        }
 
         const location = {
             id: Number(parts[0]),

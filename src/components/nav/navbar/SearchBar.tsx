@@ -5,6 +5,8 @@ import { CategorySearchResult, LocationSearchResult, useInstantSearch } from "co
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import * as Navigator from "../../../utils/navigator";
+import LoaderLine from "components/common/layout/LoaderLine";
 
 enum HintType {
     Category,
@@ -299,12 +301,13 @@ function SearchBar() {
         <>
             <span className="text-gray-500 text-sm">Search for "{searchQuery.trim()}"</span>
         </>,
-        () => console.log('TODO: Implement search'),
+        () => Navigator.goToSearch(router, searchQuery, categoryFilter?.name, locationFilter?.country),
         {
             bgOnActive: true,
             icon: HintIcon.MagnifyingGlass,
             cursorPointer: true,
-            style: 'py-3 border border-x-0 border-b-1 '
+            style: 'py-3 border border-x-0 '
+                + (loading ? 'border-b-0 ' : 'border-b-1 ')
                 + (categoryResults.length == 0 && locationResults.length == 0 ? 'border-t-0' : 'border-t-1'),
         },
     );
@@ -317,15 +320,16 @@ function SearchBar() {
                 Go to
                 <span className="text-gray-500 font-semibold"> {categoryFilter.name} </span>
                 in
-                <span className="text-gray-500 font-semibold"> {locationFilter.name} </span>
+                <span className="text-gray-500 font-semibold"> {locationFilter.country} </span>
             </span>
         </>,
-        () => console.log('TODO: Implement redirect to correct topic'),
+        () => Navigator.goToTopicPage(router, categoryFilter.name, locationFilter.country),
         {
             bgOnActive: true,
             icon: HintIcon.ArrowUpRight,
             cursorPointer: true,
-            style: 'py-3 border border-x-0 border-b-1 '
+            style: 'py-3 border border-x-0 '
+                + (loading ? 'border-b-0 ' : 'border-b-1 ')
                 + (categoryResults.length == 0 && locationResults.length == 0 ? 'border-t-0' : 'border-t-1'),
         },
     );
@@ -461,6 +465,7 @@ function SearchBar() {
                             && (!searchQuery || searchQuery.trim().length === 0)
                             && renderSearchTopicHint()}
                     </div>
+                    {loading && <LoaderLine />}
                     {renderSuggestionHint()}
                 </div>
             </div>

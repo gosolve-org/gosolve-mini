@@ -153,6 +153,7 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
         if (input == null || input.length < INPUT_MIN_LENGTH_FOR_SEARCH) {
             setLocationResults(isLocationFilterApplied ? [] : defaultLocationResults);
             setCategoryResults(isCategoryFilterApplied ? [] : defaultCategoryResults);
+            setLoading(false);
             return;
         }
 
@@ -164,6 +165,14 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
         {
             setLocationResults(!isLocationFilterApplied ? cachedValue.locationResults : []);
             setCategoryResults(!isCategoryFilterApplied ? cachedValue.categoryResults : []);
+            setLoading(false);
+            return;
+        }
+
+        setLocationResults([]);
+        setCategoryResults([]);
+
+        if (isLocationFilterApplied && isCategoryFilterApplied) {
             setLoading(false);
             return;
         }

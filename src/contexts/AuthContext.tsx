@@ -19,7 +19,7 @@ import {
 } from "@firebase/auth";
 
 import { auth, db, useDocumentOnceWithDependencies } from "utils/firebase";
-import { registerUser, doesUserExist, getUser, getWaitlistUser } from "pages/api/user";
+import { registerUser, doesUserExist, getUser } from "pages/api/user";
 import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
 import { FirebaseError } from "firebase/app";
@@ -30,14 +30,15 @@ interface AuthContext {
     user: AuthUser;
     isAuthenticated: () => boolean;
     loading: boolean;
-    login: (email: string, password: string) => Promise<UserCredential>;
+    login: (email: string, password: string, shouldValidateUser?: boolean)
+        => Promise<UserCredential>;
     getGoogleCredentials: () => Promise<UserCredential>;
     setShouldRemember: (shouldRemember: boolean) => void;
     logout: () => Promise<void>;
     registerWithEmail: (email: string, password: string) => Promise<UserCredential>;
     registerWithGoogle: (credentials: UserCredential) => Promise<UserCredential>;
-    validateUser: (credentials: UserCredential) => Promise<boolean>;
     hasEditorRights: () => boolean;
+    doesUserExist: (email: string) => Promise<boolean>;
     isUserProfileLoading: boolean;
 }
 
@@ -51,8 +52,8 @@ const AuthContext = createContext<AuthContext>({
     logout: null,
     registerWithEmail: null,
     registerWithGoogle: null,
-    validateUser: null,
     hasEditorRights: null,
+    doesUserExist: null,
     isUserProfileLoading: true,
 });
 
@@ -94,42 +95,29 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         return () => unsubscribe();
     }, []);
 
-    const validateUser = async (credentials: UserCredential): Promise<boolean> => {
-        if (!credentials.user.email) throw new Error('Could not retrieve email address.');
-
-        return await doesUserExist(credentials.user.email);
-    };
-
     const login = async (email: string, password: string, shouldValidateUser: boolean = true): Promise<UserCredential> => {
         try
         {
-            const credentials = await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
+            const signInPromise = signInWithEmailAndPassword(auth, email, password);
+            const userExistsPromise = shouldValidateUser ? doesUserExist(email) : null;
+            const [credentials, userExists] =
+                await Promise.all([signInPromise, userExistsPromise]);
 
-            if (shouldValidateUser && !await validateUser(credentials)) {
+            if (shouldValidateUser && !userExists) {
                 throw new ErrorWithCode(ERROR_CODES.notFound);
             }
     
             return credentials;
         } catch (err) {
-            if ((err instanceof FirebaseError && err.code === 'auth/user-not-found')
-                || (err instanceof ErrorWithCode && err.code === ERROR_CODES.notFound)) {
-                    const waitlistUser = await getWaitlistUser(email);
-                    if (waitlistUser?.removed_from_waitlist === false) {
-                        throw new ErrorWithCode(ERROR_CODES.waitlistUserNotOffboarded);
-                    } else {
-                        throw new ErrorWithCode(ERROR_CODES.notFound);
-                    }
-            }
-
             if (err instanceof ErrorWithCode) throw err;
 
             if (err instanceof FirebaseError) {
                 if (err.code === 'auth/wrong-password') {
                     throw new ErrorWithCode(ERROR_CODES.wrongPassword)
+                }
+
+                if (err.code === 'auth/user-not-found') {
+                    throw new ErrorWithCode(ERROR_CODES.notFound);
                 }
             }
 
@@ -183,13 +171,13 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
                 user,
                 isAuthenticated,
                 login,
-                validateUser,
                 getGoogleCredentials,
                 setShouldRemember,
                 logout,
                 registerWithEmail,
                 registerWithGoogle,
                 hasEditorRights,
+                doesUserExist,
                 isUserProfileLoading,
             }}
         >

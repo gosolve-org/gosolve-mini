@@ -8,11 +8,11 @@ import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
 import LinkToast, { showLinkToast } from "components/common/layout/LinkToast";
 import { TOAST_IDS } from "constants/toastConstants";
-import { getWaitlistUser } from "./api/user";
 import BasicHead from "components/common/layout/BasicHead";
 import Logo from "components/common/layout/Logo";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import GoogleIconSvg from "svgs/GoogleIconSvg";
+import Layout from "components/common/layout/Layout";
 
 function Login() {
     const [email, setEmail] = useState<string>("");
@@ -22,7 +22,7 @@ function Login() {
     const [isLoading, setIsLoading] = useState(false);
     const [loginFailed, setLoginFailed] = useState(false);
 
-    const { login, getGoogleCredentials, setShouldRemember, logout, validateUser } = useAuth();
+    const { login, getGoogleCredentials, setShouldRemember, registerWithGoogle, doesUserExist } = useAuth();
     const router = useRouter();
 
     const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
@@ -34,25 +34,18 @@ function Login() {
             await login(email, password);
             await router.push("/");
         } catch (err) {
+            setLoginFailed(true);
             if ((err instanceof ErrorWithCode)) {
-                if (err.code === ERROR_CODES.notFound || err.code === ERROR_CODES.waitlistUserNotFound) {
+                if (err.code === ERROR_CODES.notFound) {
                     showLinkToast(
                         'error',
-                        'No account with this email exists. Click here to join our waitlist.',
-                        `https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(email)}#waitlist`);
+                        'No account with this email exists. Click here to create a new account',
+                        `./register`);
                     return;
                 }
 
                 if (err.code === ERROR_CODES.wrongPassword) {
                     toast.error('Password is incorrect. Please try again or login with your Google account.', { containerId: TOAST_IDS.basicToastId });
-                    return;
-                }
-
-                if (err.code === ERROR_CODES.waitlistUserNotOffboarded) {
-                    showLinkToast(
-                        'error',
-                        `You're still on the waitlist. Click here to check your status.`,
-                        `https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(email)}#waitlist`);
                     return;
                 }
             }
@@ -61,7 +54,6 @@ function Login() {
             toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
         } finally {
             setIsLoading(false);
-            setLoginFailed(true);
         }
     };
 
@@ -72,29 +64,18 @@ function Login() {
         try {
             const credentials = await getGoogleCredentials();
     
-            if (!await validateUser(credentials)) {
-                const waitlistUser = await getWaitlistUser(credentials.user.email);
-                if (waitlistUser?.removed_from_waitlist === false) {
-                    showLinkToast(
-                        'error',
-                        `You're still on the waitlist. Click here to check your status.`,
-                        `https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(credentials.user.email)}#waitlist`);
-                } else {
-                    showLinkToast(
-                        'error',
-                        'No account with this email exists. Click here to join our waitlist.',
-                        `https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(credentials.user.email)}#waitlist`);
-                }
-                return;
+            if (!await doesUserExist(credentials.user.email)) {
+                await registerWithGoogle(credentials);
+                await router.push("/register/details");
+            } else {
+                await router.push("/");
             }
-    
-            await router.push("/");
         } catch (err) {
+            setLoginFailed(true);
             console.error(err);
             toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
         } finally {
             setIsLoading(false);
-            setLoginFailed(true);
         }
     };
 
@@ -108,20 +89,11 @@ function Login() {
         setShouldRememberCheckbox(e.currentTarget.checked);
 
     return (
-        <>
+        <Layout>
             <BasicHead title="goSolve | Login" />
             <main className="h-full">
-                <div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
-                    <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8">
-                        <Logo className="mx-auto h-18 w-auto" />
-                        <h2 className="mt-6 px-4 py-2 text-center text-m font-normal tracking-tight rounded-md text-black bg-gray-100">
-                            goSolve mini is a limited test version of the goSolve
-                            platform, is currently invite only, or available for
-                            active donors.
-                        </h2>
-                    </div>
-
-                    <div className="sm:mx-auto w-full sm:max-w-md mb-4">
+                <div className="flex min-h-full flex-col justify-center items-center py-6 sm:px-6 lg:px-8">
+                    <div className="mt-8 sm:mx-auto w-full sm:max-w-md mb-4">
                         <div className="bg-white py-8 shadow sm:rounded-lg px-4 sm:px-10">
                             <form
                                 className="space-y-6"
@@ -238,10 +210,10 @@ function Login() {
 
                     <div className="sm:mx-auto w-full sm:max-w-md relative">
                         <div
-                            onClick={() => router.push('/')}
+                            onClick={() => router.push('/register')}
                             className="bg-white hover:bg-gray-100 cursor-pointer py-4 shadow sm:rounded-lg px-4 sm:px-10 text-gray-400 text-center"
                         >
-                            {`Explore goSolve as guest`}
+                            New Solver? Register here
                             <ArrowRightIcon
                                 className="h-4 w-4 inline-block items-center ml-1"
                                 aria-hidden="true"
@@ -252,7 +224,7 @@ function Login() {
             </main>
             <BasicToast enableMultiToast={true} />
             <LinkToast enableMultiToast={true} />
-        </>
+        </Layout>
     );
 }
 

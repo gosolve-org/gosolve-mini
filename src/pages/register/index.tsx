@@ -14,6 +14,8 @@ import BasicHead from "components/common/layout/BasicHead";
 import Logo from "components/common/layout/Logo";
 import { USER_VALIDATIONS } from "constants/validationRules";
 import GoogleIconSvg from "svgs/GoogleIconSvg";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import Layout from "components/common/layout/Layout";
 
 function Register() {
     const [email, setEmail] = useState<string>("");
@@ -23,30 +25,6 @@ function Register() {
 
     const { registerWithEmail, registerWithGoogle, getGoogleCredentials, setShouldRemember, logout } = useAuth();
     const router = useRouter();
-
-    const handleRegistration = async (registration: Promise<UserCredential>, credentials?: UserCredential|null) => {
-        try {
-            await registration;
-            await router.push("/register/details");
-        } catch (err) {
-            if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotFound) {
-                showLinkToast(
-                    'error',
-                    `You don't have access to the platform yet. Click here to join our waitlist.`,
-                    `https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
-            } else if (err instanceof ErrorWithCode && err.code === ERROR_CODES.waitlistUserNotOffboarded) {
-                showLinkToast(
-                    'error',
-                    `You're still on the waitlist. Click here to check your status.`,
-                    `https://${process.env.NEXT_PUBLIC_GOSOLVE_HOST}/?waitlist_state=check&waitlist_email=${encodeURIComponent(credentials?.user?.email ?? email)}#waitlist`);
-            } else if (err instanceof ErrorWithCode && err.code === ERROR_CODES.userAlreadyExists) {
-                toast.error('A user with this email already exists.', { containerId: TOAST_IDS.basicToastId });
-            } else {
-                console.error(err);
-                toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
-            }
-        }
-    }
 
     const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -62,7 +40,15 @@ function Register() {
 
         try {
             setShouldRemember(shouldRememberCheckbox);
-            await handleRegistration(registerWithEmail(email, password));
+            await registerWithEmail(email, password);
+            await router.push("/register/details");
+        } catch (err) {
+            if (err instanceof ErrorWithCode && err.code === ERROR_CODES.userAlreadyExists) {
+                toast.error('A user with this email already exists.', { containerId: TOAST_IDS.basicToastId });
+            } else {
+                console.error(err);
+                toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
+            }
         } finally {
             setIsLoading(false);
         }
@@ -75,7 +61,16 @@ function Register() {
         setShouldRemember(shouldRememberCheckbox);
         try {
             const credentials = await getGoogleCredentials();
-            await handleRegistration(registerWithGoogle(credentials), credentials);
+            await registerWithGoogle(credentials);
+            await router.push("/register/details");
+        } catch (err) {
+            try {
+                console.error(err);
+                toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
+                await logout();
+            } catch (err) {
+                console.error('Could not log user out after unsuccesful Google registration.', err);
+            }
         } finally {
             setIsLoading(false);
         }
@@ -91,18 +86,11 @@ function Register() {
         setShouldRememberCheckbox(e.currentTarget.checked);
 
     return (
-        <>
+        <Layout>
             <BasicHead title="goSolve | Register" />
             <main className="h-full">
-                <div className="flex min-h-full flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
-                    <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                        <Logo className="mx-auto h-12 w-auto" />
-                        <h1 className="mt-6 text-center text-xl font-normal tracking-tight text-black">
-                            Create your account
-                        </h1>
-                    </div>
-
-                    <div className="mt-8 sm:mx-auto w-full sm:max-w-md">
+                <div className="flex min-h-full flex-col justify-center items-center py-6 sm:px-6 lg:px-8">
+                    <div className="mt-8 sm:mx-auto w-full sm:max-w-md mb-4">
                         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                             <form
                                 className="space-y-6"
@@ -225,11 +213,24 @@ function Register() {
                             </div>
                         </div>
                     </div>
+
+                    <div className="sm:mx-auto w-full sm:max-w-md relative">
+                        <div
+                            onClick={() => router.push('/login')}
+                            className="bg-white hover:bg-gray-100 cursor-pointer py-4 shadow sm:rounded-lg px-4 sm:px-10 text-gray-400 text-center"
+                        >
+                            Already on goSolve? Sign in
+                            <ArrowRightIcon
+                                className="h-4 w-4 inline-block items-center ml-1"
+                                aria-hidden="true"
+                            />
+                        </div>
+                    </div>
                 </div>
             </main>
             <BasicToast enableMultiToast={true} />
             <LinkToast enableMultiToast={true} />
-        </>
+        </Layout>
     );
 }
 

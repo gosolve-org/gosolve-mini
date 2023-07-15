@@ -72,7 +72,3 @@ module.exports.addUser = async (db, userId, data) => {
 module.exports.updateUser = async (db, userId, data) => {
     await db.collection('user').doc(userId).update(data);
 };
-
-module.exports.getIsAllowListed = async (db, email) => {
-    return (await db.collection('allowlist').doc(email).get()).exists;
-};

@@ -1,10 +1,9 @@
 const functions = require("firebase-functions");
 const { createUserWithEmailAndPassword } = require("../auth");
 const constants = require("../constants");
-const { createDb, updateUser, getUserByUsername, getIsAllowListed, addUser } = require("../db");
+const { createDb, updateUser, getUserByUsername, addUser } = require("../db");
 const ErrorWithCode = require("../models/ErrorWithCode");
 const { ensureAuth, createErrorResponse } = require("../utils");
-const { getWaitlistUser } = require("./waitlist");
 
 module.exports.updateUser = functions.region(constants.REGION).https.onCall(async (data, context) => {
     ensureAuth(context);
@@ -44,20 +43,6 @@ module.exports.registerUser = functions.region(constants.REGION).https.onCall(as
 
     if (authMethod === 'google' && !userId) {
         throw new Error('userId is missing when registering user with auth method being Google.');
-    }
-
-    const [waitlistUser, isAllowListed] = await Promise.all([
-        getWaitlistUser(email),
-        getIsAllowListed(db, email)
-    ]);
-
-    if (!isAllowListed) {
-        if (!waitlistUser) {
-            return createErrorResponse(constants.ERROR_CODES.AUTH.NOT_ON_WAITLIST);
-        }
-        if (waitlistUser?.removed_from_waitlist !== true) {
-            return createErrorResponse(constants.ERROR_CODES.AUTH.NOT_OFFBOARDED_FROM_WAITLIST);
-        }
     }
 
     if (authMethod === 'email') {

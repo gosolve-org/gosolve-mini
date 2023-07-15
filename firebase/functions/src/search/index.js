@@ -19,12 +19,14 @@ module.exports.upsertPostToMeiliSearch = functions.region(REGION).firestore
                 topicId = (await getAction(db, actionId)).topicId;
             }
 
-            const { category, location } = await getTopic(db, topicId);
+            const { category, location, categoryId, locationId } = await getTopic(db, topicId);
 
             await upsertDocument(id, 'post', {
                 topicId,
                 actionId,
+                categoryId,
                 category,
+                locationId,
                 location,
                 title,
                 authorUsername,
@@ -46,11 +48,13 @@ module.exports.upsertActionToMeiliSearch = functions.region(REGION).firestore
             const db = createDb();
 
             const { authorUsername, createdAt, topicId, title, content } = change.after.data();
-            const { category, location } = await getTopic(db, topicId);
+            const { category, location, categoryId, locationId } = await getTopic(db, topicId);
 
             await upsertDocument(id, 'action', {
                 topicId,
+                categoryId,
                 category,
+                locationId,
                 location,
                 title,
                 authorUsername,
@@ -78,7 +82,9 @@ module.exports.upsertTopicToMeiliSearch = functions.region(REGION).firestore
             ]);
 
             await upsertDocument(id, 'topic', {
+                categoryId,
                 category,
+                locationId,
                 location,
                 content: editorJsContentToRawText(content),
             });
@@ -90,7 +96,8 @@ module.exports.upsertTopicToMeiliSearch = functions.region(REGION).firestore
 // Searches through all resources
 module.exports.search = functions.region(REGION).https.onCall(async (data, context) => {
     const query = data.query;
-    if (!query) return [];
+    const options = data.options;
+    if (!query || !options) return [];
 
-    return await search(query, data.offset, data.limit);
+    return await search(query, options);
 });

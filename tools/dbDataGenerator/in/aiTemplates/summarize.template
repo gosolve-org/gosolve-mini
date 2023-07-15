@@ -1,0 +1,4 @@
+Summarize this text into {{AMOUNT_OF_PARAGRAPHS}} paragraphs. Do not mention you are an AI Language Model.
+Text to summarize:
+
+{{CONTENT}}

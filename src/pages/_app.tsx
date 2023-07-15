@@ -12,30 +12,47 @@ import '../styles/editorjs.css';
 import { NavigationContextProvider } from 'contexts/NavigationContext';
 import Route from 'components/nav/Route';
 import { GeoLocationContextProvider } from 'contexts/GeoLocationContext';
+import { DataCacheContextProvider } from 'contexts/DataCacheContext';
 
 function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
 
+    const providers = [
+        DataCacheContextProvider,
+        MediaQueryContextProvider,
+        AuthContextProvider,
+        GeoLocationContextProvider,
+    ];
+
+    const ProviderTree = ({ providers, children }) => {
+        if (providers.length === 0) {
+            return children;
+        }
+
+        const Provider = providers[0];
+        return (
+            <Provider>
+                {ProviderTree({ providers: providers.slice(1), children })}
+            </Provider>
+        );
+    };
+
     return (
-        <MediaQueryContextProvider>
-            <AuthContextProvider>
-                <GeoLocationContextProvider>
-                    {PROTECTED_ROUTES.includes(router.pathname) ? (
-                        <ProtectedRoute>
-                            <NavigationContextProvider>
-                                <Component {...pageProps} />
-                            </NavigationContextProvider>
-                        </ProtectedRoute>
-                    ) : (
-                        <Route>
-                            <NavigationContextProvider>
-                                <Component {...pageProps} />
-                            </NavigationContextProvider>
-                        </Route>
-                    )}
-                </GeoLocationContextProvider>
-            </AuthContextProvider>
-        </MediaQueryContextProvider>
+        <ProviderTree providers={providers}>
+            {PROTECTED_ROUTES.includes(router.pathname) ? (
+                <ProtectedRoute>
+                    <NavigationContextProvider>
+                        <Component {...pageProps} />
+                    </NavigationContextProvider>
+                </ProtectedRoute>
+            ) : (
+                <Route>
+                    <NavigationContextProvider>
+                        <Component {...pageProps} />
+                    </NavigationContextProvider>
+                </Route>
+            )}
+        </ProviderTree>
     );
 }
 

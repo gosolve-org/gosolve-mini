@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const countries = require('./countries.json');
+const countries = require('../data/countries.json');
 
 const FEATURE_CODE_FILTERS = {
     'A': ['ADM1', 'ADM2'/*, 'ADM3', 'ADM4', 'ADM5', 'ADMD'*/],
@@ -19,10 +19,7 @@ const FEATURE_CODE_BIG_CITY_EXCEPTIONS = ['ADM1', 'ADM2', 'ADM3', 'ADM4', 'ADM5'
 
 const ADMIN_DIVISION_TARGET_LEVEL = 0;
 
-// For now, we are ignoring all ADM4 divisions
-//const COUNTRIES_TO_IGNORE_IF_ADM4 = ["ID", "LK", "PH", "MG", "CN", "DO", "VN"];
-
-module.exports.run = (countryCode, bigCities) => {
+module.exports.run = (countryCode, bigCities, alreadyExistingLocations) => {
     const TXT_IMPORT_PATH = `/Users/tomd/Downloads/${countryCode}/${countryCode}.txt`;
     /**
      * Administrative division levels:
@@ -40,29 +37,40 @@ module.exports.run = (countryCode, bigCities) => {
 
     console.log('Loading import...');
     const locationLines = fs.readFileSync(TXT_IMPORT_PATH).toString().split("\n");
-    console.log('Import loaded 1/4');
+    console.log('Import loaded 1/5');
+
+    const targetId = alreadyExistingLocations
+        .find(el => el.countryCode === countryCode)?.id;
+
+    if (targetId == null) {
+        throw new Error(`No already existing location found for country ${countryCode}.`);
+    }
+
     let locations = locationLines.map(locationLine => {
         const parts = locationLine.split('\t');
         const featureClass = parts[6];
         const featureCode = parts[7];
 
+        let matchingBigCity = undefined;
         if (!FEATURE_CODE_FILTERS[featureClass] || !FEATURE_CODE_FILTERS[featureClass].includes(featureCode)) {
             if (!FEATURE_CODE_BIG_CITY_EXCEPTIONS.includes(featureCode)) {
-                if (!bigCities.includes(parts[1]) &&
-                    (parts[1] === parts[2] || !bigCities.includes(parts[2])) &&
-                    !bigCities.some(city => parts[3].toLowerCase().includes(city.toLowerCase()))) {
-                        return null;
-                }
+                return null;
             }
-            if (!FEATURE_CODE_BIG_CITY_EXCEPTIONS.includes(featureCode) || (
-                !bigCities.includes(parts[1]) &&
-                (parts[1] === parts[2] || !bigCities.includes(parts[2])))) {
-                    return null;
+
+            matchingBigCity = bigCities.find(bigCity =>
+                parts[1].includes(bigCity) ||
+                parts[2].includes(bigCity) ||
+                bigCity.includes(parts[1]) ||
+                bigCity.includes(parts[2]) ||
+                (parts[3] && parts[3].includes(bigCity))) || undefined;
+            
+            if (!matchingBigCity) {
+                return null;
             }
         }
 
         const location = {
-            id: Number(parts[0]),
+            id: parts[0],
             name: parts[1],
             nameLowerCase: parts[1]?.toLowerCase(),
             asciiName: parts[1] !== parts[2] ? parts[2] : null,
@@ -73,8 +81,8 @@ module.exports.run = (countryCode, bigCities) => {
             },
             featureClass,
             featureCode,
-            countryCode: parts[8],
-            alternateCountryCodes: parts[9],
+            //countryCode: parts[8],
+            //alternateCountryCodes: parts[9],
             adminCode1: parts[10],
             adminCode2: parts[11],
             adminCode3: parts[12],
@@ -83,7 +91,10 @@ module.exports.run = (countryCode, bigCities) => {
             //elevation: parts[15],
             //dem: parts[16],
             adminDivisionTargetLevel: ADMIN_DIVISION_TARGET_LEVEL,
-            country,
+            //country,
+            targetName: country,
+            targetId,
+            matchingBigCity,
         };
 
         if (location.name == null || location.name.trim().length === 0) return null;
@@ -97,7 +108,22 @@ module.exports.run = (countryCode, bigCities) => {
 
         return location;
     }).filter(el => el);
-    console.log('Deserialization complete 2/4');
+    console.log('Deserialization complete 2/5');
+
+    const bigCityDuplicates = new Set();
+    locations
+        .filter(l => l.matchingBigCity)
+        .forEach(location => bigCityDuplicates.add(location.matchingBigCity));
+    bigCityDuplicates.forEach(bigCityDuplicate => {
+        const locationsWithBigCityDuplicate = locations
+            .filter(location => location.matchingBigCity === bigCityDuplicate)
+            .sort((a, b) => (b.population || 0) - (a.population || 0));
+        locationsWithBigCityDuplicate
+            .slice(1)
+            .forEach(location => locations.splice(locations.indexOf(location), 1));
+    });
+
+    console.log('Big city duplicates removed 3/5');
 
     locations = locations.sort((a, b) => {
         if(a.nameLowerCase < b.nameLowerCase) return -1;
@@ -127,7 +153,7 @@ module.exports.run = (countryCode, bigCities) => {
         }
         if (locationsWithName.length > 0) {
             locationsWithName = locationsWithName
-                .sort((a, b) => a.featureClass.charCodeAt(0) - b.featureClass.charCodeAt(0));
+                .sort((a, b) => (b.population || 0) - (a.population || 0));
         }
         for (let j = 1; j < locationsWithName.length; ++j) {
             locationsToRemove.add(locationsWithName[j]);
@@ -140,10 +166,10 @@ module.exports.run = (countryCode, bigCities) => {
     locations.forEach(l => {
         delete l.nameLowerCase;
     });
-    console.log('Duplicate removal complete 3/4');
+    console.log('Duplicate removal complete 4/5');
 
 
-    const exportFilePath = path.join(__dirname, 'locationData', `locations_${countryCode}.json`);
+    const exportFilePath = path.join(__dirname, '..', 'locationData', `locations_${countryCode}.json`);
     if (locations.length > 100000) {
         fs.writeFileSync(exportFilePath, "", { encoding:'utf8', flag:'w' });
         const stream = fs.createWriteStream(exportFilePath, {flags:'a'});
@@ -159,6 +185,6 @@ module.exports.run = (countryCode, bigCities) => {
     } else {
         fs.writeFileSync(exportFilePath, JSON.stringify(locations), { encoding:'utf8', flag:'w' });
     }
-    console.log(`Added ${locations.length} locations for ${countryCode}. (${Math.floor(locations.length / locationLines.length * 100)}% of all location data) 4/4`);
+    console.log(`Added ${locations.length} locations for ${countryCode}. (${Math.floor(locations.length / locationLines.length * 100)}% of all location data) 5/5`);
     console.log(`${locations.filter(l => !!l._geo).length}/${locations.length} contain geo info.`);
 };

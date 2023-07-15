@@ -1,0 +1,65 @@
+{
+    "locations": [
+        "Canada",
+        "Guatemala",
+        "Australia",
+        "Taiwan",
+        "Belgium",
+        "Netherlands",
+        "Portugal",
+        "Austria",
+        "Greece",
+        "Sweden",
+        "Norway",
+        "Romania",
+        "Finland",
+        "China",
+        "India",
+        "United States",
+        "Indonesia",
+        "Pakistan",
+        "Brazil",
+        "Nigeria",
+        "Bangladesh",
+        "Russia",
+        "Japan",
+        "Mexico",
+        "Philippines",
+        "Egypt",
+        "Vietnam",
+        "Germany",
+        "Turkey",
+        "Iran",
+        "Thailand",
+        "France",
+        "United Kingdom",
+        "Italy",
+        "South Africa",
+        "Tanzania",
+        "South Korea",
+        "Kenya",
+        "Spain"
+    ],
+    "categories": [
+        {
+            "name": "Climate Change",
+            "wikiSearchQuery": "Climate change"
+        },
+        {
+            "name": "Human Rights",
+            "wikiSearchQuery": "Human rights"
+        },
+        {
+            "name": "Health",
+            "wikiSearchQuery": "Health care"
+        },
+        {
+            "name": "Poverty",
+            "wikiSearchQuery": "Poverty"
+        },
+        {
+            "name": "Education",
+            "wikiSearchQuery": "Education"
+        }
+    ]
+}

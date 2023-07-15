@@ -1,10 +1,11 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios').default;
 
-const countries = require('./countries.json');
+const countries = require('../data/countries.json');
 const countryCodes = Object.keys(countries);
-const { meilisearchApiKey, meilisearchBaseUri, meilisearchIndex } = require('./env.json');
 
 const MAX_SINGLE_BATCH_LEN = 50000000;
 
@@ -12,7 +13,8 @@ const run = async () => {
     for (let i = 0; i < countryCodes.length; ++i) {
         const countryCode = countryCodes[i];
         console.log(`Processing ${countryCode}...`);
-        let json = fs.readFileSync(path.join(__dirname, 'locationData', `locations_${countryCode}.json`)).toString();
+        let json = fs.readFileSync(path.join(
+            __dirname, '..', 'locationData', `locations_${countryCode}.json`)).toString();
 
         if (json.length < MAX_SINGLE_BATCH_LEN) {
             console.log(`POSTing to Meilisearch`);
@@ -44,12 +46,12 @@ const run = async () => {
 
 const addDocuments = async (json) => {
     const postResponse = await axios.post(
-        `${meilisearchBaseUri}/indexes/${meilisearchIndex}/documents`,
+        `${process.env.MEILISEARCH_BASE_URI}/indexes/${process.env.MEILISEARCH_INDEX}/documents`,
         json,
         {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${meilisearchApiKey}`
+                'Authorization': `Bearer ${process.env.MEILISEARCH_API_KEY}`
             }
         });
     const taskId = postResponse.data.taskUid;
@@ -59,10 +61,10 @@ const addDocuments = async (json) => {
     while (true) {
         await new Promise(resolve => setTimeout(resolve, secondsWait * 1000));
         const taskStatusResponse = await axios.get(
-            `${meilisearchBaseUri}/tasks/${taskId}`,
+            `${process.env.MEILISEARCH_BASE_URI}/tasks/${taskId}`,
             {
                 headers: {
-                    'Authorization': `Bearer ${meilisearchApiKey}`
+                    'Authorization': `Bearer ${process.env.MEILISEARCH_API_KEY}`
                 }
             });
         

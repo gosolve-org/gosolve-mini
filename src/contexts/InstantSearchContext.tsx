@@ -1,6 +1,10 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { MeiliSearch } from 'meilisearch';
 import { useGeoLocation } from './GeoLocationContext';
+import { meiliHitsToCategorySearchResults, meiliHitsToLocationSearchResults } from 'utils/mapper';
+import { useDataCache } from './DataCacheContext';
+import { Location } from 'models/Location';
+import { Category } from 'models/Category';
 
 const MAX_CACHE_ITEMS = 200;
 const DEBOUNCE_MS = 300; // Sets a delay after the last keystroke before triggering the search request
@@ -9,16 +13,16 @@ const INPUT_MIN_LENGTH_FOR_SEARCH = 2;
 const searchCache = {
     entries: {},
     entryKeyHistory: [],
+    rnd: Math.random()
 };
 
 const searchActionTimeoutIds = [];
 let currentSearchActionTimeoutId = null;
 
 const searchClient = new MeiliSearch({
-    host: 'https://app-meilisearchgospro-dev-001.azurewebsites.net',
-    apiKey: '',
+    host: process.env.NEXT_PUBLIC_MEILI_HOST,
+    apiKey: process.env.NEXT_PUBLIC_MEILI_API_KEY,
 });
-// TODO: Env
 
 const addToCache = (key: string, locationResults, categoryResults) => {
     if (!locationResults && !categoryResults) return;
@@ -47,7 +51,7 @@ const getFromCache = (key: string) => {
 }
 
 const getLocationQuery = (input: string, location: GeolocationCoordinates) => ({
-    indexUid: 'gos-locations-dev', // TODO: env
+    indexUid: process.env.NEXT_PUBLIC_MEILI_LOCATION_INDEX,
     q: input,
     limit: 3,
     sort: location?.latitude != null
@@ -56,7 +60,7 @@ const getLocationQuery = (input: string, location: GeolocationCoordinates) => ({
 });
 
 const getCategoryQuery = (input: string) => ({
-    indexUid: 'gos-categories-dev', // TODO: env
+    indexUid: process.env.NEXT_PUBLIC_MEILI_CATEGORY_INDEX,
     q: input,
     limit: 3,
 });
@@ -66,20 +70,31 @@ export interface LocationSearchResult
     id: string;
     name: string;
     asciiName: string;
-    _geo: { lat: number, lng: number },
     featureClass: string;
-    featureClassWeight: number,
     featureCode: string;
-    country: string;
-    countryCode: string;
-    alternateCountryCodes: string[];
     adminCode1: string;
     adminCode2: string;
     adminCode3: string;
     adminCode4: string;
     adminDivisionTargetLevel: number;
-    content: string;
+    targetName: string;
+    targetId: string;
 }
+
+const countryLocationToSearchResult = (location: Location): LocationSearchResult => ({
+    id: location.id,
+    name: location.location,
+    asciiName: location.location,
+    adminDivisionTargetLevel: 0,
+    targetName: location.location,
+    targetId: location.id,
+    featureClass: null,
+    featureCode: null,
+    adminCode1: null,
+    adminCode2: null,
+    adminCode3: null,
+    adminCode4: null,
+});
 
 export interface CategorySearchResult
 {
@@ -87,34 +102,26 @@ export interface CategorySearchResult
     name: string;
 }
 
+const categoryToSearchResult = (category: Category): CategorySearchResult => ({
+    id: category.id,
+    name: category.category,
+});
+
 export const InstantSearchContextProvider = ({ children }: { children: ReactNode }) => {
     const { location, isGeoLocationGranted } = useGeoLocation();
     const [loading, setLoading] = useState(false);
+    const { locations: cachedLocations, categories: cachedCategories } = useDataCache();
     const [locationResults, setLocationResults] = useState<LocationSearchResult[]>(null);
     const [categoryResults, setCategoryResults] = useState<CategorySearchResult[]>(null);
     const [defaultLocationResults, setDefaultLocationResults] = useState<LocationSearchResult[]>([]);
     const [defaultCategoryResults, setDefaultCategoryResults] = useState<CategorySearchResult[]>([]);
 
-    useEffect(() => {
-        fetchDefaultResults();
-    }, []);
-
-    useEffect(() => {
-        // Reset locationResults in searchCache entries when location changes
-        Object.keys(searchCache.entries).forEach(key => {
-            if (!searchCache.entries[key]?.locationResults) return;
-            searchCache.entries[key].locationResults = [];
-        });
-
-        fetchDefaultResults();
-    }, [ location ]);
-
-    const fetchDefaultResults = () => {
+    const fetchDefaultResults = useCallback((resultsAreEmpty) => {
         const cacheEntry = getFromCache('');
         if (!!cacheEntry && cacheEntry.locationResults && cacheEntry.categoryResults) {
             setDefaultLocationResults(cacheEntry.locationResults);
             setDefaultCategoryResults(cacheEntry.categoryResults);
-            if (locationResults == null && categoryResults == null) {
+            if (resultsAreEmpty) {
                 setLocationResults(cacheEntry.locationResults);
                 setCategoryResults(cacheEntry.categoryResults);
             }
@@ -127,20 +134,36 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
                 getCategoryQuery(''),
             ]
         }).then(value => {
-            const locationValueResults = value.results[0].hits ?? [];
-            const categoryValueResults = value.results[1].hits ?? [];
+            const locationValueResults = meiliHitsToLocationSearchResults(
+                value.results[0].hits ?? []);
+            const categoryValueResults = meiliHitsToCategorySearchResults(
+                value.results[1].hits ?? []);
 
             setDefaultLocationResults(locationValueResults as LocationSearchResult[]);
             setDefaultCategoryResults(categoryValueResults as CategorySearchResult[]);
 
-            if (locationResults == null && categoryResults == null) {
+            if (resultsAreEmpty) {
                 setLocationResults(locationValueResults as LocationSearchResult[]);
                 setCategoryResults(categoryValueResults as CategorySearchResult[]);
             }
 
             addToCache('', locationValueResults, categoryValueResults);
         });
-    }
+    }, [setDefaultLocationResults, setDefaultCategoryResults, setLocationResults, setCategoryResults, location, isGeoLocationGranted]);
+
+    useEffect(() => {
+        fetchDefaultResults(true);
+    }, [fetchDefaultResults]);
+
+    useEffect(() => {
+        // Reset locationResults in searchCache entries when location changes
+        Object.keys(searchCache.entries).forEach(key => {
+            if (!searchCache.entries[key]?.locationResults) return;
+            searchCache.entries[key].locationResults = [];
+        });
+
+        fetchDefaultResults(true);
+    }, [ location, fetchDefaultResults ]);
 
     const search = (
         input: string,
@@ -176,6 +199,18 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
             setLoading(false);
             return;
         }
+
+        const cacheLocationHits = cachedLocations
+            .filter(location => location.location.toLowerCase().startsWith(input.toLowerCase()))
+            .sort((a, b) => b.population - a.population)
+            .map(countryLocationToSearchResult)
+            .slice(0, 2);
+        const cacheCategoryHits = cachedCategories
+            .filter(category => category.category.toLowerCase().startsWith(input.toLowerCase()))
+            .map(categoryToSearchResult)
+            .slice(0, 2);
+        setLocationResults(cacheLocationHits);
+        setCategoryResults(cacheCategoryHits);
     
         const timeoutId = setTimeout(() => {
             if (currentSearchActionTimeoutId !== timeoutId) return;
@@ -191,19 +226,27 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
             }
 
             if (queries.length === 0) {
-                setLocationResults([]);
-                setCategoryResults([]);
                 setLoading(false);
                 return;
             }
 
             searchClient.multiSearch({ queries }).then(value => {
-                const locationValueResults = !isLocationFilterApplied
-                    ? (value.results[0].hits ?? [])
+                const locationHits = !isLocationFilterApplied
+                    ? meiliHitsToLocationSearchResults(value.results[0].hits ?? [])
                     : [];
-                const categoryValueResults = !isCategoryFilterApplied
-                    ? (value.results[!isLocationFilterApplied ? 1 : 0].hits ?? [])
+                const categoryHits = !isCategoryFilterApplied
+                    ? meiliHitsToCategorySearchResults(
+                        value.results[!isLocationFilterApplied ? 1 : 0].hits ?? [])
                     : [];
+
+                const locationValueResults = cacheLocationHits
+                    .concat(locationHits.filter(loc =>
+                        !cacheLocationHits.some(cached => cached.targetId === loc.targetId)))
+                    .slice(0, 3);
+                const categoryValueResults = cacheCategoryHits
+                    .concat(categoryHits.filter(cat =>
+                        !cacheCategoryHits.some(cached => cached.id === cat.id)))
+                    .slice(0, 3);
 
                 if (currentSearchActionTimeoutId !== timeoutId)
                 {

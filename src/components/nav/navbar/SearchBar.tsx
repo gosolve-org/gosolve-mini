@@ -1,12 +1,14 @@
 import { HashtagIcon, MagnifyingGlassIcon, MapPinIcon } from "@heroicons/react/20/solid";
-import { ArrowUpRightIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ArrowUpRightIcon, FunnelIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { LINKS } from "constants/links";
 import { CategorySearchResult, LocationSearchResult, useInstantSearch } from "contexts/InstantSearchContext";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
-import * as Navigator from "../../../utils/navigator";
 import LoaderLine from "components/common/layout/LoaderLine";
+import { useNav } from "contexts/NavigationContext";
+import { useMediaQueries } from "contexts/MediaQueryContext";
+
+const SEARCH_CONTAINER_NAME = 'search';
 
 enum HintType {
     Category,
@@ -14,10 +16,12 @@ enum HintType {
     Search,
     SearchTopic,
     Suggestion,
+    Filters,
 }
 
 function SearchBar() {
-    const router = useRouter();
+    const { goToSearchPage, goToTopicPage, router } = useNav();
+    const { isTabletOrMobile, isMobile, screenWidth } = useMediaQueries();
     const [categoryFilter, _setCategoryFilter] = useState<CategorySearchResult>(null);
     const [locationFilter, _setLocationFilter] = useState<LocationSearchResult>(null);
     const [hiddenCategory, _setHiddenCategory] = useState<CategorySearchResult>(null);
@@ -46,22 +50,67 @@ function SearchBar() {
 
     const readableSearchQuery = router?.query?.q?.toString().split("+").join(" ") ?? "";
 
+    const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
+    {
+        search(e.currentTarget.value, !!categoryFilter, !!locationFilter);
+        setSearchQuery(e.currentTarget.value);
+    }
+
+    const handleSearchSubmit = () => {
+        if (searchQuery) {
+            goToSearchPage(searchQuery, categoryFilter?.id, locationFilter?.id);
+        }
+    };
+
+    const clearInput = useCallback((isCategoryFilterApplied = false, isLocationFilterApplied = false) => {
+        setSearchQuery("");
+        search(null, isCategoryFilterApplied, isLocationFilterApplied);
+        inputRef.current.value = "";
+    }, [search, setSearchQuery, inputRef]);
+
+    const focusInput = () => {
+        inputRef.current.focus();
+    }
+
+    const unfocusInput = () => {
+        inputRef.current.blur();
+    }
+
+    const clearSearch = () => {
+        setCategoryFilter(null);
+        setLocationFilter(null);
+        clearInput();
+    };
+
+    const handleSearchKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            handleSearchSubmit();
+        }
+    };
+
     useEffect(() => {
         setSearchQuery(readableSearchQuery);
     }, [ readableSearchQuery ]);
 
     useEffect(() => {
+        const isLinkedToContainerByDataAttribute = (el) => !!el &&
+            (el.dataset.parentContainer === SEARCH_CONTAINER_NAME || (
+                !!el.parentElement && isLinkedToContainerByDataAttribute(el.parentElement)));
+
+        const isElementOutsideOfContainer = (el) => containerRef.current &&
+            !containerRef.current.contains(el) &&
+            containerRef.current !== el &&
+            !isLinkedToContainerByDataAttribute(el);
+
         const handleDocumentClick = (e) => {
-            if (containerRef.current &&
-                !containerRef.current.contains(e.target) && containerRef.current !== e.target) {
+            if (isElementOutsideOfContainer(e.target)) {
                 setIsFocused(false);
             }
         };
 
         const handleDocumentKeyUp = (e) => {
             if (e.code === 'Tab') {
-                if (containerRef.current &&
-                    !containerRef.current.contains(document.activeElement) && containerRef.current !== document.activeElement) {
+                if (isElementOutsideOfContainer(document.activeElement)) {
                     setIsFocused(false);
                 }
             }
@@ -132,14 +181,14 @@ function SearchBar() {
                         const location = locationResults.find(l => l.id == activeElement.dataset.id);
                         setLocationFilter(location);
                         clearInput(!!categoryFilter, true);
-                        inputRef.current.focus();
+                        focusInput();
                     } else if (activeElement.dataset.type?.toLowerCase() ===
                         HintType.Category.toString().toLowerCase()
                     ) {
                         const category = categoryResults.find(c => c.id == activeElement.dataset.id);
                         setCategoryFilter(category);
                         clearInput(true, !!locationFilter);
-                        inputRef.current.focus();
+                        focusInput();
                     }
                 }
             }
@@ -150,9 +199,22 @@ function SearchBar() {
         return () => {
             document.removeEventListener('keydown', handleDocumentKeyUp);
         };
-    }, [ isFocused, hintContainerRef, inputRef, locationResults, categoryResults, setLocationFilter, setCategoryFilter ]);
+    }, [
+        isFocused,
+        hintContainerRef,
+        inputRef,
+        locationResults,
+        categoryResults,
+        categoryFilter,
+        locationFilter,
+        setLocationFilter,
+        setCategoryFilter,
+        clearInput,
+    ]);
 
     useEffect(() => {
+        const currentInput = inputRef.current;
+
         const handeInputKeyDown = (e) => {
             if (e.code === 'Backspace') {
                 if (e.target.selectionStart === 0) {
@@ -167,49 +229,19 @@ function SearchBar() {
             }
         };
 
-        inputRef.current.addEventListener('keydown', handeInputKeyDown);
+        currentInput.addEventListener('keydown', handeInputKeyDown);
 
         return () => {
-            inputRef.current?.removeEventListener('keydown', handeInputKeyDown);
+            currentInput?.removeEventListener('keydown', handeInputKeyDown);
         };
-    }, [inputRef, categoryFilter, locationFilter, setCategoryFilter, setLocationFilter]);
-
-    const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
-    {
-        search(e.currentTarget.value, !!categoryFilter, !!locationFilter);
-        setSearchQuery(e.currentTarget.value);
-    }
-
-    const handleSearchSubmit = () => {
-        if (searchQuery) {
-            router.push(`/search?q=${searchQuery.split(" ").join("+")}`);
-        }
-    };
-
-    const clearInput = (isCategoryFilterApplied = false, isLocationFilterApplied = false) => {
-        setSearchQuery("");
-        search(null, isCategoryFilterApplied, isLocationFilterApplied);
-        inputRef.current.value = "";
-        inputRef.current.focus();
-    };
-
-    const clearSearch = () => {
-        setCategoryFilter(null);
-        setLocationFilter(null);
-        clearInput();
-    };
-
-    const handleSearchKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            handleSearchSubmit();
-        }
-    };
+    }, [inputRef, categoryFilter, locationFilter, search, setCategoryFilter, setLocationFilter]);
 
     enum HintIcon
     {
         Plus,
         MagnifyingGlass,
         ArrowUpRight,
+        Filter,
     }
     interface HintOptions {
         icon?: HintIcon;
@@ -229,6 +261,9 @@ function SearchBar() {
             case HintIcon.ArrowUpRight:
                 icon = <ArrowUpRightIcon className="h-4 w-4 text-gray-400" />;
                 break;
+            case HintIcon.Filter:
+                icon = <FunnelIcon className="h-4 w-4 text-gray-400" />;
+                break;
             default:
                 icon = <div className="w-4"></div>;
                 break;
@@ -241,13 +276,16 @@ function SearchBar() {
                 data-id={id}
                 data-hint="hint"
                 data-type={type}
+                data-parent-container={SEARCH_CONTAINER_NAME}
                 onMouseDown={() => {
                     onClick();
                     setTimeout(() => inputRef.current.focus(), 0);
                     if (type === HintType.Category) {
                         clearInput(true, !!locationFilter);
+                        focusInput();
                     } else if (type === HintType.Location) {
                         clearInput(!!categoryFilter, true);
+                        focusInput();
                     }
                 }}
                 className={"flex w-full focus:outline-none "
@@ -271,7 +309,7 @@ function SearchBar() {
         category.id,
         HintType.Category,
         <>
-            <span className="bg-gos-blue px-1.5 mr-1 py-1 rounded-full text-xs text-white flex items-center">
+            <span className="bg-gos-blue h-fit my-auto px-1.5 mr-1 py-1 rounded-full text-xs text-white flex items-center">
                 <HashtagIcon className="h-3 w-3 text-white mr-0.5" />
                 Category
             </span>
@@ -285,11 +323,11 @@ function SearchBar() {
         location.id,
         HintType.Location,
         <>
-            <span className="bg-gos-green px-1.5 mr-1 py-1 rounded-full text-xs text-white flex items-center">
+            <span className="bg-gos-green h-fit my-auto px-1.5 mr-1 py-1 rounded-full text-xs text-white flex items-center">
                 <MapPinIcon className="h-3 w-3 text-white mr-0.5" />
                 Location
             </span>
-            <span className="grow text-gray-500 text-sm flex items-center">{location.country}</span>
+            <span className="grow text-gray-500 text-sm flex items-center">{location.targetName}</span>
         </>,
         () => setLocationFilter(location),
         { icon: HintIcon.Plus },
@@ -299,16 +337,19 @@ function SearchBar() {
         'searchHint',
         HintType.Search,
         <>
-            <span className="text-gray-500 text-sm">Search for "{searchQuery.trim()}"</span>
+            <span className="text-gray-500 text-sm">Search for &quot;{searchQuery.trim()}&quot;</span>
         </>,
-        () => Navigator.goToSearch(router, searchQuery, categoryFilter?.name, locationFilter?.country),
+        () => {
+            goToSearchPage(searchQuery, categoryFilter?.id, locationFilter?.targetId);
+            clearSearch();
+        },
         {
             bgOnActive: true,
             icon: HintIcon.MagnifyingGlass,
             cursorPointer: true,
             style: 'py-3 border border-x-0 '
                 + (loading ? 'border-b-0 ' : 'border-b-1 ')
-                + (categoryResults.length == 0 && locationResults.length == 0 ? 'border-t-0' : 'border-t-1'),
+                + (categoryResults.length === 0 && locationResults.length === 0 ? 'border-t-0' : 'border-t-1'),
         },
     );
 
@@ -320,17 +361,20 @@ function SearchBar() {
                 Go to
                 <span className="text-gray-500 font-semibold"> {categoryFilter.name} </span>
                 in
-                <span className="text-gray-500 font-semibold"> {locationFilter.country} </span>
+                <span className="text-gray-500 font-semibold"> {locationFilter?.targetName ?? "World"} </span>
             </span>
         </>,
-        () => Navigator.goToTopicPage(router, categoryFilter.name, locationFilter.country),
+        () => {
+            goToTopicPage(categoryFilter.name, locationFilter?.targetName ?? "World");
+            clearSearch();
+        },
         {
             bgOnActive: true,
             icon: HintIcon.ArrowUpRight,
             cursorPointer: true,
             style: 'py-3 border border-x-0 '
                 + (loading ? 'border-b-0 ' : 'border-b-1 ')
-                + (categoryResults.length == 0 && locationResults.length == 0 ? 'border-t-0' : 'border-t-1'),
+                + (categoryResults.length === 0 && locationResults.length === 0 ? 'border-t-0' : 'border-t-1'),
         },
     );
 
@@ -350,60 +394,87 @@ function SearchBar() {
         { bgOnActive: false, icon: null },
     );
 
+    const renderLocationInputFilter = (paddingClassName) => (
+        <span
+            style={{
+                maxWidth: isTabletOrMobile ? 135 : undefined,
+            }}
+            className={`${paddingClassName} ml-2 my-1 bg-gos-green rounded-full text-xs text-white flex items-center whitespace-nowrap`}
+        >
+            <span>
+                <MapPinIcon className="h-3 w-3 text-white mr-0.5" />
+            </span>
+            <span className="truncate">{locationFilter.targetName}</span>
+            <label
+                tabIndex={0}
+                onClick={() => {
+                    setLocationFilter(null);
+                    setTimeout(() => inputRef.current.focus(), 0);
+                    search(searchQuery, !!categoryFilter, false);
+                }}
+                className="cursor-pointer"
+                htmlFor="search"
+            >
+                <XMarkIcon className="h-3 w-3 text-white ml-1" />
+            </label>
+        </span>
+    );
+
+    const renderCategoryInputFilter = (paddingClassName) => (
+        <span className={`${locationFilter ? 'ml-1' : 'ml-2'} ${paddingClassName} my-1 bg-gos-blue rounded-full text-xs text-white flex items-center whitespace-nowrap`}>
+            <HashtagIcon className="h-3 w-3 text-white mr-0.5" />
+            {categoryFilter.name}
+            <label
+                tabIndex={0}
+                onClick={() => {
+                    setCategoryFilter(null);
+                    setTimeout(() => inputRef.current.focus(), 0);
+                    search(searchQuery, false, !!locationFilter);
+                }}
+                className="cursor-pointer"
+                htmlFor="search"
+            >
+                <XMarkIcon className="h-3 w-3 text-white ml-1" />
+            </label>
+        </span>
+    );
+
     const renderInputFilters = () => (
-        <div className="flex">
-            {locationFilter &&
-                <span className="ml-2 my-1 bg-gos-green px-1.5 py-1 rounded-full text-xs text-white flex items-center whitespace-nowrap">
-                    <MapPinIcon className="h-3 w-3 text-white mr-0.5" />
-                    {locationFilter.country}
-                    <label
-                        tabIndex={0}
-                        onClick={() => {
-                            setLocationFilter(null);
-                            setTimeout(() => inputRef.current.focus(), 0);
-                            search(searchQuery, !!categoryFilter, false);
-                        }}
-                        className="cursor-pointer"
-                        htmlFor="search"
-                    >
-                        <XMarkIcon className="h-3 w-3 text-white ml-1" />
-                    </label>
-                </span>
-            }
-            {categoryFilter &&
-                <span className={`${locationFilter ? 'ml-1' : 'ml-2'} my-1 bg-gos-blue px-1.5 py-1 rounded-full text-xs text-white flex items-center whitespace-nowrap`}>
-                    <HashtagIcon className="h-3 w-3 text-white mr-0.5" />
-                    {categoryFilter.name}
-                    <label
-                        tabIndex={0}
-                        onClick={() => {
-                            setCategoryFilter(null);
-                            setTimeout(() => inputRef.current.focus(), 0);
-                            search(searchQuery, false, !!locationFilter);
-                        }}
-                        className="cursor-pointer"
-                        htmlFor="search"
-                    >
-                        <XMarkIcon className="h-3 w-3 text-white ml-1" />
-                    </label>
-                </span>
-            }
+        <div className="flex" data-parent-container={SEARCH_CONTAINER_NAME}>
+            {locationFilter && renderLocationInputFilter('px-1.5 py-1')}
+            {categoryFilter && renderCategoryInputFilter('px-1.5 py-1')}
         </div>
+    );
+
+    const renderMobileInputFilters = () => renderHint(
+        'filtersHint',
+        HintType.Filters,
+        <>
+            {locationFilter && renderLocationInputFilter('px-1.5 py-2')}
+            {categoryFilter && renderCategoryInputFilter('px-1.5 py-2')}
+        </>,
+        () => {},
+        {
+            bgOnActive: false,
+            icon: HintIcon.Filter,
+            style: 'py-1 border border-x-0 border-t-0',
+        },
     );
 
     return (
         <div
             ref={containerRef}
-            className="bg-white relative"
+            className={`bg-white ${isMobile && isFocused ? 'absolute' : 'relative'}`}
             style={{
-                width: '600px',
+                width: isMobile && isFocused ? '100%' : '600px',
+                zIndex: 1,
             }}
         >
             {/* INPUT */}
             <div
-                className={`flex border border-gray-300 overflow-hidden ${isFocused ? 'border-b-0 rounded-t-3xl' : 'rounded-3xl'}`}
+                className={`flex box-border border border-gray-300 overflow-hidden ${isFocused ? 'border-b-0 pb-px rounded-t-3xl' : 'rounded-3xl'}`}
                 style={{
-                    marginTop: isFocused ? '-1px' : '0',
+                    //marginTop: isFocused ? '0' : '0',
                 }}
             >
                 <label htmlFor="search" className="sr-only">
@@ -418,10 +489,12 @@ function SearchBar() {
                         aria-hidden="true"
                     />
                 </label>
-                {renderInputFilters()}
+                {!isMobile && renderInputFilters()}
                 <input
                     ref={inputRef}
-                    placeholder={!locationFilter && !categoryFilter ? `Explore goSolve` : ''}
+                    placeholder={!locationFilter && !categoryFilter
+                        ? (screenWidth > 350 ? `Explore goSolve` : 'Explore')
+                        : ''}
                     autoComplete="off"
                     id="search"
                     name="search"
@@ -434,8 +507,19 @@ function SearchBar() {
                 />
                 <label
                     htmlFor="search"
+                    style={{
+                        WebkitTapHighlightColor: isMobile ? 'transparent' : 'initial',
+                    }}
                     className="inset-y-0 flex items-center pr-3 cursor-pointer text-gray-400 hover:text-gray-500"
-                    onClick={clearSearch}
+                    onClick={() => {
+                        clearSearch();
+                        if (!isMobile) {
+                            focusInput();
+                        } else {
+                            unfocusInput();
+                            setIsFocused(false);
+                        }
+                    }}
                 >
                     <button type="button">
                         <XMarkIcon
@@ -452,6 +536,7 @@ function SearchBar() {
             >
                 <div className="border-t"></div>
                 <div className="mb-1">
+                    {isMobile && (locationFilter || categoryFilter) && renderMobileInputFilters()}
                     <div ref={hintContainerRef}>
                         {categoryResults
                             .filter(c => c !== hiddenCategory)
@@ -461,7 +546,6 @@ function SearchBar() {
                             .map(renderLocationHint)}
                         {!!searchQuery && searchQuery.trim().length > 0 && renderSearchHint()}
                         {!!categoryFilter
-                            && !!locationFilter
                             && (!searchQuery || searchQuery.trim().length === 0)
                             && renderSearchTopicHint()}
                     </div>

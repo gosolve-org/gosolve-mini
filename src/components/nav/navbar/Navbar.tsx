@@ -27,8 +27,13 @@ function Navbar() {
     return (
         <InstantSearchContextProvider>
             {isTabletOrMobile && <BurgerMenu isOpen={isBurgerMenuOpen} onOpen={openBurgerMenu} onClose={closeBurgerMenu}></BurgerMenu>}
-            <div className="mx-auto px-1 sm:px-2 lg:px-4 bg-white shadow-sm lg:static lg:overflow-y-visible">
-                <div className="relative flex justify-between">
+            <div
+                style={{
+                    height: 54,
+                }}
+                className="mx-auto px-1 sm:px-2 lg:px-4 bg-white shadow-sm lg:static lg:overflow-y-visible"
+            >
+                <div className="h-full relative flex justify-between">
                     <div className="flex grow basis-0 md:inset-y-0 md:left-0 lg:static">
                         {isTabletOrMobile
                             ? (
@@ -45,12 +50,10 @@ function Navbar() {
                             )
                         }
                     </div>
-
-                    {!isTabletOrMobile &&                
-                        <div className="flex min-w-0 flex-row justify-center items-center px-6 py-2 md:px-8 lg:px-0">
-                            <SearchBar />
-                        </div>
-                    }
+          
+                    <div className="flex min-w-0 flex-row justify-center items-center px-6 py-2 md:px-8 lg:px-0">
+                        <SearchBar />
+                    </div>
 
                     <div className="flex grow basis-0 items-center justify-end py-2">
                         {/* NOTIFICATIONS BELL */}
@@ -69,13 +72,15 @@ function Navbar() {
                         }
 
                         {/* FEEDBACK ICON */}
-                        <div className="mr-2">
-                            <Tippy content="Give Feedback">
-                                <Link href={LINKS.feedbackForm} target="_blank">
-                                    <MegaphoneIcon className="h-7 w-7 text-gray-light"></MegaphoneIcon>
-                                </Link>
-                            </Tippy>
-                        </div>
+                        {!isTabletOrMobile &&
+                            <div className="mr-2">
+                                <Tippy content="Give Feedback">
+                                    <Link href={LINKS.feedbackForm} target="_blank">
+                                        <MegaphoneIcon className="h-7 w-7 text-gray-light"></MegaphoneIcon>
+                                    </Link>
+                                </Tippy>
+                            </div>
+                        }
 
                         {/* ACCOUNT SETTINGS ICON */}
                         {isAuthenticated() &&

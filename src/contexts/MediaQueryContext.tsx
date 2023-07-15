@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 
 interface MediaQueryContext {
@@ -9,6 +9,8 @@ interface MediaQueryContext {
     isMobile: boolean;
     isPortrait: boolean;
     isRetina: boolean;
+    screenWidth: number;
+    screenHeight: number;
 }
 
 export const MediaQueryContext = createContext<MediaQueryContext>({
@@ -18,7 +20,9 @@ export const MediaQueryContext = createContext<MediaQueryContext>({
     isTablet: false,
     isMobile: false,
     isPortrait: false,
-    isRetina: false
+    isRetina: false,
+    screenWidth: 0,
+    screenHeight: 0,
 });
 
 export const MediaQueryContextProvider = ({ children }: { children: ReactNode }) => {
@@ -30,6 +34,20 @@ export const MediaQueryContextProvider = ({ children }: { children: ReactNode })
     const isPortrait = useMediaQuery({ orientation: 'portrait' });
     const isRetina = useMediaQuery({ query: '(min-resolution: 2dppx)' });
 
+    const [screenWidth, setScreenWidth] = useState(0);
+    const [screenHeight, setScreenHeight] = useState(0);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setScreenWidth(global.window?.innerWidth);
+            setScreenHeight(global.window?.innerHeight);
+        }
+
+        global.window?.addEventListener("resize", handleResize);
+        handleResize();
+        return () => global?.window?.removeEventListener("resize", handleResize);
+    }, [global.window]);
+
     return (
         <MediaQueryContext.Provider
             value={{
@@ -39,7 +57,9 @@ export const MediaQueryContextProvider = ({ children }: { children: ReactNode })
                 isTablet,
                 isMobile,
                 isPortrait,
-                isRetina
+                isRetina,
+                screenWidth,
+                screenHeight,
             }}
         >
             {children}

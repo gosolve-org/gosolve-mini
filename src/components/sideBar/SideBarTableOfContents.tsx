@@ -49,7 +49,8 @@ function SideBarTableOfContents()
                             key={title.id}
                             onClick={() => onLinkClick(title.index)}
                             className={`${getTitleClassName(title.level, i === 0 || titles[i - 1].level < title.level)} text-right text-gray-400 hover:text-gray-500 cursor-pointer block`}
-                        >{title.value}</span>
+                            dangerouslySetInnerHTML={{ __html: title.value }}
+                        />
                     )}
                 </div>
                 <div className="ml-5 bg-gray-200" style={{

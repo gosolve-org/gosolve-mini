@@ -94,14 +94,12 @@ function CommunityOverview({ resourceType } : CommunityOverviewProps) {
                                 <button
                                     onClick={handleAddCommunityClick}
                                     type="button"
-                                    className="inline-flex items-center rounded-full border border-gray-300 bg-white p-1.5 shadow-sm hover:bg-indigo-500 hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                    className="inline-flex items-center rounded-full text-black hover:text-white p-1.5 border border-gray-300 bg-white shadow-sm hover:bg-indigo-500 hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                 >
-                                    {resourceType == ResourceType.Topic || true &&
-                                        <PlusIcon
-                                            className="h-4 w-4 text-black hover:text-white"
-                                            aria-hidden="true"
-                                        />
-                                    }
+                                    <PlusIcon
+                                        className="h-4 w-4"
+                                        aria-hidden="true"
+                                    />
                                 </button>
                             </span>
                         }

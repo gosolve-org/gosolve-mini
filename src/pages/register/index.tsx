@@ -13,6 +13,7 @@ import { TOAST_IDS } from "constants/toastConstants";
 import BasicHead from "components/common/layout/BasicHead";
 import Logo from "components/common/layout/Logo";
 import { USER_VALIDATIONS } from "constants/validationRules";
+import GoogleIconSvg from "svgs/GoogleIconSvg";
 
 function Register() {
     const [email, setEmail] = useState<string>("");
@@ -212,25 +213,12 @@ function Register() {
                                             className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50"
                                         >
                                             <span className="sr-only">
-                                                Sign in with Google
+                                                Register with Google
                                             </span>
-                                            <svg
+                                            <GoogleIconSvg
                                                 className="h-5 w-5 text-gray-500"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth="2"
-                                                stroke="currentColor"
-                                                fill="none"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            >
-                                                <path
-                                                    stroke="none"
-                                                    d="M0 0h24v24H0z"
-                                                />
-                                                <path d="M17.788 5.108A9 9 0 1021 12h-8" />
-                                            </svg>
+                                                width={24}
+                                                height={24}/>
                                         </button>
                                     </div>
                                 </div>

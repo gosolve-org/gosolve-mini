@@ -12,6 +12,7 @@ import { getWaitlistUser } from "./api/user";
 import BasicHead from "components/common/layout/BasicHead";
 import Logo from "components/common/layout/Logo";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import GoogleIconSvg from "svgs/GoogleIconSvg";
 
 function Login() {
     const [email, setEmail] = useState<string>("");
@@ -219,23 +220,10 @@ function Login() {
                                             <span className="sr-only">
                                                 Sign in with Google
                                             </span>
-                                            <svg
+                                            <GoogleIconSvg
                                                 className="h-5 w-5 text-gray-500"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth="2"
-                                                stroke="currentColor"
-                                                fill="none"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            >
-                                                <path
-                                                    stroke="none"
-                                                    d="M0 0h24v24H0z"
-                                                />
-                                                <path d="M17.788 5.108A9 9 0 1021 12h-8" />
-                                            </svg>
+                                                width={24}
+                                                height={24}/>
                                         </button>
                                     </div>
                                 </div>

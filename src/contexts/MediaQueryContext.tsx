@@ -46,7 +46,7 @@ export const MediaQueryContextProvider = ({ children }: { children: ReactNode })
         global.window?.addEventListener("resize", handleResize);
         handleResize();
         return () => global?.window?.removeEventListener("resize", handleResize);
-    }, [global.window]);
+    }, []);
 
     return (
         <MediaQueryContext.Provider

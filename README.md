@@ -1,5 +1,13 @@
 This is a [Next.js](https://nextjs.org/) project with Tailwind and Firebase.
 
+## Initial Firebase project setup
+- Create Firebase project
+- Go to Cloud Firestore -> Create (in production mode)
+- Go to Functions -> Get started (until you see the empty Dashboard)
+- Go to Project Settings -> Set "Default GCP resource location"
+- Go to https://console.cloud.google.com/artifacts and enable the Artifact API for your project
+- Go to https://console.cloud.google.com/apis/library/cloudbuild.googleapis.com and enable the Cloud Build API for your project
+
 ## First-time setup
 ```bash
 # Installing NPM packages

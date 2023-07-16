@@ -58,6 +58,13 @@ module.exports.getLocation = async (db, locationId) => {
     return { location: locationDoc.data().location };
 };
 
+module.exports.getUserByEmail = async (db, email) => {
+    const userDocs = await db.collection('user').where('email', '==', email).get();
+    
+    if (userDocs.empty) return null;
+    return { ...userDocs.docs[0].data(), id: userDocs.docs[0].id };
+};
+
 module.exports.getUserByUsername = async (db, username) => {
     const userDocs = await db.collection('user').where('username', '==', username).get();
     
@@ -71,8 +78,4 @@ module.exports.addUser = async (db, userId, data) => {
 
 module.exports.updateUser = async (db, userId, data) => {
     await db.collection('user').doc(userId).update(data);
-};
-
-module.exports.getIsAllowListed = async (db, email) => {
-    return (await db.collection('allowlist').doc(email).get()).exists;
 };

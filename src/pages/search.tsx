@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react'
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -12,6 +13,7 @@ import calendar from "dayjs/plugin/calendar";
 import Layout from "components/common/layout/Layout";
 import Pagination from "components/common/Pagination";
 import Loader from "components/common/layout/Loader";
+import { useNav } from "contexts/NavigationContext";
 dayjs.extend(localizedFormat);
 dayjs.extend(calendar);
 
@@ -19,32 +21,34 @@ const PAGE_SIZE = 10;
 
 function Search() {
     const router = useRouter();
-
-    const searchQuery = router?.query?.q ? router?.query?.q.toString() : "";
-    const pageQuery = router.query?.page
-        ? parseInt(router.query?.page.toString()) || 1
-        : 1;
-
-    const readableSearch = searchQuery.split("+").join(" ");
+    const { searchParams } = useNav();
 
     const [totalMatches, setTotalMatches] = useState(0);
     const [results, setResults] = useState(null);
 
     useEffect(() => {
-        if (!searchQuery) return;
+        if (!searchParams) return;
 
         setResults(null);
 
-        search(searchQuery, (pageQuery - 1) * PAGE_SIZE, PAGE_SIZE)
+        search({
+            query: searchParams.q,
+            categoryIdFilter: searchParams.qCategoryId,
+            locationIdFilter: searchParams.qLocationId,
+        }, {
+            limit: PAGE_SIZE,
+            offset: (searchParams.page - 1) * PAGE_SIZE,
+        })
             .then(result => {
                 setTotalMatches(result.estimatedTotalHits);
                 setResults(result.hits);
             })
             .catch(err => {
+                Sentry.captureException(err);
                 console.error(err);
                 toast.error('Something went wrong');
             });
-    }, [ searchQuery, pageQuery ]);
+    }, [ searchParams, setTotalMatches, setResults ]);
 
     return (
         <Layout>
@@ -53,7 +57,7 @@ function Search() {
                 <div className="min-w-[75%]">
                     <div className="flex items-center">
                         <h2 className="text-2xl font-xl font-semibold leading-6 text-black">
-                            {`Search for "${readableSearch}"`}
+                            {`Search for "${searchParams.q}"`}
                         </h2>
                     </div>
 

@@ -1,0 +1,3819 @@
+[
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AD",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3041565,
+        "name": "Andorra",
+        "population": 77006,
+        "_geo": {
+            "lat": 42.5045,
+            "lng": 1.49414
+        },
+        "targetName": "Andorra",
+        "targetId": 3041565
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 290557,
+        "name": "United Arab Emirates",
+        "population": 9630959,
+        "_geo": {
+            "lat": 25,
+            "lng": 55.33333
+        },
+        "targetName": "United Arab Emirates",
+        "targetId": 290557
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AF",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1149361,
+        "name": "Afghanistan",
+        "population": 37172386,
+        "_geo": {
+            "lat": 34.5,
+            "lng": 69.41667
+        },
+        "targetName": "Afghanistan",
+        "targetId": 1149361
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3576396,
+        "name": "Antigua and Barbuda",
+        "population": 96286,
+        "_geo": {
+            "lat": 17.1,
+            "lng": -61.85
+        },
+        "targetName": "Antigua and Barbuda",
+        "targetId": 3576396
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AI",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3573511,
+        "name": "Anguilla",
+        "population": 13254,
+        "_geo": {
+            "lat": 18.22931,
+            "lng": -63.0468
+        },
+        "targetName": "Anguilla",
+        "targetId": 3573511
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AL",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 783754,
+        "name": "Albania",
+        "population": 2866376,
+        "_geo": {
+            "lat": 41.26667,
+            "lng": 19.78333
+        },
+        "targetName": "Albania",
+        "targetId": 783754
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 174982,
+        "name": "Armenia",
+        "population": 2951776,
+        "_geo": {
+            "lat": 40.18333,
+            "lng": 44.5
+        },
+        "targetName": "Armenia",
+        "targetId": 174982
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3351879,
+        "name": "Angola",
+        "population": 30809762,
+        "_geo": {
+            "lat": -8.91667,
+            "lng": 13.33924
+        },
+        "targetName": "Angola",
+        "targetId": 3351879
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AQ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 6697173,
+        "name": "Antarctica",
+        "population": 0,
+        "_geo": {
+            "lat": -90,
+            "lng": 0
+        },
+        "targetName": "Antarctica",
+        "targetId": 6697173
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3865483,
+        "name": "Argentina",
+        "population": 44494502,
+        "_geo": {
+            "lat": -36,
+            "lng": -60
+        },
+        "targetName": "Argentina",
+        "targetId": 3865483
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 5880801,
+        "name": "American Samoa",
+        "population": 55465,
+        "_geo": {
+            "lat": -14.31667,
+            "lng": -170.76667
+        },
+        "targetName": "American Samoa",
+        "targetId": 5880801
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AT",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2782113,
+        "name": "Austria",
+        "population": 8847037,
+        "_geo": {
+            "lat": 48.2082,
+            "lng": 16.37169
+        },
+        "targetName": "Austria",
+        "targetId": 2782113
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AU",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2077456,
+        "name": "Australia",
+        "population": 24992369,
+        "_geo": {
+            "lat": -33,
+            "lng": 146
+        },
+        "targetName": "Australia",
+        "targetId": 2077456
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AW",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3577279,
+        "name": "Aruba",
+        "population": 105845,
+        "_geo": {
+            "lat": 12.5,
+            "lng": -69.96667
+        },
+        "targetName": "Aruba",
+        "targetId": 3577279
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AX",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 661882,
+        "name": "Aland Islands",
+        "population": 26711,
+        "_geo": {
+            "lat": 60.22496,
+            "lng": 19.93363
+        },
+        "targetName": "Aland Islands",
+        "targetId": 661882
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AZ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 587116,
+        "name": "Azerbaijan",
+        "population": 9942334,
+        "_geo": {
+            "lat": 40.39802,
+            "lng": 49.72414
+        },
+        "targetName": "Azerbaijan",
+        "targetId": 587116
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3277605,
+        "name": "Bosnia and Herzegovina",
+        "population": 3323929,
+        "_geo": {
+            "lat": 44,
+            "lng": 17.58333
+        },
+        "targetName": "Bosnia and Herzegovina",
+        "targetId": 3277605
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BB",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3374084,
+        "name": "Barbados",
+        "population": 286641,
+        "_geo": {
+            "lat": 13.12633,
+            "lng": -59.59817
+        },
+        "targetName": "Barbados",
+        "targetId": 3374084
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BD",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1210997,
+        "name": "Bangladesh",
+        "population": 161356039,
+        "_geo": {
+            "lat": 23.83333,
+            "lng": 90.25
+        },
+        "targetName": "Bangladesh",
+        "targetId": 1210997
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2802361,
+        "name": "Belgium",
+        "population": 11422068,
+        "_geo": {
+            "lat": 51,
+            "lng": 4.5
+        },
+        "targetName": "Belgium",
+        "targetId": 2802361
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BF",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2361809,
+        "name": "Burkina Faso",
+        "population": 19751535,
+        "_geo": {
+            "lat": 12.37874,
+            "lng": -1.53276
+        },
+        "targetName": "Burkina Faso",
+        "targetId": 2361809
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 732800,
+        "name": "Bulgaria",
+        "population": 7000039,
+        "_geo": {
+            "lat": 42.66667,
+            "lng": 23.38333
+        },
+        "targetName": "Bulgaria",
+        "targetId": 732800
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BH",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 290291,
+        "name": "Bahrain",
+        "population": 1569439,
+        "_geo": {
+            "lat": 26.21667,
+            "lng": 50.58333
+        },
+        "targetName": "Bahrain",
+        "targetId": 290291
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BI",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 433561,
+        "name": "Burundi",
+        "population": 11175378,
+        "_geo": {
+            "lat": -3.3802,
+            "lng": 29.3547
+        },
+        "targetName": "Burundi",
+        "targetId": 433561
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BJ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2395170,
+        "name": "Benin",
+        "population": 11485048,
+        "_geo": {
+            "lat": 6.66667,
+            "lng": 2.25
+        },
+        "targetName": "Benin",
+        "targetId": 2395170
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BL",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3578476,
+        "name": "Saint Barthelemy",
+        "population": 8450,
+        "_geo": {
+            "lat": 17.89618,
+            "lng": -62.84978
+        },
+        "targetName": "Saint Barthelemy",
+        "targetId": 3578476
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3573345,
+        "name": "Bermuda",
+        "population": 63968,
+        "_geo": {
+            "lat": 32.29944,
+            "lng": -64.79278
+        },
+        "targetName": "Bermuda",
+        "targetId": 3573345
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1820814,
+        "name": "Brunei",
+        "population": 428962,
+        "_geo": {
+            "lat": 4.91667,
+            "lng": 114.91667
+        },
+        "targetName": "Brunei",
+        "targetId": 1820814
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3923057,
+        "name": "Bolivia",
+        "population": 11353142,
+        "_geo": {
+            "lat": -17.5,
+            "lng": -61.5
+        },
+        "targetName": "Bolivia",
+        "targetId": 3923057
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BQ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 7626844,
+        "name": "Bonaire, Saint Eustatius and Saba ",
+        "population": 18012,
+        "_geo": {
+            "lat": 12.2,
+            "lng": -68.28333
+        },
+        "targetName": "Bonaire, Saint Eustatius and Saba ",
+        "targetId": 7626844
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3469034,
+        "name": "Brazil",
+        "population": 209469333,
+        "_geo": {
+            "lat": -22,
+            "lng": -49
+        },
+        "targetName": "Brazil",
+        "targetId": 3469034
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3572887,
+        "name": "Bahamas",
+        "population": 385640,
+        "_geo": {
+            "lat": 25.03333,
+            "lng": -77.28333
+        },
+        "targetName": "Bahamas",
+        "targetId": 3572887
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BT",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1252634,
+        "name": "Bhutan",
+        "population": 754394,
+        "_geo": {
+            "lat": 27.6,
+            "lng": 89.58333
+        },
+        "targetName": "Bhutan",
+        "targetId": 1252634
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BV",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3371123,
+        "name": "Bouvet Island",
+        "population": 0,
+        "_geo": {
+            "lat": -54.43333,
+            "lng": 3.4
+        },
+        "targetName": "Bouvet Island",
+        "targetId": 3371123
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BW",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 933860,
+        "name": "Botswana",
+        "population": 2254126,
+        "_geo": {
+            "lat": -25,
+            "lng": 25.75
+        },
+        "targetName": "Botswana",
+        "targetId": 933860
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BY",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 630336,
+        "name": "Belarus",
+        "population": 9485386,
+        "_geo": {
+            "lat": 53.9,
+            "lng": 27.56667
+        },
+        "targetName": "Belarus",
+        "targetId": 630336
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "BZ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3582678,
+        "name": "Belize",
+        "population": 383071,
+        "_geo": {
+            "lat": 17.55,
+            "lng": -88.41667
+        },
+        "targetName": "Belize",
+        "targetId": 3582678
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 6251999,
+        "name": "Canada",
+        "population": 37058856,
+        "_geo": {
+            "lat": 49.25014,
+            "lng": -84.49983
+        },
+        "targetName": "Canada",
+        "targetId": 6251999
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CC",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1547376,
+        "name": "Cocos Islands",
+        "population": 628,
+        "_geo": {
+            "lat": -12.16667,
+            "lng": 96.83333
+        },
+        "targetName": "Cocos Islands",
+        "targetId": 1547376
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "alternateNames": [
+            "Congo",
+            "Congo-Kinshasa",
+            "Zaire"
+        ],
+        "countryCode": "CD",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 203312,
+        "name": "Democratic Republic of the Congo",
+        "population": 84068091,
+        "_geo": {
+            "lat": 0.2,
+            "lng": 18.93333
+        },
+        "targetName": "Democratic Republic of the Congo",
+        "targetId": 203312
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CF",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 239880,
+        "name": "Central African Republic",
+        "population": 4666377,
+        "_geo": {
+            "lat": 4.38333,
+            "lng": 18.56667
+        },
+        "targetName": "Central African Republic",
+        "targetId": 239880
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "alternateNames": [
+            "Congo",
+            "Congo-Brazzaville"
+        ],
+        "countryCode": "CG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2260494,
+        "name": "Republic of the Congo",
+        "population": 5244363,
+        "_geo": {
+            "lat": -4.2657,
+            "lng": 15.28048
+        },
+        "targetName": "Republic of the Congo",
+        "targetId": 2260494
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CH",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2658434,
+        "name": "Switzerland",
+        "population": 8516543,
+        "_geo": {
+            "lat": 47.41667,
+            "lng": 8.66667
+        },
+        "targetName": "Switzerland",
+        "targetId": 2658434
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "alternateNames": [
+            "Côte d'Ivoire"
+        ],
+        "countryCode": "CI",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2287781,
+        "name": "Ivory Coast",
+        "population": 25069229,
+        "_geo": {
+            "lat": 5.36289,
+            "lng": -3.9992
+        },
+        "targetName": "Ivory Coast",
+        "targetId": 2287781
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CK",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1899402,
+        "name": "Cook Islands",
+        "population": 21388,
+        "_geo": {
+            "lat": -21.23274,
+            "lng": -159.77245
+        },
+        "targetName": "Cook Islands",
+        "targetId": 1899402
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CL",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3895114,
+        "name": "Chile",
+        "population": 18729160,
+        "_geo": {
+            "lat": -33.47269,
+            "lng": -70.64724
+        },
+        "targetName": "Chile",
+        "targetId": 3895114
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2233387,
+        "name": "Cameroon",
+        "population": 25216237,
+        "_geo": {
+            "lat": 4.75,
+            "lng": 11.83333
+        },
+        "targetName": "Cameroon",
+        "targetId": 2233387
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1814991,
+        "name": "China",
+        "population": 1411778724,
+        "_geo": {
+            "lat": 23.5,
+            "lng": 113.25
+        },
+        "targetName": "China",
+        "targetId": 1814991
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3686110,
+        "name": "Colombia",
+        "population": 49648685,
+        "_geo": {
+            "lat": 4.25,
+            "lng": -74.18333
+        },
+        "targetName": "Colombia",
+        "targetId": 3686110
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3624060,
+        "name": "Costa Rica",
+        "population": 4999441,
+        "_geo": {
+            "lat": 9.66667,
+            "lng": -84
+        },
+        "targetName": "Costa Rica",
+        "targetId": 3624060
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CU",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3562981,
+        "name": "Cuba",
+        "population": 11338138,
+        "_geo": {
+            "lat": 20.2,
+            "lng": -75.93333
+        },
+        "targetName": "Cuba",
+        "targetId": 3562981
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CV",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3374766,
+        "name": "Cabo Verde",
+        "population": 543767,
+        "_geo": {
+            "lat": 14.95,
+            "lng": -23.51667
+        },
+        "targetName": "Cabo Verde",
+        "targetId": 3374766
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CW",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 7626836,
+        "name": "Curacao",
+        "population": 159849,
+        "_geo": {
+            "lat": 12.18333,
+            "lng": -69
+        },
+        "targetName": "Curacao",
+        "targetId": 7626836
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CX",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2078138,
+        "name": "Christmas Island",
+        "population": 1500,
+        "_geo": {
+            "lat": -10.41667,
+            "lng": 105.71667
+        },
+        "targetName": "Christmas Island",
+        "targetId": 2078138
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CY",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 146669,
+        "name": "Cyprus",
+        "population": 1189265,
+        "_geo": {
+            "lat": 35.06667,
+            "lng": 33.1
+        },
+        "targetName": "Cyprus",
+        "targetId": 146669
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "alternateNames": [
+            "Czech Republic"
+        ],
+        "countryCode": "CZ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3077311,
+        "name": "Czechia",
+        "population": 10625695,
+        "_geo": {
+            "lat": 50.12718,
+            "lng": 14.1964
+        },
+        "targetName": "Czechia",
+        "targetId": 3077311
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "alternateNames": [
+            "Deutschland"
+        ],
+        "countryCode": "DE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2921044,
+        "name": "Germany",
+        "population": 82927922,
+        "_geo": {
+            "lat": 51.21895,
+            "lng": 6.76339
+        },
+        "targetName": "Germany",
+        "targetId": 2921044
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "DJ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 223816,
+        "name": "Djibouti",
+        "population": 958920,
+        "_geo": {
+            "lat": 11.56,
+            "lng": 43.06
+        },
+        "targetName": "Djibouti",
+        "targetId": 223816
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "DK",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2623032,
+        "name": "Denmark",
+        "population": 5797446,
+        "_geo": {
+            "lat": 55.83333,
+            "lng": 12.33333
+        },
+        "targetName": "Denmark",
+        "targetId": 2623032
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "DM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3575830,
+        "name": "Dominica",
+        "population": 71625,
+        "_geo": {
+            "lat": 15.3,
+            "lng": -61.36667
+        },
+        "targetName": "Dominica",
+        "targetId": 3575830
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "DO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3508796,
+        "name": "Dominican Republic",
+        "population": 10627165,
+        "_geo": {
+            "lat": 18.56678,
+            "lng": -69.84874
+        },
+        "targetName": "Dominican Republic",
+        "targetId": 3508796
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "DZ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2589581,
+        "name": "Algeria",
+        "population": 42228429,
+        "_geo": {
+            "lat": 36.74053,
+            "lng": 3.00957
+        },
+        "targetName": "Algeria",
+        "targetId": 2589581
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "EC",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3658394,
+        "name": "Ecuador",
+        "population": 17084357,
+        "_geo": {
+            "lat": -2,
+            "lng": -79.83333
+        },
+        "targetName": "Ecuador",
+        "targetId": 3658394
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "EE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 453733,
+        "name": "Estonia",
+        "population": 1320884,
+        "_geo": {
+            "lat": 59.33333,
+            "lng": 24.83333
+        },
+        "targetName": "Estonia",
+        "targetId": 453733
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "EG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 357994,
+        "name": "Egypt",
+        "population": 98423595,
+        "_geo": {
+            "lat": 30.05,
+            "lng": 31.65
+        },
+        "targetName": "Egypt",
+        "targetId": 357994
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "EH",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2461445,
+        "name": "Western Sahara",
+        "population": 273008,
+        "_geo": {
+            "lat": 24.5,
+            "lng": -13
+        },
+        "targetName": "Western Sahara",
+        "targetId": 2461445
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "ER",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 338010,
+        "name": "Eritrea",
+        "population": 6209262,
+        "_geo": {
+            "lat": 14.83333,
+            "lng": 38.83333
+        },
+        "targetName": "Eritrea",
+        "targetId": 338010
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "ES",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2510769,
+        "name": "Spain",
+        "population": 46723749,
+        "_geo": {
+            "lat": 37.5,
+            "lng": -4.58333
+        },
+        "targetName": "Spain",
+        "targetId": 2510769
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "ET",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 337996,
+        "name": "Ethiopia",
+        "population": 109224559,
+        "_geo": {
+            "lat": 8,
+            "lng": 39
+        },
+        "targetName": "Ethiopia",
+        "targetId": 337996
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "FI",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 660013,
+        "name": "Finland",
+        "population": 5518050,
+        "_geo": {
+            "lat": 60.17556,
+            "lng": 24.93417
+        },
+        "targetName": "Finland",
+        "targetId": 660013
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "FJ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2205218,
+        "name": "Fiji",
+        "population": 883483,
+        "_geo": {
+            "lat": -18,
+            "lng": 178.33333
+        },
+        "targetName": "Fiji",
+        "targetId": 2205218
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "FK",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3474414,
+        "name": "Falkland Islands",
+        "population": 2638,
+        "_geo": {
+            "lat": -51.75,
+            "lng": -59
+        },
+        "targetName": "Falkland Islands",
+        "targetId": 3474414
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "FM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2081918,
+        "name": "Micronesia",
+        "population": 112640,
+        "_geo": {
+            "lat": 7.44077,
+            "lng": 151.85431
+        },
+        "targetName": "Micronesia",
+        "targetId": 2081918
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "FO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2622320,
+        "name": "Faroe Islands",
+        "population": 48497,
+        "_geo": {
+            "lat": 62.01927,
+            "lng": -6.77444
+        },
+        "targetName": "Faroe Islands",
+        "targetId": 2622320
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "FR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3017382,
+        "name": "France",
+        "population": 66987244,
+        "_geo": {
+            "lat": 48.7,
+            "lng": 2.5
+        },
+        "targetName": "France",
+        "targetId": 3017382
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2400553,
+        "name": "Gabon",
+        "population": 2119275,
+        "_geo": {
+            "lat": 0.3,
+            "lng": 10.03333
+        },
+        "targetName": "Gabon",
+        "targetId": 2400553
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "alternateNames": [
+            "Great Britain",
+            "Britain",
+            "England",
+            "Scotland"
+        ],
+        "countryCode": "GB",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2635167,
+        "name": "United Kingdom",
+        "population": 66488991,
+        "_geo": {
+            "lat": 52.16045,
+            "lng": -0.70312
+        },
+        "targetName": "United Kingdom",
+        "targetId": 2635167
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GD",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3580239,
+        "name": "Grenada",
+        "population": 111454,
+        "_geo": {
+            "lat": 12.05,
+            "lng": -61.73333
+        },
+        "targetName": "Grenada",
+        "targetId": 3580239
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 614540,
+        "name": "Georgia",
+        "population": 3731000,
+        "_geo": {
+            "lat": 41.71667,
+            "lng": 44.83333
+        },
+        "targetName": "Georgia",
+        "targetId": 614540
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GF",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3381670,
+        "name": "French Guiana",
+        "population": 195506,
+        "_geo": {
+            "lat": 3.99929,
+            "lng": -52.99856
+        },
+        "targetName": "French Guiana",
+        "targetId": 3381670
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3042362,
+        "name": "Guernsey",
+        "population": 65228,
+        "_geo": {
+            "lat": 49.46,
+            "lng": -2.55194
+        },
+        "targetName": "Guernsey",
+        "targetId": 3042362
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GH",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2300660,
+        "name": "Ghana",
+        "population": 29767108,
+        "_geo": {
+            "lat": 5.55,
+            "lng": -0.21667
+        },
+        "targetName": "Ghana",
+        "targetId": 2300660
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GI",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2411586,
+        "name": "Gibraltar",
+        "population": 33718,
+        "_geo": {
+            "lat": 36.14474,
+            "lng": -5.35257
+        },
+        "targetName": "Gibraltar",
+        "targetId": 2411586
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GL",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3425505,
+        "name": "Greenland",
+        "population": 56025,
+        "_geo": {
+            "lat": 64.18284,
+            "lng": -51.71831
+        },
+        "targetName": "Greenland",
+        "targetId": 3425505
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2413451,
+        "name": "Gambia",
+        "population": 2280102,
+        "_geo": {
+            "lat": 13.23333,
+            "lng": -16.35
+        },
+        "targetName": "Gambia",
+        "targetId": 2413451
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2420477,
+        "name": "Guinea",
+        "population": 12414318,
+        "_geo": {
+            "lat": 10.4,
+            "lng": -9.25
+        },
+        "targetName": "Guinea",
+        "targetId": 2420477
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GP",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3579143,
+        "name": "Guadeloupe",
+        "population": 443000,
+        "_geo": {
+            "lat": 16.25011,
+            "lng": -61.58369
+        },
+        "targetName": "Guadeloupe",
+        "targetId": 3579143
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GQ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2309096,
+        "name": "Equatorial Guinea",
+        "population": 1308974,
+        "_geo": {
+            "lat": 1.5,
+            "lng": 9.75
+        },
+        "targetName": "Equatorial Guinea",
+        "targetId": 2309096
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 390903,
+        "name": "Greece",
+        "population": 10727668,
+        "_geo": {
+            "lat": 37.92037,
+            "lng": 23.9035
+        },
+        "targetName": "Greece",
+        "targetId": 390903
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3474415,
+        "name": "South Georgia and the South Sandwich Islands",
+        "population": 30,
+        "_geo": {
+            "lat": -54.5,
+            "lng": -37
+        },
+        "targetName": "South Georgia and the South Sandwich Islands",
+        "targetId": 3474415
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GT",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3595528,
+        "name": "Guatemala",
+        "population": 17247807,
+        "_geo": {
+            "lat": 14.66667,
+            "lng": -90.5
+        },
+        "targetName": "Guatemala",
+        "targetId": 3595528
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GU",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4043988,
+        "name": "Guam",
+        "population": 165768,
+        "_geo": {
+            "lat": 13.51776,
+            "lng": 144.83898
+        },
+        "targetName": "Guam",
+        "targetId": 4043988
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GW",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2372248,
+        "name": "Guinea-Bissau",
+        "population": 1874309,
+        "_geo": {
+            "lat": 11.85391,
+            "lng": -15.59097
+        },
+        "targetName": "Guinea-Bissau",
+        "targetId": 2372248
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "GY",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3378535,
+        "name": "Guyana",
+        "population": 779004,
+        "_geo": {
+            "lat": 6.5,
+            "lng": -58.08333
+        },
+        "targetName": "Guyana",
+        "targetId": 3378535
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "HK",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1819730,
+        "name": "Hong Kong",
+        "population": 7451000,
+        "_geo": {
+            "lat": 22.38715,
+            "lng": 114.19534
+        },
+        "targetName": "Hong Kong",
+        "targetId": 1819730
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "HM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1547314,
+        "name": "Heard Island and McDonald Islands",
+        "population": 0,
+        "_geo": {
+            "lat": -53.1,
+            "lng": 72.51667
+        },
+        "targetName": "Heard Island and McDonald Islands",
+        "targetId": 1547314
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "HN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3608932,
+        "name": "Honduras",
+        "population": 9587522,
+        "_geo": {
+            "lat": 14.25,
+            "lng": -87.16667
+        },
+        "targetName": "Honduras",
+        "targetId": 3608932
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "HR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3202326,
+        "name": "Croatia",
+        "population": 3871833,
+        "_geo": {
+            "lat": 45.81307,
+            "lng": 15.9773
+        },
+        "targetName": "Croatia",
+        "targetId": 3202326
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "HT",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3723988,
+        "name": "Haiti",
+        "population": 11123176,
+        "_geo": {
+            "lat": 18.66381,
+            "lng": -72.29141
+        },
+        "targetName": "Haiti",
+        "targetId": 3723988
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "HU",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 719819,
+        "name": "Hungary",
+        "population": 9768785,
+        "_geo": {
+            "lat": 47.5,
+            "lng": 19.08333
+        },
+        "targetName": "Hungary",
+        "targetId": 719819
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "ID",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1643084,
+        "name": "Indonesia",
+        "population": 267663435,
+        "_geo": {
+            "lat": -6.75,
+            "lng": 107.5
+        },
+        "targetName": "Indonesia",
+        "targetId": 1643084
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "IE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2963597,
+        "name": "Ireland",
+        "population": 4853506,
+        "_geo": {
+            "lat": 53.16667,
+            "lng": -7.02121
+        },
+        "targetName": "Ireland",
+        "targetId": 2963597
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "IL",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 294640,
+        "name": "Israel",
+        "population": 8883800,
+        "_geo": {
+            "lat": 32.08333,
+            "lng": 34.91667
+        },
+        "targetName": "Israel",
+        "targetId": 294640
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "IM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3042225,
+        "name": "Isle of Man",
+        "population": 84077,
+        "_geo": {
+            "lat": 54.15442,
+            "lng": -4.48452
+        },
+        "targetName": "Isle of Man",
+        "targetId": 3042225
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "IN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1269750,
+        "name": "India",
+        "population": 1352617328,
+        "_geo": {
+            "lat": 27.25,
+            "lng": 80.75
+        },
+        "targetName": "India",
+        "targetId": 1269750
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "IO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1282588,
+        "name": "British Indian Ocean Territory",
+        "population": 4000,
+        "_geo": {
+            "lat": -6,
+            "lng": 71.5
+        },
+        "targetName": "British Indian Ocean Territory",
+        "targetId": 1282588
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "IQ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 99237,
+        "name": "Iraq",
+        "population": 38433600,
+        "_geo": {
+            "lat": 33.31667,
+            "lng": 44.36667
+        },
+        "targetName": "Iraq",
+        "targetId": 99237
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "IR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 130758,
+        "name": "Iran",
+        "population": 81800269,
+        "_geo": {
+            "lat": 35.66667,
+            "lng": 51.41667
+        },
+        "targetName": "Iran",
+        "targetId": 130758
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "IS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2629691,
+        "name": "Iceland",
+        "population": 353574,
+        "_geo": {
+            "lat": 64.16667,
+            "lng": -21.66667
+        },
+        "targetName": "Iceland",
+        "targetId": 2629691
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "IT",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3175395,
+        "name": "Italy",
+        "population": 60431283,
+        "_geo": {
+            "lat": 45.66667,
+            "lng": 9.5
+        },
+        "targetName": "Italy",
+        "targetId": 3175395
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "JE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3042142,
+        "name": "Jersey",
+        "population": 90812,
+        "_geo": {
+            "lat": 49.18333,
+            "lng": -2.1
+        },
+        "targetName": "Jersey",
+        "targetId": 3042142
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "JM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3489940,
+        "name": "Jamaica",
+        "population": 2934855,
+        "_geo": {
+            "lat": 18.06667,
+            "lng": -76.75
+        },
+        "targetName": "Jamaica",
+        "targetId": 3489940
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "JO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 248816,
+        "name": "Jordan",
+        "population": 9956011,
+        "_geo": {
+            "lat": 31.58369,
+            "lng": 36.33335
+        },
+        "targetName": "Jordan",
+        "targetId": 248816
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "alternateNames": [
+            "Nippon",
+            "Nihon"
+        ],
+        "countryCode": "JP",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1861060,
+        "name": "Japan",
+        "population": 126529100,
+        "_geo": {
+            "lat": 35.6895,
+            "lng": 139.69171
+        },
+        "targetName": "Japan",
+        "targetId": 1861060
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "KE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 192950,
+        "name": "Kenya",
+        "population": 51393010,
+        "_geo": {
+            "lat": -1.28333,
+            "lng": 36.83333
+        },
+        "targetName": "Kenya",
+        "targetId": 192950
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "KG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1527747,
+        "name": "Kyrgyzstan",
+        "population": 6315800,
+        "_geo": {
+            "lat": 40,
+            "lng": 73
+        },
+        "targetName": "Kyrgyzstan",
+        "targetId": 1527747
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "KH",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1831722,
+        "name": "Cambodia",
+        "population": 16249798,
+        "_geo": {
+            "lat": 11.57489,
+            "lng": 104.91394
+        },
+        "targetName": "Cambodia",
+        "targetId": 1831722
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "KI",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4030945,
+        "name": "Kiribati",
+        "population": 115847,
+        "_geo": {
+            "lat": 1.42,
+            "lng": 172.984
+        },
+        "targetName": "Kiribati",
+        "targetId": 4030945
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "KM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 921929,
+        "name": "Comoros",
+        "population": 832322,
+        "_geo": {
+            "lat": -11.58333,
+            "lng": 43.33333
+        },
+        "targetName": "Comoros",
+        "targetId": 921929
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "KN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3575174,
+        "name": "Saint Kitts and Nevis",
+        "population": 52441,
+        "_geo": {
+            "lat": 17.29732,
+            "lng": -62.70613
+        },
+        "targetName": "Saint Kitts and Nevis",
+        "targetId": 3575174
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "KP",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1873107,
+        "name": "North Korea",
+        "population": 25549819,
+        "_geo": {
+            "lat": 39.5,
+            "lng": 126.16667
+        },
+        "targetName": "North Korea",
+        "targetId": 1873107
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "alternateNames": [
+            "Republic of Korea"
+        ],
+        "countryCode": "KR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1835841,
+        "name": "South Korea",
+        "population": 51635256,
+        "_geo": {
+            "lat": 37.6,
+            "lng": 127.25
+        },
+        "targetName": "South Korea",
+        "targetId": 1835841
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "XK",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 831053,
+        "name": "Kosovo",
+        "population": 1845300,
+        "_geo": {
+            "lat": 42.66308,
+            "lng": 21.16486
+        },
+        "targetName": "Kosovo",
+        "targetId": 831053
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "KW",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 285570,
+        "name": "Kuwait",
+        "population": 4137309,
+        "_geo": {
+            "lat": 29.25,
+            "lng": 47.91667
+        },
+        "targetName": "Kuwait",
+        "targetId": 285570
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "KY",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3580718,
+        "name": "Cayman Islands",
+        "population": 64174,
+        "_geo": {
+            "lat": 19.28908,
+            "lng": -81.36981
+        },
+        "targetName": "Cayman Islands",
+        "targetId": 3580718
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "KZ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1522867,
+        "name": "Kazakhstan",
+        "population": 18276499,
+        "_geo": {
+            "lat": 43.25,
+            "lng": 68.66667
+        },
+        "targetName": "Kazakhstan",
+        "targetId": 1522867
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1655842,
+        "name": "Laos",
+        "population": 7061507,
+        "_geo": {
+            "lat": 16.5,
+            "lng": 105.75
+        },
+        "targetName": "Laos",
+        "targetId": 1655842
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LB",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 272103,
+        "name": "Lebanon",
+        "population": 6848925,
+        "_geo": {
+            "lat": 33.88333,
+            "lng": 35.5
+        },
+        "targetName": "Lebanon",
+        "targetId": 272103
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LC",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3576468,
+        "name": "Saint Lucia",
+        "population": 181889,
+        "_geo": {
+            "lat": 13.98404,
+            "lng": -60.97
+        },
+        "targetName": "Saint Lucia",
+        "targetId": 3576468
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LI",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3042058,
+        "name": "Liechtenstein",
+        "population": 37910,
+        "_geo": {
+            "lat": 47.17433,
+            "lng": 9.52401
+        },
+        "targetName": "Liechtenstein",
+        "targetId": 3042058
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LK",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1227603,
+        "name": "Sri Lanka",
+        "population": 21670000,
+        "_geo": {
+            "lat": 6.83333,
+            "lng": 80.08333
+        },
+        "targetName": "Sri Lanka",
+        "targetId": 1227603
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2275384,
+        "name": "Liberia",
+        "population": 4818977,
+        "_geo": {
+            "lat": 6.5,
+            "lng": -10.56667
+        },
+        "targetName": "Liberia",
+        "targetId": 2275384
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 932692,
+        "name": "Lesotho",
+        "population": 2108132,
+        "_geo": {
+            "lat": -29.58333,
+            "lng": 27.83333
+        },
+        "targetName": "Lesotho",
+        "targetId": 932692
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LT",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 597427,
+        "name": "Lithuania",
+        "population": 2789533,
+        "_geo": {
+            "lat": 54.83333,
+            "lng": 25.33333
+        },
+        "targetName": "Lithuania",
+        "targetId": 597427
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LU",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2960313,
+        "name": "Luxembourg",
+        "population": 607728,
+        "_geo": {
+            "lat": 49.61427,
+            "lng": 6.17289
+        },
+        "targetName": "Luxembourg",
+        "targetId": 2960313
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LV",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 458258,
+        "name": "Latvia",
+        "population": 1926542,
+        "_geo": {
+            "lat": 56.97778,
+            "lng": 24.12167
+        },
+        "targetName": "Latvia",
+        "targetId": 458258
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "LY",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2215636,
+        "name": "Libya",
+        "population": 6678567,
+        "_geo": {
+            "lat": 32.08723,
+            "lng": 20.18738
+        },
+        "targetName": "Libya",
+        "targetId": 2215636
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2542007,
+        "name": "Morocco",
+        "population": 36029138,
+        "_geo": {
+            "lat": 33.47804,
+            "lng": -7.43225
+        },
+        "targetName": "Morocco",
+        "targetId": 2542007
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MC",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2993457,
+        "name": "Monaco",
+        "population": 38682,
+        "_geo": {
+            "lat": 43.73216,
+            "lng": 7.41981
+        },
+        "targetName": "Monaco",
+        "targetId": 2993457
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MD",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 617790,
+        "name": "Moldova",
+        "population": 3545883,
+        "_geo": {
+            "lat": 47,
+            "lng": 28.83333
+        },
+        "targetName": "Moldova",
+        "targetId": 617790
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "ME",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3194884,
+        "name": "Montenegro",
+        "population": 622345,
+        "_geo": {
+            "lat": 42.5,
+            "lng": 19.33333
+        },
+        "targetName": "Montenegro",
+        "targetId": 3194884
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MF",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3578421,
+        "name": "Saint Martin",
+        "population": 37264,
+        "_geo": {
+            "lat": 18.0731,
+            "lng": -63.0822
+        },
+        "targetName": "Saint Martin",
+        "targetId": 3578421
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1062947,
+        "name": "Madagascar",
+        "population": 26262368,
+        "_geo": {
+            "lat": -18.45,
+            "lng": 47.5
+        },
+        "targetName": "Madagascar",
+        "targetId": 1062947
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MH",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2080185,
+        "name": "Marshall Islands",
+        "population": 58413,
+        "_geo": {
+            "lat": 7.15,
+            "lng": 171.2
+        },
+        "targetName": "Marshall Islands",
+        "targetId": 2080185
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MK",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 718075,
+        "name": "North Macedonia",
+        "population": 2082958,
+        "_geo": {
+            "lat": 42.005,
+            "lng": 21.42889
+        },
+        "targetName": "North Macedonia",
+        "targetId": 718075
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "ML",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2453866,
+        "name": "Mali",
+        "population": 19077690,
+        "_geo": {
+            "lat": 11.3,
+            "lng": -6.2
+        },
+        "targetName": "Mali",
+        "targetId": 2453866
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1327865,
+        "name": "Myanmar",
+        "population": 53708395,
+        "_geo": {
+            "lat": 17,
+            "lng": 96.16667
+        },
+        "targetName": "Myanmar",
+        "targetId": 1327865
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2029969,
+        "name": "Mongolia",
+        "population": 3170208,
+        "_geo": {
+            "lat": 47.91667,
+            "lng": 106.91667
+        },
+        "targetName": "Mongolia",
+        "targetId": 2029969
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1821275,
+        "name": "Macao",
+        "population": 631636,
+        "_geo": {
+            "lat": 22.213,
+            "lng": 113.54537
+        },
+        "targetName": "Macao",
+        "targetId": 1821275
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MP",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4041468,
+        "name": "Northern Mariana Islands",
+        "population": 56882,
+        "_geo": {
+            "lat": 15.16847,
+            "lng": 145.74081
+        },
+        "targetName": "Northern Mariana Islands",
+        "targetId": 4041468
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MQ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3570311,
+        "name": "Martinique",
+        "population": 432900,
+        "_geo": {
+            "lat": 14.66655,
+            "lng": -60.99961
+        },
+        "targetName": "Martinique",
+        "targetId": 3570311
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2378080,
+        "name": "Mauritania",
+        "population": 4403319,
+        "_geo": {
+            "lat": 17.96667,
+            "lng": -15.95
+        },
+        "targetName": "Mauritania",
+        "targetId": 2378080
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3578097,
+        "name": "Montserrat",
+        "population": 9341,
+        "_geo": {
+            "lat": 16.78333,
+            "lng": -62.205
+        },
+        "targetName": "Montserrat",
+        "targetId": 3578097
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MT",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2562770,
+        "name": "Malta",
+        "population": 483530,
+        "_geo": {
+            "lat": 35.9375,
+            "lng": 14.39861
+        },
+        "targetName": "Malta",
+        "targetId": 2562770
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MU",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 934292,
+        "name": "Mauritius",
+        "population": 1265303,
+        "_geo": {
+            "lat": -20.3,
+            "lng": 57.48333
+        },
+        "targetName": "Mauritius",
+        "targetId": 934292
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MV",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1282028,
+        "name": "Maldives",
+        "population": 515696,
+        "_geo": {
+            "lat": 4.175,
+            "lng": 73.50833
+        },
+        "targetName": "Maldives",
+        "targetId": 1282028
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MW",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 927384,
+        "name": "Malawi",
+        "population": 17563749,
+        "_geo": {
+            "lat": -15.5,
+            "lng": 35
+        },
+        "targetName": "Malawi",
+        "targetId": 927384
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MX",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3996063,
+        "name": "Mexico",
+        "population": 126190788,
+        "_geo": {
+            "lat": 19.36667,
+            "lng": -99.66667
+        },
+        "targetName": "Mexico",
+        "targetId": 3996063
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MY",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1733045,
+        "name": "Malaysia",
+        "population": 31528585,
+        "_geo": {
+            "lat": 3.16667,
+            "lng": 101.5
+        },
+        "targetName": "Malaysia",
+        "targetId": 1733045
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "MZ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1036973,
+        "name": "Mozambique",
+        "population": 29495962,
+        "_geo": {
+            "lat": -15,
+            "lng": 39
+        },
+        "targetName": "Mozambique",
+        "targetId": 1036973
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3355338,
+        "name": "Namibia",
+        "population": 2448255,
+        "_geo": {
+            "lat": -22.75,
+            "lng": 17.08333
+        },
+        "targetName": "Namibia",
+        "targetId": 3355338
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NC",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2139685,
+        "name": "New Caledonia",
+        "population": 284060,
+        "_geo": {
+            "lat": -21.75,
+            "lng": 165.83333
+        },
+        "targetName": "New Caledonia",
+        "targetId": 2139685
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2440476,
+        "name": "Niger",
+        "population": 22442948,
+        "_geo": {
+            "lat": 14.25,
+            "lng": 7.25
+        },
+        "targetName": "Niger",
+        "targetId": 2440476
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NF",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2155115,
+        "name": "Norfolk Island",
+        "population": 1828,
+        "_geo": {
+            "lat": -29.03333,
+            "lng": 167.95
+        },
+        "targetName": "Norfolk Island",
+        "targetId": 2155115
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2328926,
+        "name": "Nigeria",
+        "population": 195874740,
+        "_geo": {
+            "lat": 6.53774,
+            "lng": 3.3522
+        },
+        "targetName": "Nigeria",
+        "targetId": 2328926
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NI",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3617476,
+        "name": "Nicaragua",
+        "population": 6465513,
+        "_geo": {
+            "lat": 12,
+            "lng": -86.41667
+        },
+        "targetName": "Nicaragua",
+        "targetId": 3617476
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "alternateNames": [
+            "Holland"
+        ],
+        "countryCode": "NL",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2750405,
+        "name": "Netherlands",
+        "population": 17231017,
+        "_geo": {
+            "lat": 52,
+            "lng": 4.66667
+        },
+        "targetName": "Netherlands",
+        "targetId": 2750405
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3144096,
+        "name": "Norway",
+        "population": 5314336,
+        "_geo": {
+            "lat": 60.08051,
+            "lng": 9.89478
+        },
+        "targetName": "Norway",
+        "targetId": 3144096
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NP",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1282988,
+        "name": "Nepal",
+        "population": 28087871,
+        "_geo": {
+            "lat": 26.94242,
+            "lng": 85.61
+        },
+        "targetName": "Nepal",
+        "targetId": 1282988
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2110425,
+        "name": "Nauru",
+        "population": 12704,
+        "_geo": {
+            "lat": -0.52187,
+            "lng": 166.91632
+        },
+        "targetName": "Nauru",
+        "targetId": 2110425
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NU",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4036232,
+        "name": "Niue",
+        "population": 2166,
+        "_geo": {
+            "lat": -19.03333,
+            "lng": -169.86667
+        },
+        "targetName": "Niue",
+        "targetId": 4036232
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "NZ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2186224,
+        "name": "New Zealand",
+        "population": 4885500,
+        "_geo": {
+            "lat": -36.85582,
+            "lng": 174.74304
+        },
+        "targetName": "New Zealand",
+        "targetId": 2186224
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "OM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 286963,
+        "name": "Oman",
+        "population": 4829483,
+        "_geo": {
+            "lat": 23.5835,
+            "lng": 58.40366
+        },
+        "targetName": "Oman",
+        "targetId": 286963
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3703430,
+        "name": "Panama",
+        "population": 4176873,
+        "_geo": {
+            "lat": 9.08333,
+            "lng": -78.9
+        },
+        "targetName": "Panama",
+        "targetId": 3703430
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3932488,
+        "name": "Peru",
+        "population": 31989256,
+        "_geo": {
+            "lat": -11.85,
+            "lng": -76.45
+        },
+        "targetName": "Peru",
+        "targetId": 3932488
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PF",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4030656,
+        "name": "French Polynesia",
+        "population": 277679,
+        "_geo": {
+            "lat": -17.5,
+            "lng": -149.5
+        },
+        "targetName": "French Polynesia",
+        "targetId": 4030656
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2088628,
+        "name": "Papua New Guinea",
+        "population": 8606316,
+        "_geo": {
+            "lat": -7.0106,
+            "lng": 146.9672
+        },
+        "targetName": "Papua New Guinea",
+        "targetId": 2088628
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PH",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1694008,
+        "name": "Philippines",
+        "population": 106651922,
+        "_geo": {
+            "lat": 14.57775,
+            "lng": 121.04599
+        },
+        "targetName": "Philippines",
+        "targetId": 1694008
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PK",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1168579,
+        "name": "Pakistan",
+        "population": 212215030,
+        "_geo": {
+            "lat": 30.85,
+            "lng": 72.31667
+        },
+        "targetName": "Pakistan",
+        "targetId": 1168579
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PL",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 798544,
+        "name": "Poland",
+        "population": 37978548,
+        "_geo": {
+            "lat": 52.36667,
+            "lng": 21.1
+        },
+        "targetName": "Poland",
+        "targetId": 798544
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3424932,
+        "name": "Saint Pierre and Miquelon",
+        "population": 7012,
+        "_geo": {
+            "lat": 46.78333,
+            "lng": -56.2
+        },
+        "targetName": "Saint Pierre and Miquelon",
+        "targetId": 3424932
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4030699,
+        "name": "Pitcairn",
+        "population": 46,
+        "_geo": {
+            "lat": -25.06667,
+            "lng": -130.08333
+        },
+        "targetName": "Pitcairn",
+        "targetId": 4030699
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4566966,
+        "name": "Puerto Rico",
+        "population": 3195153,
+        "_geo": {
+            "lat": 18.45095,
+            "lng": -66.09169
+        },
+        "targetName": "Puerto Rico",
+        "targetId": 4566966
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 6254930,
+        "name": "Palestinian Territory",
+        "population": 4569087,
+        "_geo": {
+            "lat": 31.66667,
+            "lng": 35.25
+        },
+        "targetName": "Palestinian Territory",
+        "targetId": 6254930
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PT",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2264397,
+        "name": "Portugal",
+        "population": 10281762,
+        "_geo": {
+            "lat": 39,
+            "lng": -9.13333
+        },
+        "targetName": "Portugal",
+        "targetId": 2264397
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PW",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1559582,
+        "name": "Palau",
+        "population": 17907,
+        "_geo": {
+            "lat": 7.339,
+            "lng": 134.4785
+        },
+        "targetName": "Palau",
+        "targetId": 1559582
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "PY",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3437598,
+        "name": "Paraguay",
+        "population": 6956071,
+        "_geo": {
+            "lat": -25.53333,
+            "lng": -57.46667
+        },
+        "targetName": "Paraguay",
+        "targetId": 3437598
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "QA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 289688,
+        "name": "Qatar",
+        "population": 2781677,
+        "_geo": {
+            "lat": 25.3,
+            "lng": 51.5
+        },
+        "targetName": "Qatar",
+        "targetId": 289688
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "RE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 935317,
+        "name": "Reunion",
+        "population": 776948,
+        "_geo": {
+            "lat": -21.10044,
+            "lng": 55.60206
+        },
+        "targetName": "Reunion",
+        "targetId": 935317
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "RO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 798549,
+        "name": "Romania",
+        "population": 19473936,
+        "_geo": {
+            "lat": 44.5,
+            "lng": 26.08333
+        },
+        "targetName": "Romania",
+        "targetId": 798549
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "RS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 6290252,
+        "name": "Serbia",
+        "population": 6982084,
+        "_geo": {
+            "lat": 44,
+            "lng": 21
+        },
+        "targetName": "Serbia",
+        "targetId": 6290252
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "RU",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2017370,
+        "name": "Russia",
+        "population": 144478050,
+        "_geo": {
+            "lat": 55.76167,
+            "lng": 37.60667
+        },
+        "targetName": "Russia",
+        "targetId": 2017370
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "RW",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 49518,
+        "name": "Rwanda",
+        "population": 12301939,
+        "_geo": {
+            "lat": -1.75,
+            "lng": 30.5
+        },
+        "targetName": "Rwanda",
+        "targetId": 49518
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 102358,
+        "name": "Saudi Arabia",
+        "population": 33699947,
+        "_geo": {
+            "lat": 21.62425,
+            "lng": 41.20422
+        },
+        "targetName": "Saudi Arabia",
+        "targetId": 102358
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SB",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2103350,
+        "name": "Solomon Islands",
+        "population": 652858,
+        "_geo": {
+            "lat": -9,
+            "lng": 161
+        },
+        "targetName": "Solomon Islands",
+        "targetId": 2103350
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SC",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 241170,
+        "name": "Seychelles",
+        "population": 96762,
+        "_geo": {
+            "lat": -4.59167,
+            "lng": 55.45
+        },
+        "targetName": "Seychelles",
+        "targetId": 241170
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SD",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 366755,
+        "name": "Sudan",
+        "population": 41801533,
+        "_geo": {
+            "lat": 14.68333,
+            "lng": 29.93333
+        },
+        "targetName": "Sudan",
+        "targetId": 366755
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 7909807,
+        "name": "South Sudan",
+        "population": 8260490,
+        "_geo": {
+            "lat": 4.75,
+            "lng": 31
+        },
+        "targetName": "South Sudan",
+        "targetId": 7909807
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2661886,
+        "name": "Sweden",
+        "population": 10183175,
+        "_geo": {
+            "lat": 59.5,
+            "lng": 18
+        },
+        "targetName": "Sweden",
+        "targetId": 2661886
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1880251,
+        "name": "Singapore",
+        "population": 5638676,
+        "_geo": {
+            "lat": 1.28967,
+            "lng": 103.85007
+        },
+        "targetName": "Singapore",
+        "targetId": 1880251
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SH",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3370751,
+        "name": "Saint Helena",
+        "population": 7460,
+        "_geo": {
+            "lat": -15.93183,
+            "lng": -5.71817
+        },
+        "targetName": "Saint Helena",
+        "targetId": 3370751
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SI",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3190538,
+        "name": "Slovenia",
+        "population": 2067372,
+        "_geo": {
+            "lat": 46.05918,
+            "lng": 14.50916
+        },
+        "targetName": "Slovenia",
+        "targetId": 3190538
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SJ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 607072,
+        "name": "Svalbard and Jan Mayen",
+        "population": 2550,
+        "_geo": {
+            "lat": 78.15706,
+            "lng": 15.86426
+        },
+        "targetName": "Svalbard and Jan Mayen",
+        "targetId": 607072
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SK",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3057568,
+        "name": "Slovakia",
+        "population": 5447011,
+        "_geo": {
+            "lat": 49.16667,
+            "lng": 21.25
+        },
+        "targetName": "Slovakia",
+        "targetId": 3057568
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SL",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2403846,
+        "name": "Sierra Leone",
+        "population": 7650154,
+        "_geo": {
+            "lat": 9.15,
+            "lng": -11.53333
+        },
+        "targetName": "Sierra Leone",
+        "targetId": 2403846
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3168068,
+        "name": "San Marino",
+        "population": 33785,
+        "_geo": {
+            "lat": 43.96667,
+            "lng": 12.46667
+        },
+        "targetName": "San Marino",
+        "targetId": 3168068
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2245662,
+        "name": "Senegal",
+        "population": 15854360,
+        "_geo": {
+            "lat": 14.76667,
+            "lng": -17.28333
+        },
+        "targetName": "Senegal",
+        "targetId": 2245662
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 51537,
+        "name": "Somalia",
+        "population": 15008154,
+        "_geo": {
+            "lat": 4,
+            "lng": 45.5
+        },
+        "targetName": "Somalia",
+        "targetId": 51537
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3382998,
+        "name": "Suriname",
+        "population": 575991,
+        "_geo": {
+            "lat": 5.86667,
+            "lng": -55.16667
+        },
+        "targetName": "Suriname",
+        "targetId": 3382998
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "ST",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2410758,
+        "name": "Sao Tome and Principe",
+        "population": 197700,
+        "_geo": {
+            "lat": 0.25,
+            "lng": 6.6
+        },
+        "targetName": "Sao Tome and Principe",
+        "targetId": 2410758
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SV",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3585968,
+        "name": "El Salvador",
+        "population": 6420744,
+        "_geo": {
+            "lat": 13.78333,
+            "lng": -89.18333
+        },
+        "targetName": "El Salvador",
+        "targetId": 3585968
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SX",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 7609695,
+        "name": "Sint Maarten",
+        "population": 40654,
+        "_geo": {
+            "lat": 18.03333,
+            "lng": -63.05
+        },
+        "targetName": "Sint Maarten",
+        "targetId": 7609695
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SY",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 163843,
+        "name": "Syria",
+        "population": 16906283,
+        "_geo": {
+            "lat": 36.25,
+            "lng": 37.61667
+        },
+        "targetName": "Syria",
+        "targetId": 163843
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "SZ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 934841,
+        "name": "Eswatini",
+        "population": 1136191,
+        "_geo": {
+            "lat": -26.58333,
+            "lng": 31.25
+        },
+        "targetName": "Eswatini",
+        "targetId": 934841
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TC",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3576916,
+        "name": "Turks and Caicos Islands",
+        "population": 37665,
+        "_geo": {
+            "lat": 21.75,
+            "lng": -71.58333
+        },
+        "targetName": "Turks and Caicos Islands",
+        "targetId": 3576916
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TD",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2434508,
+        "name": "Chad",
+        "population": 15477751,
+        "_geo": {
+            "lat": 11.34,
+            "lng": 16.25
+        },
+        "targetName": "Chad",
+        "targetId": 2434508
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TF",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1546748,
+        "name": "French Southern Territories",
+        "population": 140,
+        "_geo": {
+            "lat": -59.99856,
+            "lng": 138.9913
+        },
+        "targetName": "French Southern Territories",
+        "targetId": 1546748
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2363686,
+        "name": "Togo",
+        "population": 7889094,
+        "_geo": {
+            "lat": 6.5,
+            "lng": 1.33333
+        },
+        "targetName": "Togo",
+        "targetId": 2363686
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TH",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1605651,
+        "name": "Thailand",
+        "population": 69428524,
+        "_geo": {
+            "lat": 13.87719,
+            "lng": 100.71991
+        },
+        "targetName": "Thailand",
+        "targetId": 1605651
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TJ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1220409,
+        "name": "Tajikistan",
+        "population": 9100837,
+        "_geo": {
+            "lat": 37.83333,
+            "lng": 69
+        },
+        "targetName": "Tajikistan",
+        "targetId": 1220409
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TK",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4031074,
+        "name": "Tokelau",
+        "population": 1466,
+        "_geo": {
+            "lat": -8.558,
+            "lng": -172.497
+        },
+        "targetName": "Tokelau",
+        "targetId": 4031074
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TL",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1966436,
+        "name": "Timor Leste",
+        "population": 1267972,
+        "_geo": {
+            "lat": -8.55,
+            "lng": 125.66667
+        },
+        "targetName": "Timor Leste",
+        "targetId": 1966436
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1218197,
+        "name": "Turkmenistan",
+        "population": 5850908,
+        "_geo": {
+            "lat": 37,
+            "lng": 62.5
+        },
+        "targetName": "Turkmenistan",
+        "targetId": 1218197
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2464461,
+        "name": "Tunisia",
+        "population": 11565204,
+        "_geo": {
+            "lat": 36.78633,
+            "lng": 10.18484
+        },
+        "targetName": "Tunisia",
+        "targetId": 2464461
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TO",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4032283,
+        "name": "Tonga",
+        "population": 103197,
+        "_geo": {
+            "lat": -21.13333,
+            "lng": -175.2
+        },
+        "targetName": "Tonga",
+        "targetId": 4032283
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TR",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 298795,
+        "name": "Turkey",
+        "population": 82319724,
+        "_geo": {
+            "lat": 41.03508,
+            "lng": 28.98331
+        },
+        "targetName": "Turkey",
+        "targetId": 298795
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TT",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3573591,
+        "name": "Trinidad and Tobago",
+        "population": 1389858,
+        "_geo": {
+            "lat": 10.63387,
+            "lng": -61.38182
+        },
+        "targetName": "Trinidad and Tobago",
+        "targetId": 3573591
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TV",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2110297,
+        "name": "Tuvalu",
+        "population": 11508,
+        "_geo": {
+            "lat": -8.51719,
+            "lng": 179.13054
+        },
+        "targetName": "Tuvalu",
+        "targetId": 2110297
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TW",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1668284,
+        "name": "Taiwan",
+        "population": 23451837,
+        "_geo": {
+            "lat": 24.15114,
+            "lng": 120.70541
+        },
+        "targetName": "Taiwan",
+        "targetId": 1668284
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "TZ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 149590,
+        "name": "Tanzania",
+        "population": 56318348,
+        "_geo": {
+            "lat": -6.83523,
+            "lng": 39.19597
+        },
+        "targetName": "Tanzania",
+        "targetId": 149590
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "UA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 690791,
+        "name": "Ukraine",
+        "population": 44622516,
+        "_geo": {
+            "lat": 48,
+            "lng": 37.66667
+        },
+        "targetName": "Ukraine",
+        "targetId": 690791
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "UG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 226074,
+        "name": "Uganda",
+        "population": 42723139,
+        "_geo": {
+            "lat": 0.5,
+            "lng": 32
+        },
+        "targetName": "Uganda",
+        "targetId": 226074
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "UM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 5854968,
+        "name": "United States Minor Outlying Islands",
+        "population": 0,
+        "_geo": {
+            "lat": 19.28012,
+            "lng": 166.64828
+        },
+        "targetName": "United States Minor Outlying Islands",
+        "targetId": 5854968
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "alternateNames": [
+            "America"
+        ],
+        "countryCode": "US",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 6252001,
+        "name": "United States",
+        "population": 327167434,
+        "_geo": {
+            "lat": 37.25022,
+            "lng": -119.75126
+        },
+        "targetName": "United States",
+        "targetId": 6252001
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "UY",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3439705,
+        "name": "Uruguay",
+        "population": 3449299,
+        "_geo": {
+            "lat": -34.825,
+            "lng": -56.2
+        },
+        "targetName": "Uruguay",
+        "targetId": 3439705
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "UZ",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1512440,
+        "name": "Uzbekistan",
+        "population": 32955400,
+        "_geo": {
+            "lat": 39.8,
+            "lng": 66.43333
+        },
+        "targetName": "Uzbekistan",
+        "targetId": 1512440
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "VA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3164670,
+        "name": "Vatican",
+        "population": 921,
+        "_geo": {
+            "lat": 41.90236,
+            "lng": 12.45332
+        },
+        "targetName": "Vatican",
+        "targetId": 3164670
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "VC",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3577815,
+        "name": "Saint Vincent and the Grenadines",
+        "population": 110211,
+        "_geo": {
+            "lat": 13.16524,
+            "lng": -61.19282
+        },
+        "targetName": "Saint Vincent and the Grenadines",
+        "targetId": 3577815
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "VE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3625428,
+        "name": "Venezuela",
+        "population": 28870195,
+        "_geo": {
+            "lat": 10,
+            "lng": -72.16667
+        },
+        "targetName": "Venezuela",
+        "targetId": 3625428
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "VG",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 3577718,
+        "name": "British Virgin Islands",
+        "population": 29802,
+        "_geo": {
+            "lat": 18.43139,
+            "lng": -64.62305
+        },
+        "targetName": "British Virgin Islands",
+        "targetId": 3577718
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "VI",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4796775,
+        "name": "U.S. Virgin Islands",
+        "population": 106977,
+        "_geo": {
+            "lat": 18.34537,
+            "lng": -64.92755
+        },
+        "targetName": "U.S. Virgin Islands",
+        "targetId": 4796775
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "VN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1562822,
+        "name": "Vietnam",
+        "population": 95540395,
+        "_geo": {
+            "lat": 10.82327,
+            "lng": 106.62978
+        },
+        "targetName": "Vietnam",
+        "targetId": 1562822
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "VU",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 2134431,
+        "name": "Vanuatu",
+        "population": 292680,
+        "_geo": {
+            "lat": -17.5894,
+            "lng": 168.36731
+        },
+        "targetName": "Vanuatu",
+        "targetId": 2134431
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "WF",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4034749,
+        "name": "Wallis and Futuna",
+        "population": 16025,
+        "_geo": {
+            "lat": -13.29884,
+            "lng": -176.22053
+        },
+        "targetName": "Wallis and Futuna",
+        "targetId": 4034749
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "WS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 4034894,
+        "name": "Samoa",
+        "population": 196130,
+        "_geo": {
+            "lat": -13.91667,
+            "lng": -171.8
+        },
+        "targetName": "Samoa",
+        "targetId": 4034894
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "YE",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 69543,
+        "name": "Yemen",
+        "population": 28498687,
+        "_geo": {
+            "lat": 14.91732,
+            "lng": 43.19279
+        },
+        "targetName": "Yemen",
+        "targetId": 69543
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "YT",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 1024031,
+        "name": "Mayotte",
+        "population": 279471,
+        "_geo": {
+            "lat": -12.77966,
+            "lng": 45.22831
+        },
+        "targetName": "Mayotte",
+        "targetId": 1024031
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "ZA",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 953987,
+        "name": "South Africa",
+        "population": 57779622,
+        "_geo": {
+            "lat": -26.08333,
+            "lng": 28.25
+        },
+        "targetName": "South Africa",
+        "targetId": 953987
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "ZM",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 895949,
+        "name": "Zambia",
+        "population": 17351822,
+        "_geo": {
+            "lat": -15.41667,
+            "lng": 29
+        },
+        "targetName": "Zambia",
+        "targetId": 895949
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "ZW",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 878675,
+        "name": "Zimbabwe",
+        "population": 14439018,
+        "_geo": {
+            "lat": -17.85417,
+            "lng": 31.05833
+        },
+        "targetName": "Zimbabwe",
+        "targetId": 878675
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "CS",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 8505033,
+        "name": "Serbia and Montenegro",
+        "population": 10829175,
+        "_geo": {
+            "lat": 44,
+            "lng": 21
+        },
+        "targetName": "Serbia and Montenegro",
+        "targetId": 8505033
+    },
+    {
+        "adminDivisionTargetLevel": 0,
+        "countryCode": "AN",
+        "featureClass": "L",
+        "featureCode": "COUNTRY",
+        "id": 8505032,
+        "name": "Netherlands Antilles",
+        "population": 300000,
+        "_geo": {
+            "lat": 12.25,
+            "lng": -68.75
+        },
+        "targetName": "Netherlands Antilles",
+        "targetId": 8505032
+    }
+]

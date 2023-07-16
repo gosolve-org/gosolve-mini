@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import {
     useState,
     FormEvent,
@@ -69,6 +70,7 @@ function AddActionModal({ open, onClose }: AddActionModalProps) {
                 `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/actions/${docId}`
             );
         } catch (err) {
+            Sentry.captureException(err);
             toast.error("Something went wrong");
             console.error(err);
         } finally {

@@ -14,5 +14,11 @@ export const trimToFirstLine = (content: string) => {
     return lines.length <= 1 ? lines[0] : lines[0] + '…';
 }
 
-export const urlPartToReadable = (content: string) => content?.split("-").join(" ");
-export const toUrlPart = (content: string) => content?.split(" ").join("-");
+export const urlPartToReadable = (content: string) => {
+    if (!content) return null;
+    return decodeURIComponent(content).replaceAll("-", " ");
+};
+export const toUrlPart = (content: string) => {
+    if (!content) return null;
+    return encodeURIComponent(content.replaceAll(" ", "-"));
+}

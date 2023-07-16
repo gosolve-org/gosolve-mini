@@ -9,6 +9,8 @@ module.exports = {
             colors: {
                 'gos-green': '#1CBF84',
                 'gos-green-light': '#68DAB2',
+                'gos-blue': '#1C71BF',
+                'gos-blue-light': '#6CAEFC',
                 'gray-light': '#828299'
             }
         },

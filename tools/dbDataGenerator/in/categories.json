@@ -1,0 +1,29 @@
+[
+    {
+        "category": "goSolve",
+        "imageName": "gosolve",
+        "hidden": true
+    },
+    {
+        "category": "Climate Change",
+        "imageName": "climate-change"
+    },
+    {
+        "category": "Human Rights",
+        "imageName": "human-rights"
+    },
+    {
+        "category": "Health",
+        "imageName": "health",
+        "imageTextShadowOpacity": 0.5
+    },
+    {
+        "category": "Poverty",
+        "imageName": "poverty",
+        "imagePosition": "top"
+    },
+    {
+        "category": "Education",
+        "imageName": "education"
+    }
+]

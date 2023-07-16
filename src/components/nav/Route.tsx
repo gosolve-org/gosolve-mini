@@ -1,6 +1,6 @@
+import * as Sentry from "@sentry/react";
 import React, { ReactNode, useEffect } from "react";
 import { useRouter } from "next/router";
-
 import { useAuth } from "contexts/AuthContext";
 import { isUserOnboarded } from "pages/api/user";
 
@@ -21,6 +21,7 @@ function Route({ children }: RouteProps) {
                 if (!isOnboarded) router.push('/register/details');
             })
             .catch(err => {
+                Sentry.captureException(err);
                 console.error(err);
             })
     }, [ user, isAuthenticated, routerPath, router ]);

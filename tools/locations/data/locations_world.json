@@ -1,0 +1,24 @@
+[
+    {
+        "id": "world",
+        "name": "World",
+        "alternateNames": [
+            "Worldwide",
+            "Earth",
+            "Global",
+            "Universal",
+            "International"
+        ],
+        "asciiName": null,
+        "_geo": {
+            "lat": 0,
+            "lng": 0
+        },
+        "featureClass": "L",
+        "featureCode": "WORLD",
+        "population": 8000000000,
+        "adminDivisionTargetLevel": -2,
+        "targetName": "World",
+        "targetId": "world"
+    }
+]

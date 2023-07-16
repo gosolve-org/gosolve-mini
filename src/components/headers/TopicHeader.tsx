@@ -33,7 +33,10 @@ function TopicHeader() {
 
     return (
         <div className="relative w-full">
-            <div className="w-full h-40 sm:h-60 2xl:h-80 absolute left-0" style={{ zIndex: -1 }}>
+            <div
+                className="w-full h-40 sm:h-60 2xl:h-80 absolute left-0 select-none"
+                style={{ zIndex: -1 }}
+            >
                 {!!currentCategory?.imageName &&
                     <Image
                         src={`${CATEGORY_IMAGE_DIR_URI}/${currentCategory?.imageName}.webp`}
@@ -44,6 +47,7 @@ function TopicHeader() {
                         quality={100}
                         style={{
                             objectFit: 'cover',
+                            objectPosition: currentCategory?.imagePosition ?? 'center',
                         }}
                     />
                 }
@@ -53,7 +57,11 @@ function TopicHeader() {
                     <h1
                         className="w-full px-4 py-2 text-center text-3xl tracking-tight text-white"
                         style={{
-                            textShadow: '0px 4px 17px rgba(0, 0, 0, 0.5)',
+                            textShadow:
+                                `5px 0px 17px rgba(0, 0, 0, ${currentCategory?.imageTextShadowOpacity ?? 1}),` +
+                                `-5px 0px 17px rgba(0, 0, 0, ${currentCategory?.imageTextShadowOpacity ?? 1}),` +
+                                `0px 5px 17px rgba(0, 0, 0, ${currentCategory?.imageTextShadowOpacity ?? 1}),` +
+                                `0px -5px 17px rgba(0, 0, 0, ${currentCategory?.imageTextShadowOpacity ?? 1})`,
                         }}
                     >
                         {currentCategory?.hidden || currentLocation?.hidden

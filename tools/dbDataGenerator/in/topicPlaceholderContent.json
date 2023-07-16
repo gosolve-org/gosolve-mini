@@ -1,0 +1,21 @@
+{
+    "time": 1688072226625,
+    "blocks": [
+        {
+            "id": "qRNYmjeSh3",
+            "type": "header",
+            "data": {
+                "text": "{{TITLE}}",
+                "level": 1
+            }
+        },
+        {
+            "id": "3zclaQ-CKc",
+            "type": "paragraph",
+            "data": {
+                "text": "PLACEHOLDER"
+            }
+        }
+    ],
+    "version": "2.26.4"
+}

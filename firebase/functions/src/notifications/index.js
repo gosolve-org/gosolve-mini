@@ -4,6 +4,7 @@ const constants = require('../constants');
 const { toUrlPart } = require('../utils');
 const { triggerNotification, createSubscriber } = require('./novu');
 const { createDb, getPost, getTopic, getAction } = require('../db');
+const { functionWrapper } = require('../sentry');
 
 const handleRootCommentCreation = async (commentId, commentAuthorUsername, commentAuthorId, postId) => {
         const db = createDb();
@@ -84,14 +85,14 @@ const handleCommentReply = async (commentId, commentAuthorUsername, commentAutho
 
 module.exports.createSubscriber = functions.region(REGION).firestore
     .document('user/{docId}')
-    .onCreate(async (change) => {
+    .onCreate(functionWrapper(async (change) => {
         await createSubscriber(change.id, change.data().email);
-    });
+    }));
 
 
 module.exports.notifyCommentCreation = functions.region(REGION).firestore
     .document('comments/{docId}')
-    .onCreate(async (snapshot) => {
+    .onCreate(functionWrapper(async (snapshot) => {
         const id = snapshot.id;
         const { authorUsername, authorId, postId, parentId } = snapshot.data();
 
@@ -100,11 +101,11 @@ module.exports.notifyCommentCreation = functions.region(REGION).firestore
         } else {
             await handleRootCommentCreation(id, authorUsername, authorId, postId);
         }
-    });
+    }));
 
 module.exports.notifyPostCreation = functions.region(REGION).firestore
     .document('posts/{docId}')
-    .onCreate(async (snapshot) => {
+    .onCreate(functionWrapper(async (snapshot) => {
         const db = createDb();
         const id = snapshot.id;
         const { authorId, authorUsername, actionId } = snapshot.data();
@@ -125,4 +126,4 @@ module.exports.notifyPostCreation = functions.region(REGION).firestore
             postId: id,
             actionId,
         });
-    });
+    }));

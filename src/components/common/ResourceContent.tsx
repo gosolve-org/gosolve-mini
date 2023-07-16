@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import { useAuth } from "contexts/AuthContext";
 import { useResource } from "contexts/ResourceContext";
 import dynamic from "next/dynamic";
@@ -35,6 +36,7 @@ function ResourceContent()
                     setContent(savedData);
                 })
                 .catch((err) => {
+                    Sentry.captureException(err);
                     toast.error("Something went wrong");
                     console.error(err);
                 });
@@ -50,6 +52,7 @@ function ResourceContent()
                     setContent(savedData);
                 })
                 .catch((err) => {
+                    Sentry.captureException(err);
                     console.error(err);
                     toast.error("Something went wrong");
                 });

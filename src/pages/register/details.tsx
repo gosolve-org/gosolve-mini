@@ -1,6 +1,6 @@
+import * as Sentry from '@sentry/node'
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-
 import { useAuth } from "contexts/AuthContext";
 import { updateUser } from "pages/api/user";
 import { toast } from "react-toastify";
@@ -61,6 +61,7 @@ function Details() {
             if (err.code === 'functions/invalid-argument') {
                 toast.error(err.message);
             } else {
+                Sentry.captureException(err);
                 toast.error('Something went wrong');
                 console.error(err);
             }

@@ -1,5 +1,6 @@
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
+import * as Sentry from '@sentry/node'
 
 import { useAuth } from "contexts/AuthContext";
 import BasicToast from "components/common/layout/BasicToast";
@@ -9,7 +10,6 @@ import { ERROR_CODES } from "constants/errorCodes";
 import LinkToast, { showLinkToast } from "components/common/layout/LinkToast";
 import { TOAST_IDS } from "constants/toastConstants";
 import BasicHead from "components/common/layout/BasicHead";
-import Logo from "components/common/layout/Logo";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import GoogleIconSvg from "svgs/GoogleIconSvg";
 import Layout from "components/common/layout/Layout";
@@ -50,6 +50,7 @@ function Login() {
                 }
             }
 
+            Sentry.captureException(err);
             console.error(err);
             toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
         } finally {
@@ -72,6 +73,7 @@ function Login() {
             }
         } catch (err) {
             setLoginFailed(true);
+            Sentry.captureException(err);
             console.error(err);
             toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
         } finally {

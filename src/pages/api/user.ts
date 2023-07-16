@@ -1,6 +1,6 @@
+import * as Sentry from '@sentry/node'
 import { db, wrappedHttpsCallable } from "utils/firebase";
 import { doc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
-
 import { User } from "models/User";
 
 const updateUserFunction = wrappedHttpsCallable('updateUser');
@@ -37,6 +37,7 @@ const getUser = async (uid: string): Promise<User> => {
         if (!docSnap.exists()) return null;
         return docSnap.data() as User;
     } catch (err) {
+        Sentry.captureException(err);
         console.error(err);
         throw new Error("Not allowed");
     }
@@ -47,6 +48,7 @@ const doesUserExist = async (email: string): Promise<boolean> => {
     try {
         return !(await getDocs(query(collection(db, 'user'), where('email', '==', email)))).empty;
     } catch (err) {
+        Sentry.captureException(err);
         console.error(err);
         return false;
     }
@@ -60,6 +62,7 @@ const isUserOnboarded = async (userId: string) => {
         if (!docSnap.exists()) return false;
         return docSnap.get('isOnboarded') ?? false;
     } catch (err) {
+        Sentry.captureException(err);
         console.error(err);
         throw new Error("Not allowed");
     }

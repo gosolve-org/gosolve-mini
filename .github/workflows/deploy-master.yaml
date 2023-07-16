@@ -9,7 +9,67 @@ on:
         required: true
 
 jobs:
-  deploy:
+  create-github-release-tag:
+    if: github.ref == 'refs/heads/main'
+    environment: ${{ inputs.environment }}
+    name: GitHub Tags
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.taggerFinal.outputs.new_tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Generate Final Version
+        id: taggerFinal
+        uses: anothrNick/github-tag-action@v1.67.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Echo New Tag
+        run: echo "The new tag version will be ${{ steps.taggerFinal.outputs.new_tag }}"
+  create-github-release:
+    if: github.ref == 'refs/heads/main'
+    environment: ${{ inputs.environment }}
+    needs: create-github-release-tag
+    name: GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Create Release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          tag: ${{ needs.create-github-release-tag.outputs.new_tag }}
+          token: ${{ secrets.GITHUB_TOKEN_RELEASE }}
+  deploy-sentry:
+    if: github.ref == 'refs/heads/main'
+    environment: ${{ inputs.environment }}
+    needs: [create-github-release-tag, create-github-release]
+    name: Sentry Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Split Repo Name
+        uses: jungwinter/split@v2.1.0
+        id: split_repo_name
+        with:
+          msg: ${{ github.repository }}
+          separator: /
+          maxsplit: 1
+      - name: Sentry Release
+        uses: getsentry/action-release@v1.4.1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: ${{ inputs.environment }}
+          version: ${{ steps.split_repo_name.outputs._1 }}@${{ needs.create-github-release-tag.outputs.new_tag }}
+  deploy-firebase:
     if: github.ref == 'refs/heads/main'
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
@@ -17,7 +77,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Deploy firebase to ${{ inputs.environment }}
         id: deploy
-        uses: ./.github/workflows/actions/deploy
+        uses: ./.github/workflows/actions/deploy-firebase
         with:
           firebase_project_id: ${{ vars.FIREBASE_PROJECT_ID }}
           firebase_functions_env_file: ${{ secrets.FIREBASE_FUNCTIONS_ENV_FILE }}

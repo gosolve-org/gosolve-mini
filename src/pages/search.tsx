@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node'
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -43,6 +44,7 @@ function Search() {
                 setResults(result.hits);
             })
             .catch(err => {
+                Sentry.captureException(err);
                 console.error(err);
                 toast.error('Something went wrong');
             });

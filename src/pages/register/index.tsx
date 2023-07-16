@@ -1,7 +1,7 @@
+import * as Sentry from '@sentry/node'
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-
 import { useAuth } from "contexts/AuthContext";
 import { toast } from "react-toastify";
 import BasicToast from "components/common/layout/BasicToast";
@@ -46,6 +46,7 @@ function Register() {
             if (err instanceof ErrorWithCode && err.code === ERROR_CODES.userAlreadyExists) {
                 toast.error('A user with this email already exists.', { containerId: TOAST_IDS.basicToastId });
             } else {
+                Sentry.captureException(err);
                 console.error(err);
                 toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
             }
@@ -65,10 +66,12 @@ function Register() {
             await router.push("/register/details");
         } catch (err) {
             try {
+                Sentry.captureException(err);
                 console.error(err);
                 toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
                 await logout();
             } catch (err) {
+                Sentry.captureException(err);
                 console.error('Could not log user out after unsuccesful Google registration.', err);
             }
         } finally {

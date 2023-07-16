@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node'
 import { db } from "utils/firebase";
 import { collection, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
 
@@ -11,6 +12,7 @@ const addAction = async (details: Action) => {
             updatedAt: new Date().getTime(),
         }).then((docRef) => docRef.id);
     } catch (err) {
+        Sentry.captureException(err);
         console.error(err);
         throw new Error("Not allowed");
     }
@@ -32,6 +34,7 @@ const updateAction = async (docId: string, details: Action) => {
             return await addAction(details);
         }
     } catch (err) {
+        Sentry.captureException(err);
         console.error(err);
         throw new Error("Not allowed");
     }

@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node'
 import { useState, useEffect, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { doc } from "firebase/firestore";
@@ -68,6 +69,7 @@ function Settings() {
             if (err.code === 'functions/invalid-argument') {
                 toast.error(err.message);
             } else {
+                Sentry.captureException(err);
                 toast.error('Something went wrong');
                 console.error(err);
             }

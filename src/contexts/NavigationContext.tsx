@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Category } from "models/Category";
 import { Location } from "models/Location";
@@ -151,6 +152,7 @@ export const NavigationContextProvider = ({ children }: { children: ReactNode })
                     setCurrentCategory(category);
                     docCache.categories[categoryQuery] = category;
                 }).catch((error) => {
+                    Sentry.captureException(error);
                     console.error("Error getting documents: ", error);
                 });
             }
@@ -174,6 +176,7 @@ export const NavigationContextProvider = ({ children }: { children: ReactNode })
                     setCurrentLocation(location);
                     docCache.locations[locationQuery] = location;
                 }).catch((error) => {
+                    Sentry.captureException(error);
                     console.error("Error getting documents: ", error);
                 });
             }

@@ -14,6 +14,7 @@
   "main": "index.js",
   "dependencies": {
     "@novu/node": "^0.11.0",
+    "@sentry/node": "^7.58.1",
     "axios": "^1.2.3",
     "dotenv": "^16.0.3",
     "firebase-admin": "^11.5.0",

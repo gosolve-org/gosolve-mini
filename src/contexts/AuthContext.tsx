@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import {
     createContext,
     ReactNode,
@@ -82,6 +83,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
                         });
                     })
                     .catch(err => {
+                        Sentry.captureException(err);
                         console.error(err);
                     }).finally(() => {
                         setLoading(false);
@@ -121,6 +123,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
                 }
             }
 
+            Sentry.captureException(err);
             console.error(err);
             throw new Error('Something went wrong');
         }
@@ -150,6 +153,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             try {
                 await logout();
             } catch (logoutErr) {
+                Sentry.captureException(logoutErr);
                 console.error('Could not log user out after unsuccesful Google registration.', logoutErr);
             } finally {
                 throw err;

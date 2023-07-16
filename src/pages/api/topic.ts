@@ -1,6 +1,6 @@
+import * as Sentry from '@sentry/node'
 import { db } from "utils/firebase";
 import { collection, updateDoc, doc, getDoc, addDoc } from "firebase/firestore";
-
 import { Topic } from "models/Topic";
 
 const addTopicHistory = async ({ details }: { details: Topic }) => {
@@ -11,6 +11,7 @@ const addTopicHistory = async ({ details }: { details: Topic }) => {
             updatedAt: new Date().getTime(),
         }).then((docRef) => docRef.id);
     } catch (err) {
+        Sentry.captureException(err);
         console.error(err);
         throw new Error("Not allowed");
     }
@@ -28,6 +29,7 @@ const addTopic = async (details: Topic) => {
 
         return id;
     } catch (err) {
+        Sentry.captureException(err);
         console.error(err);
         throw new Error("Not allowed");
     }
@@ -56,6 +58,7 @@ const updateTopic = async (docId: string, details: Topic) => {
 
         Promise.resolve();
     } catch (err) {
+        Sentry.captureException(err);
         console.error(err);
         throw new Error("Not allowed");
     }

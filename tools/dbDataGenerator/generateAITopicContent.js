@@ -56,11 +56,13 @@ const run = async () => {
     let progressCounter = 0;
 
     topicInputData.forEach(el => {
-        if (el.wikiPage !== 'Climate_change_in_the_United_States' &&
-            el.wikiPage !== 'Climate_change_in_France') return;
         batch.push(async (done) => {
             console.log(`${++progressCounter}/${topicInputData.length}`);
+
             try {
+                const matchingLocation = locations.find(l => l.location === el.location);
+                const matchingCategory = categories.find(c => c.category === el.category);
+
                 const contentChunks = await getPageContentChunks(el.wikiPage, 8000);
                 let summary = '';
                 for (let i = 0; i < contentChunks.length; i++) {
@@ -84,6 +86,8 @@ const run = async () => {
                     id: el.topicId,
                     data: {
                         content: topicContent,
+                        location: matchingLocation.location,
+                        category: matchingCategory.category,
                     },
                 };
                 done(null, topic);

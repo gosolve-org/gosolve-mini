@@ -10,12 +10,6 @@ const run = async () => {
     }
 
     const topics = await firebase.getCollection('topics');
-    
-    ids.forEach(id => {
-        if (!topics.find(t => t.id === id)) {
-            throw new Error(`No firestore topic found for ${id}`);
-        }
-    });
 
     const data = [];
     for (let i = 0; i < ids.length; i++) {
@@ -23,6 +17,13 @@ const run = async () => {
         console.log(`${i + 1}/${ids.length}`);
         const dataItem = JSON.parse(fs.readFileSync(path.join(__dirname, 'out', 'topicData', `${id}.json`)));
         const convertedDataItem = { id: dataItem.id, ...dataItem.data };
+        delete convertedDataItem.category;
+        delete convertedDataItem.location;
+
+        if (!topics.find(t => t.id === convertedDataItem.id)) {
+            throw new Error(`No firestore topic found for ${convertedDataItem.id}`);
+        }
+
         if (convertedDataItem.content instanceof Object) {
             convertedDataItem.content = JSON.stringify(convertedDataItem.content);
         }

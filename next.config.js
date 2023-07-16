@@ -41,6 +41,7 @@ module.exports = withSentryConfig(
 
     org: process.env.NEXT_PUBLIC_SENTRY_ORG,
     project: process.env.NEXT_PUBLIC_SENTRY_PROJECT,
+    authToken: process.env.NEXT_PUBLIC_SENTRY_TOKEN,
   },
   {
     // For all available options, see:

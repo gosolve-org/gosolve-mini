@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
       - name: Generate Final Version
         id: taggerFinal
-        uses: anothrNick/github-tag-action@v1.67.0
+        uses: anothrNick/github-tag-action@1.67.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: develop

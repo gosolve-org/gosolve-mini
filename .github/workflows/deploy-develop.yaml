@@ -73,6 +73,7 @@ jobs:
           environment: development
           version: ${{ steps.split_repo_name.outputs._1 }}@${{ needs.create-github-release-tag.outputs.new_tag }}
   deploy-firebase-dev:
+    needs: deploy-sentry
     environment: develop
     runs-on: ubuntu-latest
     steps:

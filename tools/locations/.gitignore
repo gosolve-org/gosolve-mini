@@ -4,6 +4,7 @@ locationData/locations_*.json
 !locations_continents.json
 !locations_countries.json
 env.json
+service-account.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node

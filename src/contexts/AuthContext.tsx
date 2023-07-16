@@ -40,6 +40,7 @@ interface AuthContext {
     registerWithGoogle: (credentials: UserCredential) => Promise<UserCredential>;
     hasEditorRights: () => boolean;
     doesUserExist: (email: string) => Promise<boolean>;
+    setIsLoginFinished: (isLoginFinished: boolean) => void;
     isUserProfileLoading: boolean;
 }
 
@@ -55,15 +56,17 @@ const AuthContext = createContext<AuthContext>({
     registerWithGoogle: null,
     hasEditorRights: null,
     doesUserExist: null,
+    setIsLoginFinished: null,
     isUserProfileLoading: true,
 });
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [user, setUser] = useState<AuthUser>(null);
+    const [isLoginFinished, setIsLoginFinished] = useState<boolean>(true);
     const [userProfile, isUserProfileLoading] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
 
-    const isAuthenticated = () => !!user;
+    const isAuthenticated = () => !!user && isLoginFinished;
     const hasEditorRights = () => userProfile?.id === user?.uid &&
         (userProfile?.data()?.role === "admin" || userProfile?.data()?.role === "editor");
 
@@ -182,6 +185,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
                 registerWithGoogle,
                 hasEditorRights,
                 doesUserExist,
+                setIsLoginFinished,
                 isUserProfileLoading,
             }}
         >

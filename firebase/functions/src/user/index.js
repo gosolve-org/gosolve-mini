@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 const { createUserWithEmailAndPassword } = require("../auth");
 const constants = require("../constants");
-const { createDb, updateUser, getUserByUsername, addUser } = require("../db");
+const { createDb, updateUser, getUserByUsername, getUserByEmail, addUser } = require("../db");
 const ErrorWithCode = require("../models/ErrorWithCode");
 const { ensureAuth, createErrorResponse } = require("../utils");
 const { functionWrapper, Sentry } = require('../sentry');
@@ -44,20 +44,21 @@ module.exports.registerUser =
         let { email, password, authMethod, userId } = data;
         const db = createDb();
 
-        db.ShouldThrowError();
-
         if (authMethod === 'google' && !userId) {
             throw new Error('userId is missing when registering user with auth method being Google.');
         }
 
+        const userAlreadyExists = !!(await getUserByEmail(db, email));
+
         if (authMethod === 'email') {
             try {
+                if (userAlreadyExists) {
+                    return createErrorResponse(constants.ERROR_CODES.AUTH.USER_ALREADY_EXISTS);
+                }
                 userId = await createUserWithEmailAndPassword(email, password);
             } catch (err) {
                 if (err instanceof ErrorWithCode) {
-                    if (err.code !== constants.ERROR_CODES.AUTH.USER_ALREADY_EXISTS) {
-                        return createErrorResponse(err.code);
-                    }
+                    return createErrorResponse(err.code);
                 } else {
                     Sentry.captureException(err);
                     functions.logger.error(err);
@@ -73,5 +74,5 @@ module.exports.registerUser =
             updatedAt: new Date().getTime(),
         }
 
-        await addUser(db, userId, user);
+        !userAlreadyExists && await addUser(db, userId, user);
     }));

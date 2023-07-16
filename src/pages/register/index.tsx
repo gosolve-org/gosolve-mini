@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/node'
+import * as Sentry from '@sentry/react'
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -7,11 +7,9 @@ import { toast } from "react-toastify";
 import BasicToast from "components/common/layout/BasicToast";
 import { ErrorWithCode } from "models/ErrorWithCode";
 import { ERROR_CODES } from "constants/errorCodes";
-import LinkToast, { showLinkToast } from "components/common/layout/LinkToast";
-import { UserCredential } from "@firebase/auth";
+import LinkToast from "components/common/layout/LinkToast";
 import { TOAST_IDS } from "constants/toastConstants";
 import BasicHead from "components/common/layout/BasicHead";
-import Logo from "components/common/layout/Logo";
 import { USER_VALIDATIONS } from "constants/validationRules";
 import GoogleIconSvg from "svgs/GoogleIconSvg";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
@@ -23,7 +21,14 @@ function Register() {
     const [shouldRememberCheckbox, setShouldRememberCheckbox] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const { registerWithEmail, registerWithGoogle, getGoogleCredentials, setShouldRemember, logout } = useAuth();
+    const {
+        registerWithEmail,
+        registerWithGoogle,
+        getGoogleCredentials,
+        setShouldRemember,
+        logout,
+        setIsLoginFinished,
+    } = useAuth();
     const router = useRouter();
 
     const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
@@ -61,21 +66,26 @@ function Register() {
 
         setShouldRemember(shouldRememberCheckbox);
         try {
+            setIsLoginFinished(false);
             const credentials = await getGoogleCredentials();
             await registerWithGoogle(credentials);
             await router.push("/register/details");
         } catch (err) {
+            if (err.code === ERROR_CODES.popupClosedByUser) {
+                return;
+            }
             try {
                 Sentry.captureException(err);
                 console.error(err);
                 toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
                 await logout();
-            } catch (err) {
-                Sentry.captureException(err);
-                console.error('Could not log user out after unsuccesful Google registration.', err);
+            } catch (logoutErr) {
+                Sentry.captureException(logoutErr);
+                console.error('Could not log user out after unsuccesful Google registration.', logoutErr);
             }
         } finally {
             setIsLoading(false);
+            setIsLoginFinished(true);
         }
     };
 

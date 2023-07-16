@@ -1,6 +1,6 @@
 import { useState, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-import * as Sentry from '@sentry/node'
+import * as Sentry from '@sentry/react'
 
 import { useAuth } from "contexts/AuthContext";
 import BasicToast from "components/common/layout/BasicToast";
@@ -22,7 +22,15 @@ function Login() {
     const [isLoading, setIsLoading] = useState(false);
     const [loginFailed, setLoginFailed] = useState(false);
 
-    const { login, getGoogleCredentials, setShouldRemember, registerWithGoogle, doesUserExist } = useAuth();
+    const {
+        login,
+        logout,
+        setIsLoginFinished,
+        getGoogleCredentials,
+        setShouldRemember,
+        registerWithGoogle,
+        doesUserExist
+    } = useAuth();
     const router = useRouter();
 
     const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
@@ -63,6 +71,7 @@ function Login() {
         setShouldRemember(shouldRememberCheckbox);
 
         try {
+            setIsLoginFinished(false);
             const credentials = await getGoogleCredentials();
     
             if (!await doesUserExist(credentials.user.email)) {
@@ -72,12 +81,24 @@ function Login() {
                 await router.push("/");
             }
         } catch (err) {
+            if (err.code === ERROR_CODES.popupClosedByUser) {
+                return;
+            }
+
             setLoginFailed(true);
             Sentry.captureException(err);
             console.error(err);
             toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
+            try {
+                await logout();
+            } catch (logoutErr) {
+                Sentry.captureException(logoutErr);
+                console.error(logoutErr);
+                toast.error('Could not log out after unsuccessful login.', { containerId: TOAST_IDS.basicToastId });
+            }
         } finally {
             setIsLoading(false);
+            setIsLoginFinished(true);
         }
     };
 

@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/node'
+import * as Sentry from '@sentry/react'
 import { db, wrappedHttpsCallable } from "utils/firebase";
 import { doc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
 import { User } from "models/User";

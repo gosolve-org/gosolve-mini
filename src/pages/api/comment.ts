@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/node'
+import * as Sentry from '@sentry/react'
 import { db } from "utils/firebase";
 import { collection, addDoc } from "firebase/firestore";
 

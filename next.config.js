@@ -1,3 +1,5 @@
+const { withSentryConfig } = require("@sentry/nextjs");
+
 /** @type {import('next').NextConfig} */
 // reactStrictMode: true when this fixed: https://github.com/Jungwoo-An/react-editor-js/issues/213
 const nextConfig = {
@@ -26,15 +28,10 @@ const nextConfig = {
     }
 };
 
-module.exports = nextConfig;
-
 
 // Injected content via Sentry wizard below
-
-const { withSentryConfig } = require("@sentry/nextjs");
-
 module.exports = withSentryConfig(
-  module.exports,
+  nextConfig,
   {
     // For all available options, see:
     // https://github.com/getsentry/sentry-webpack-plugin#options
@@ -42,8 +39,8 @@ module.exports = withSentryConfig(
     // Suppresses source map uploading logs during build
     silent: true,
 
-    org: "gosolve-org",
-    project: "gosolve-web",
+    org: process.env.NEXT_PUBLIC_SENTRY_ORG,
+    project: process.env.NEXT_PUBLIC_SENTRY_PROJECT,
   },
   {
     // For all available options, see:

@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/node'
+import * as Sentry from '@sentry/react'
 import { useState, useEffect, SyntheticEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { doc } from "firebase/firestore";

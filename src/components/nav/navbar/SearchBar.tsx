@@ -59,7 +59,9 @@ function SearchBar() {
     }
 
     const handleSearchSubmit = () => {
-        if (searchQuery) {
+        if (categoryFilter && (!searchQuery || searchQuery.trim().length === 0)) {
+            goToTopicPage(categoryFilter.name, locationFilter?.targetName ?? "World");
+        } else if (searchQuery) {
             goToSearchPage(searchQuery, categoryFilter?.id, locationFilter?.id);
         }
     };

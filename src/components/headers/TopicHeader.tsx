@@ -1,4 +1,4 @@
-import { FormEvent } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Tab } from "models/Tab";
 import { toUrlPart } from "utils/textUtils";
@@ -9,6 +9,8 @@ import { CATEGORY_IMAGE_DIR_URI } from "constants/uris";
 
 const DEFAULT_PAGE_TITLE = 'Welcome to goSolve mini';
 const TAB_WIDTH = 200;
+const HEADER_SHADOW_OPACITY_BEFORE_IMAGE_LOAD = 0.4;
+const HEADER_SHADOW_OPACITY_AFTER_IMAGE_LOAD = 1;
 
 const tabs = [
     { name: "Topic", href: "", value: Tab.Topic, showOnHiddenTopics: true },
@@ -27,9 +29,23 @@ function classNames(...classes: string[]) {
 function TopicHeader() {
     const { currentTab, currentCategory, currentLocation, handleCurrentTabChange } = useNav();
     const { isMobile } = useMediaQueries();
+    const backgroundImageRef = useRef<HTMLImageElement>(null);
+    const [headerShadowOpacity, setHeaderShadowOpacity] =
+        useState(currentCategory?.imageTextShadowOpacity ?? HEADER_SHADOW_OPACITY_BEFORE_IMAGE_LOAD);
 
     const handleTabChange = (e: FormEvent<HTMLSelectElement>) =>
         handleCurrentTabChange(Tab[e.currentTarget.value]);
+
+    const defineHeaderShadowOpacity = useCallback(() => {
+        const defaultOpacity = backgroundImageRef.current?.complete
+            ? HEADER_SHADOW_OPACITY_AFTER_IMAGE_LOAD
+            : HEADER_SHADOW_OPACITY_BEFORE_IMAGE_LOAD;
+        setHeaderShadowOpacity(currentCategory?.imageTextShadowOpacity ?? defaultOpacity);
+    }, [backgroundImageRef, currentCategory, setHeaderShadowOpacity]);
+
+    useEffect(() => {
+        defineHeaderShadowOpacity();
+    }, [currentCategory, defineHeaderShadowOpacity]);
 
     return (
         <div className="relative w-full">
@@ -41,6 +57,8 @@ function TopicHeader() {
                     <Image
                         src={`${CATEGORY_IMAGE_DIR_URI}/${currentCategory?.imageName}.webp`}
                         sizes="100vw"
+                        ref={backgroundImageRef}
+                        onLoad={defineHeaderShadowOpacity}
                         alt={currentCategory?.category}
                         fill={true}
                         priority={true}
@@ -58,10 +76,10 @@ function TopicHeader() {
                         className="w-full px-4 py-2 text-center text-3xl tracking-tight text-white"
                         style={{
                             textShadow:
-                                `5px 0px 17px rgba(0, 0, 0, ${currentCategory?.imageTextShadowOpacity ?? 1}),` +
-                                `-5px 0px 17px rgba(0, 0, 0, ${currentCategory?.imageTextShadowOpacity ?? 1}),` +
-                                `0px 5px 17px rgba(0, 0, 0, ${currentCategory?.imageTextShadowOpacity ?? 1}),` +
-                                `0px -5px 17px rgba(0, 0, 0, ${currentCategory?.imageTextShadowOpacity ?? 1})`,
+                                `5px 0px 17px rgba(0, 0, 0, ${headerShadowOpacity}),` +
+                                `-5px 0px 17px rgba(0, 0, 0, ${headerShadowOpacity}),` +
+                                `0px 5px 17px rgba(0, 0, 0, ${headerShadowOpacity}),` +
+                                `0px -5px 17px rgba(0, 0, 0, ${headerShadowOpacity})`,
                         }}
                     >
                         {currentCategory?.hidden || currentLocation?.hidden

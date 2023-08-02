@@ -50,19 +50,19 @@ const getFromCache = (key: string) => {
     return searchCache.entries[key.trim().toLowerCase()];
 }
 
-const getLocationQuery = (input: string, location: GeolocationCoordinates) => ({
+const getLocationQuery = (input: string, location: GeolocationCoordinates, limit?: number) => ({
     indexUid: process.env.NEXT_PUBLIC_MEILI_LOCATION_INDEX,
     q: input,
-    limit: 3,
+    limit: limit ?? 3,
     sort: location?.latitude != null
         ? [`_geoPoint(${location.latitude},${location.longitude}):asc`]
         : undefined,
 });
 
-const getCategoryQuery = (input: string) => ({
+const getCategoryQuery = (input: string, limit?: number) => ({
     indexUid: process.env.NEXT_PUBLIC_MEILI_CATEGORY_INDEX,
     q: input,
-    limit: 3,
+    limit: limit ?? 3,
 });
 
 export interface LocationSearchResult
@@ -131,7 +131,7 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
         searchClient.multiSearch({
             queries: [
                 getLocationQuery('', isGeoLocationGranted ? location : null),
-                getCategoryQuery(''),
+                getCategoryQuery('', 6),
             ]
         }).then(value => {
             const locationValueResults = meiliHitsToLocationSearchResults(

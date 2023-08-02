@@ -464,8 +464,8 @@ function SearchBar() {
 
     const renderInputFilters = () => (
         <div className="flex" data-parent-container={SEARCH_CONTAINER_NAME}>
-            {locationFilter && renderLocationInputFilter('px-1.5 py-1')}
             {categoryFilter && renderCategoryInputFilter('px-1.5 py-1')}
+            {locationFilter && renderLocationInputFilter('px-1.5 py-1')}
         </div>
     );
 
@@ -473,8 +473,8 @@ function SearchBar() {
         'filtersHint',
         HintType.Filters,
         <>
-            {locationFilter && renderLocationInputFilter('px-1.5 py-2')}
             {categoryFilter && renderCategoryInputFilter('px-1.5 py-2')}
+            {locationFilter && renderLocationInputFilter('px-1.5 py-2')}
         </>,
         () => {},
         {

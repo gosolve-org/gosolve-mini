@@ -31,11 +31,13 @@ const run = async () => {
     for (let i = 0; i < ids.length; i++) {
         const id = ids[i];
         const doc = JSON.parse(fs.readFileSync(path.join(__dirname, 'out', 'topicData', `${id}.json`)));
-        
+
         const location = locations.find(l => l.location === doc.data.location);
         const category = categories.find(c => c.category === doc.data.category);
 
-        doc.id = topics.find(t => t.locationId === location.id && t.categoryId === category.id).id;
+        const existingTopic = topics.find(t => t.locationId === location.id && t.categoryId === category.id);
+
+        doc.id = existingTopic.id;
         
         fs.writeFileSync(
             path.join(__dirname, 'out', 'topicData', `${id}.json`),

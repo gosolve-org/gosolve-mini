@@ -1,15 +1,17 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
 
 interface GeoLocationContext {
     isGeoLocationAvailable: boolean;
     isGeoLocationGranted: boolean;
     location: GeolocationCoordinates | null;
+    requestLocationAccess: () => void;
 }
 
 export const GeoLocationContext = createContext<GeoLocationContext>({
     isGeoLocationAvailable: false,
     isGeoLocationGranted: false,
     location: null,
+    requestLocationAccess: () => {},
 });
 
 export const GeoLocationContextProvider = ({ children }: { children: ReactNode }) => {
@@ -17,16 +19,25 @@ export const GeoLocationContextProvider = ({ children }: { children: ReactNode }
     const [isGeoLocationGranted, setIsGeoLocationGranted] = useState<boolean>(false);
     const [location, setLocation] = useState<GeolocationCoordinates | null>(null);
 
-    useEffect(() => {
-        setIsGeoLocationAvailable(!!navigator.geolocation);
-
+    const requestLocationAccess = useCallback(() => {
         navigator.geolocation.getCurrentPosition((position) => {
             setLocation(position.coords);
             setIsGeoLocationGranted(true);
         }, () => {
             setIsGeoLocationGranted(false);
         });
-    }, []);
+    }, [setLocation, setIsGeoLocationGranted]);
+
+    useEffect(() => {
+        setIsGeoLocationAvailable(!!navigator.geolocation);
+        navigator.permissions.query({ name: "geolocation" }).then((result) => {
+            const isGranted = result.state === 'granted';
+            setIsGeoLocationGranted(isGranted);
+            if (isGranted) {
+                requestLocationAccess();
+            }
+        });
+    }, [setIsGeoLocationAvailable]);
 
     return (
         <GeoLocationContext.Provider
@@ -34,6 +45,7 @@ export const GeoLocationContextProvider = ({ children }: { children: ReactNode }
                 isGeoLocationAvailable,
                 isGeoLocationGranted,
                 location,
+                requestLocationAccess,
             }}
         >
             {children}

@@ -1,5 +1,5 @@
 import { HashtagIcon, MagnifyingGlassIcon, MapPinIcon } from "@heroicons/react/20/solid";
-import { ArrowUpRightIcon, FunnelIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ArrowUpRightIcon, FunnelIcon, PlusIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { LINKS } from "constants/links";
 import { CategorySearchResult, LocationSearchResult, useInstantSearch } from "contexts/InstantSearchContext";
 import Link from "next/link";
@@ -7,6 +7,9 @@ import { FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } fr
 import LoaderLine from "components/common/layout/LoaderLine";
 import { useNav } from "contexts/NavigationContext";
 import { useMediaQueries } from "contexts/MediaQueryContext";
+import { useGeoLocation } from "contexts/GeoLocationContext";
+import { useDataCache } from "contexts/DataCacheContext";
+import { categoryToSearchResult, countryLocationToSearchResult } from "utils/mapper";
 
 const SEARCH_CONTAINER_NAME = 'search';
 
@@ -15,13 +18,15 @@ enum HintType {
     Location,
     Search,
     SearchTopic,
-    Suggestion,
+    Basic,
     Filters,
 }
 
 function SearchBar() {
+    const { isGeoLocationGranted, isGeoLocationAvailable, requestLocationAccess } = useGeoLocation();
     const { goToSearchPage, goToTopicPage, router } = useNav();
     const { isTabletOrMobile, isMobile, screenWidth } = useMediaQueries();
+    const { categories, locations } = useDataCache();
     const [categoryFilter, _setCategoryFilter] = useState<CategorySearchResult>(null);
     const [locationFilter, _setLocationFilter] = useState<LocationSearchResult>(null);
     const [hiddenCategory, _setHiddenCategory] = useState<CategorySearchResult>(null);
@@ -50,6 +55,18 @@ function SearchBar() {
 
     const readableSearchQuery = router?.query?.q?.toString().split("+").join(" ") ?? "";
 
+    useEffect(() => {
+        if (!!router.query.qCategoryId) {
+            const category = categories.find(c => c.id === router.query.qCategoryId);
+            category && setCategoryFilter(categoryToSearchResult(category));
+        }
+
+        if (!!router.query.qLocationId) {
+            const location = locations.find(l => l.id === router.query.qLocationId);
+            location && setLocationFilter(countryLocationToSearchResult(location));
+        }
+    }, [router, categories, locations]);
+
     const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
     {
         search(e.currentTarget.value, !!categoryFilter, !!locationFilter);
@@ -57,7 +74,9 @@ function SearchBar() {
     }
 
     const handleSearchSubmit = () => {
-        if (searchQuery) {
+        if (categoryFilter && (!searchQuery || searchQuery.trim().length === 0)) {
+            goToTopicPage(categoryFilter.name, locationFilter?.targetName ?? "World");
+        } else if (searchQuery) {
             goToSearchPage(searchQuery, categoryFilter?.id, locationFilter?.id);
         }
     };
@@ -242,6 +261,7 @@ function SearchBar() {
         MagnifyingGlass,
         ArrowUpRight,
         Filter,
+        Sparkles,
     }
     interface HintOptions {
         icon?: HintIcon;
@@ -263,6 +283,9 @@ function SearchBar() {
                 break;
             case HintIcon.Filter:
                 icon = <FunnelIcon className="h-4 w-4 text-gray-400" />;
+                break;
+            case HintIcon.Sparkles:
+                icon = <SparklesIcon className="h-4 w-4 text-gray-400" />;
                 break;
             default:
                 icon = <div className="w-4"></div>;
@@ -378,9 +401,26 @@ function SearchBar() {
         },
     );
 
+    const renderLocationAccessHint = () => renderHint(
+        'locationAccessHint',
+        HintType.Basic,
+        <>
+            <span className="mt-1 text-xs font-light">
+                Enable location access for better results
+            </span>
+        </>,
+        requestLocationAccess,
+        {
+            icon: HintIcon.Sparkles,
+            cursorPointer: true,
+            style: 'py-1.5 text-gray-400 focus:text-gray-500 hover:text-gray-500',
+        },
+    );
+
+
     const renderSuggestionHint = () => renderHint(
         'suggestionHint',
-        HintType.Suggestion,
+        HintType.Basic,
         <>
             <span
                 className="mt-1 text-xs font-light text-gray-400 focus:text-gray-500 hover:text-gray-500"
@@ -441,8 +481,8 @@ function SearchBar() {
 
     const renderInputFilters = () => (
         <div className="flex" data-parent-container={SEARCH_CONTAINER_NAME}>
-            {locationFilter && renderLocationInputFilter('px-1.5 py-1')}
             {categoryFilter && renderCategoryInputFilter('px-1.5 py-1')}
+            {locationFilter && renderLocationInputFilter('px-1.5 py-1')}
         </div>
     );
 
@@ -450,8 +490,8 @@ function SearchBar() {
         'filtersHint',
         HintType.Filters,
         <>
-            {locationFilter && renderLocationInputFilter('px-1.5 py-2')}
             {categoryFilter && renderCategoryInputFilter('px-1.5 py-2')}
+            {locationFilter && renderLocationInputFilter('px-1.5 py-2')}
         </>,
         () => {},
         {
@@ -550,6 +590,7 @@ function SearchBar() {
                             && renderSearchTopicHint()}
                     </div>
                     {loading && <LoaderLine />}
+                    {!isGeoLocationGranted && isGeoLocationAvailable && renderLocationAccessHint()}
                     {renderSuggestionHint()}
                 </div>
             </div>

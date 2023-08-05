@@ -26,5 +26,5 @@ Promise.all([getCollection('locations'), getCollection('categories')])
             });
         });
 
-        saveToDb('topics', topics);
+        saveToDb('topics', topics, 'title');
     });

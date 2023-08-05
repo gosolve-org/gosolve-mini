@@ -8,6 +8,8 @@ import LoaderLine from "components/common/layout/LoaderLine";
 import { useNav } from "contexts/NavigationContext";
 import { useMediaQueries } from "contexts/MediaQueryContext";
 import { useGeoLocation } from "contexts/GeoLocationContext";
+import { useDataCache } from "contexts/DataCacheContext";
+import { categoryToSearchResult, countryLocationToSearchResult } from "utils/mapper";
 
 const SEARCH_CONTAINER_NAME = 'search';
 
@@ -24,6 +26,7 @@ function SearchBar() {
     const { isGeoLocationGranted, isGeoLocationAvailable, requestLocationAccess } = useGeoLocation();
     const { goToSearchPage, goToTopicPage, router } = useNav();
     const { isTabletOrMobile, isMobile, screenWidth } = useMediaQueries();
+    const { categories, locations } = useDataCache();
     const [categoryFilter, _setCategoryFilter] = useState<CategorySearchResult>(null);
     const [locationFilter, _setLocationFilter] = useState<LocationSearchResult>(null);
     const [hiddenCategory, _setHiddenCategory] = useState<CategorySearchResult>(null);
@@ -51,6 +54,18 @@ function SearchBar() {
     }, [ _setLocationFilter, _setHiddenLocation ]);
 
     const readableSearchQuery = router?.query?.q?.toString().split("+").join(" ") ?? "";
+
+    useEffect(() => {
+        if (!!router.query.qCategoryId) {
+            const category = categories.find(c => c.id === router.query.qCategoryId);
+            category && setCategoryFilter(categoryToSearchResult(category));
+        }
+
+        if (!!router.query.qLocationId) {
+            const location = locations.find(l => l.id === router.query.qLocationId);
+            location && setLocationFilter(countryLocationToSearchResult(location));
+        }
+    }, [router, categories, locations]);
 
     const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
     {

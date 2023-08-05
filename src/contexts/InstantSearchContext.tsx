@@ -1,10 +1,11 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { MeiliSearch } from 'meilisearch';
 import { useGeoLocation } from './GeoLocationContext';
-import { meiliHitsToCategorySearchResults, meiliHitsToLocationSearchResults } from 'utils/mapper';
+import { categoryToSearchResult, countryLocationToSearchResult, meiliHitsToCategorySearchResults, meiliHitsToLocationSearchResults } from 'utils/mapper';
 import { useDataCache } from './DataCacheContext';
-import { Location } from 'models/Location';
-import { Category } from 'models/Category';
+import { useNav } from './NavigationContext';
+
+// TODO: Bug: When immediately selecting filter, the default results are still shown even though they should be hidden (since filter is already selected)
 
 const MAX_CACHE_ITEMS = 200;
 const DEBOUNCE_MS = 300; // Sets a delay after the last keystroke before triggering the search request
@@ -81,31 +82,11 @@ export interface LocationSearchResult
     targetId: string;
 }
 
-const countryLocationToSearchResult = (location: Location): LocationSearchResult => ({
-    id: location.id,
-    name: location.location,
-    asciiName: location.location,
-    adminDivisionTargetLevel: 0,
-    targetName: location.location,
-    targetId: location.id,
-    featureClass: null,
-    featureCode: null,
-    adminCode1: null,
-    adminCode2: null,
-    adminCode3: null,
-    adminCode4: null,
-});
-
 export interface CategorySearchResult
 {
     id: string;
     name: string;
 }
-
-const categoryToSearchResult = (category: Category): CategorySearchResult => ({
-    id: category.id,
-    name: category.category,
-});
 
 export const InstantSearchContextProvider = ({ children }: { children: ReactNode }) => {
     const { location, isGeoLocationGranted } = useGeoLocation();
@@ -139,12 +120,12 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
             const categoryValueResults = meiliHitsToCategorySearchResults(
                 value.results[1].hits ?? []);
 
-            setDefaultLocationResults(locationValueResults as LocationSearchResult[]);
-            setDefaultCategoryResults(categoryValueResults as CategorySearchResult[]);
+            setDefaultLocationResults(locationValueResults);
+            setDefaultCategoryResults(categoryValueResults);
 
             if (resultsAreEmpty) {
-                setLocationResults(locationValueResults as LocationSearchResult[]);
-                setCategoryResults(categoryValueResults as CategorySearchResult[]);
+                setLocationResults(locationValueResults);
+                setCategoryResults(categoryValueResults);
             }
 
             addToCache('', locationValueResults, categoryValueResults);
@@ -259,8 +240,8 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
                 
                 addToCache(input, locationValueResults, categoryValueResults);
 
-                setLocationResults(locationValueResults as LocationSearchResult[]);
-                setCategoryResults(categoryValueResults as CategorySearchResult[]);
+                setLocationResults(locationValueResults);
+                setCategoryResults(categoryValueResults);
 
                 setLoading(false);
             });
@@ -306,7 +287,7 @@ export const useInstantSearch = () => {
     const context = useContext(InstantSearchContext);
 
     if (context === undefined) {
-        throw new Error("useAuth must be used within an InstantSearchContextProvider");
+        throw new Error("useInstantSearch must be used within an InstantSearchContextProvider");
     }
 
     return context;

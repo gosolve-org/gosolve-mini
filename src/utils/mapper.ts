@@ -51,3 +51,23 @@ export const meiliHitsToCategorySearchResults = (hits: any[]): CategorySearchRes
         id: hit.id?.toString(),
     }));
 }
+
+export const countryLocationToSearchResult = (location: Location): LocationSearchResult => ({
+    id: location.id,
+    name: location.location,
+    asciiName: location.location,
+    adminDivisionTargetLevel: 0,
+    targetName: location.location,
+    targetId: location.id,
+    featureClass: null,
+    featureCode: null,
+    adminCode1: null,
+    adminCode2: null,
+    adminCode3: null,
+    adminCode4: null,
+});
+
+export const categoryToSearchResult = (category: Category): CategorySearchResult => ({
+    id: category.id,
+    name: category.category,
+});

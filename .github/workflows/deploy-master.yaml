@@ -30,15 +30,24 @@ jobs:
           msg: ${{ github.repository }}
           separator: /
           maxsplit: 1
-      - name: Sentry Release
-        uses: getsentry/action-release@v1.4.1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: ${{ inputs.environment }}
-          version: ${{ steps.split_repo_name.outputs._1 }}@${{ inputs.release }}
+          - name: Sentry Release Web
+          uses: getsentry/action-release@v1.4.1
+          env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+            SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+          with:
+            environment: development
+            version: ${{ steps.split_repo_name.outputs._1 }}@${{ inputs.release }}
+        - name: Sentry Release Firebase
+          uses: getsentry/action-release@v1.4.1
+          env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+            SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT_FIREBASE }}
+          with:
+            environment: development
+            version: ${{ steps.split_repo_name.outputs._1 }}@${{ inputs.release }}
   deploy-firebase:
     if: github.ref == 'refs/heads/main'
     needs: deploy-sentry

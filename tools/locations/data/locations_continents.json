@@ -1,0 +1,108 @@
+[
+    {
+        "id": 6255146,
+        "name": "Africa",
+        "asciiName": null,
+        "featureClass": "L",
+        "featureCode": "CONT",
+        "adminDivisionTargetLevel": -2,
+        "population": 1460481772,
+        "targetName": "World",
+        "targetId": "world",
+        "_geo": {
+            "lat": 2.709558,
+            "lng": 22.920835
+        }
+    },
+    {
+        "id": 6255147,
+        "name": "Asia",
+        "asciiName": null,
+        "featureClass": "L",
+        "featureCode": "CONT",
+        "adminDivisionTargetLevel": -2,
+        "population": 4758344217,
+        "targetName": "World",
+        "targetId": "world",
+        "_geo": {
+            "lat": 34.730796,
+            "lng": 100.861507
+        }
+    },
+    {
+        "id": 6255148,
+        "name": "Europe",
+        "asciiName": null,
+        "featureClass": "L",
+        "featureCode": "CONT",
+        "adminDivisionTargetLevel": -2,
+        "population": 748982888,
+        "targetName": "World",
+        "targetId": "world",
+        "_geo": {
+            "lat": 50.493279,
+            "lng": 14.581283
+        }
+    },
+    {
+        "id": 6255149,
+        "name": "North America",
+        "alternateNames": ["America"],
+        "asciiName": null,
+        "featureClass": "L",
+        "featureCode": "CONT",
+        "adminDivisionTargetLevel": -2,
+        "population": 378904407,
+        "targetName": "World",
+        "targetId": "world",
+        "_geo": {
+            "lat": 48.316405,
+            "lng": -103.163441
+        }
+    },
+    {
+        "id": 6255151,
+        "name": "Oceania",
+        "asciiName": null,
+        "featureClass": "L",
+        "featureCode": "CONT",
+        "adminDivisionTargetLevel": -2,
+        "population": 43155000,
+        "targetName": "World",
+        "targetId": "world",
+        "_geo": {
+            "lat": -21.966069,
+            "lng": 139.720165
+        }
+    },
+    {
+        "id": 6255150,
+        "name": "South America",
+        "asciiName": null,
+        "featureClass": "L",
+        "featureCode": "CONT",
+        "adminDivisionTargetLevel": -2,
+        "population": 441284731,
+        "targetName": "World",
+        "targetId": "world",
+        "_geo": {
+            "lat": -9.698612,
+            "lng": -54.432596
+        }
+    },
+    {
+        "id": 6255152,
+        "name": "Antarctica",
+        "asciiName": null,
+        "featureClass": "L",
+        "featureCode": "CONT",
+        "adminDivisionTargetLevel": -2,
+        "population": 5000,
+        "targetName": "World",
+        "targetId": "world",
+        "_geo": {
+            "lat": -79.493222,
+            "lng": 20.366725
+        }
+    }
+]

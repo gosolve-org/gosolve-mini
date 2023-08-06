@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import { FormEvent, MutableRefObject, SyntheticEvent, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -33,6 +34,7 @@ function ReplyForm({
             setReply('');
             if (showSuccessToast) toast.success(successToastMessage);
         } catch (err) {
+            Sentry.captureException(err);
             console.error(err);
             toast.error('Something went wrong');
         } finally {

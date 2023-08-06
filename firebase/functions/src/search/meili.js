@@ -1,8 +1,13 @@
 const axios = require("axios").default;
 const { defineString } = require("firebase-functions/params");
+const functions = require("firebase-functions");
 
 const MEILI_API_URL = defineString('MEILI_API_URL');
 const MEILI_API_KEY = defineString('MEILI_API_KEY');
+const MEILI_RESOURCE_INDEX = defineString('MEILI_RESOURCE_INDEX');
+
+const getResourceIndexUrl = () =>
+    `${MEILI_API_URL.value()}/indexes/${MEILI_RESOURCE_INDEX.value()}`;
 
 const createHeaders = ({ hasJsonBody = false } = {}) => {
     const headers = { "Authorization": `Bearer ${MEILI_API_KEY.value()}` };
@@ -15,7 +20,7 @@ const createHeaders = ({ hasJsonBody = false } = {}) => {
 
 const upsertDocument = async (id, type, data) => {
     await axios.post(
-        `${MEILI_API_URL.value()}/indexes/resources/documents`, 
+        `${getResourceIndexUrl()}/documents`, 
         [{
             ...data,
             type: type,
@@ -26,19 +31,27 @@ const upsertDocument = async (id, type, data) => {
 };
 
 const deleteDocument = async (id, type) => {
-    await axios.delete(`${MEILI_API_URL.value()}/indexes/resources/documents/${type}-${id}`, {
+    await axios.delete(`${getResourceIndexUrl()}/documents/${type}-${id}`, {
         headers: createHeaders()
     });
 };
 
-const search = async (query, offset, limit) => {
-    const request = { q: query };
+const search = async (query, options) => {
+    const request = { q: query.query, filter: [] };
 
-    if (!!offset) request.offset = offset;
-    if (!!limit) request.limit = limit;
+    if (!!options.offset) request.offset = options.offset;
+    if (!!options.limit) request.limit = options.limit;
+    if (!!query.categoryIdFilter) {
+        functions.logger.log(`categoryIdFilter: ${query.categoryIdFilter}`);
+        request.filter.push(`categoryId = ${query.categoryIdFilter}`);
+    }
+    if (!!query.locationIdFilter) {
+        functions.logger.log(`locationIdFilter: ${query.locationIdFilter}`);
+        request.filter.push(`locationId = ${query.locationIdFilter}`);
+    }
 
     const result = await axios.post(
-        `${MEILI_API_URL.value()}/indexes/resources/search`,
+        `${getResourceIndexUrl()}/search`,
         request,
         {
             headers: createHeaders({ hasJsonBody: true })

@@ -12,7 +12,8 @@ import BurgerMenu from "./BurgerMenu";
 import SearchBar from "./SearchBar";
 import { useNav } from "contexts/NavigationContext";
 import { useRouter } from "next/router";
-import TopicSelector from "./TopicSelector";
+import { InstantSearchContextProvider } from "contexts/InstantSearchContext";
+import ProfileIconSvg from "svgs/ProfileIconSvg";
 
 function Navbar() {
     const { user, isAuthenticated } = useAuth();
@@ -25,10 +26,15 @@ function Navbar() {
     };
 
     return (
-        <>
+        <InstantSearchContextProvider>
             {isTabletOrMobile && <BurgerMenu isOpen={isBurgerMenuOpen} onOpen={openBurgerMenu} onClose={closeBurgerMenu}></BurgerMenu>}
-            <div className="mx-auto px-1 sm:px-2 lg:px-4 bg-white shadow-sm lg:static lg:overflow-y-visible">
-                <div className="relative flex justify-between">
+            <div
+                style={{
+                    height: 54,
+                }}
+                className="mx-auto px-1 sm:px-2 lg:px-4 bg-white shadow-sm lg:static lg:overflow-y-visible"
+            >
+                <div className="h-full relative flex justify-between">
                     <div className="flex grow basis-0 md:inset-y-0 md:left-0 lg:static">
                         {isTabletOrMobile
                             ? (
@@ -45,14 +51,10 @@ function Navbar() {
                             )
                         }
                     </div>
-
-                    {!isTabletOrMobile &&                
-                        <div className="flex min-w-0 flex-row justify-center items-center px-6 py-2 md:px-8 lg:px-0">
-                            <SearchBar />
-                            <span className="w-0.5 h-5 mx-5 bg-gray-200"></span>
-                            <TopicSelector />
-                        </div>
-                    }
+          
+                    <div className="flex min-w-0 flex-row justify-center items-center px-6 py-2 md:px-8 lg:px-0">
+                        <SearchBar />
+                    </div>
 
                     <div className="flex grow basis-0 items-center justify-end py-2">
                         {/* NOTIFICATIONS BELL */}
@@ -71,13 +73,15 @@ function Navbar() {
                         }
 
                         {/* FEEDBACK ICON */}
-                        <div className="mr-2">
-                            <Tippy content="Give Feedback">
-                                <Link href={LINKS.feedbackForm} target="_blank">
-                                    <MegaphoneIcon className="h-7 w-7 text-gray-light"></MegaphoneIcon>
-                                </Link>
-                            </Tippy>
-                        </div>
+                        {!isTabletOrMobile &&
+                            <div className="mr-2">
+                                <Tippy content="Give Feedback">
+                                    <Link href={LINKS.feedbackForm} target="_blank">
+                                        <MegaphoneIcon className="h-7 w-7 text-gray-light"></MegaphoneIcon>
+                                    </Link>
+                                </Tippy>
+                            </div>
+                        }
 
                         {/* ACCOUNT SETTINGS ICON */}
                         {isAuthenticated() &&
@@ -94,13 +98,11 @@ function Navbar() {
                                         ) : (
                                             <div className="flex justify-center">
                                                 <span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
-                                                    <svg
+                                                    <ProfileIconSvg
                                                         className="h-full w-full text-gray-300"
                                                         fill="currentColor"
                                                         viewBox="0 0 24 24"
-                                                    >
-                                                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                                    </svg>
+                                                    />
                                                 </span>
                                             </div>
                                         )}
@@ -121,7 +123,7 @@ function Navbar() {
                     </div>
                 </div>
             </div>
-        </>
+        </InstantSearchContextProvider>
     );
 }
 

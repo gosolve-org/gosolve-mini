@@ -9,3 +9,7 @@
     max-width: 100% !important;
 }
 /* END WIDTH HACK */
+
+.codex-editor {
+    position: initial !important;
+}

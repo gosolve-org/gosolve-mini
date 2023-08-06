@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import {
     useState,
     FormEvent,
@@ -72,6 +73,7 @@ function AddCommunityPostModal({ open, onClose, parentResourceType, parentResour
                 : `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/actions/${actionId}/community/${docId}`
             );
         } catch (err) {
+            Sentry.captureException(err);
             toast.error("Something went wrong");
             console.error(err);
         } finally {

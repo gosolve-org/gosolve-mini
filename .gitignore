@@ -1,3 +1,5 @@
+logs.txt
+
 # Created by https://www.toptal.com/developers/gitignore/api/windows,linux,macos,visualstudiocode,sublimetext,notepadpp,node,react,firebase
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,macos,visualstudiocode,sublimetext,notepadpp,node,react,firebase
 
@@ -146,7 +148,8 @@ web_modules/
 
 # Next.js build output
 .next
-out
+!out/.gitkeep
+out/*
 
 # Nuxt.js build / generate output
 .nuxt
@@ -294,3 +297,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,macos,visualstudiocode,sublimetext,notepadpp,node,react,firebase
+
+# Sentry Auth Token
+.sentryclirc

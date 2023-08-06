@@ -1,5 +1,5 @@
+import * as Sentry from '@sentry/react'
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import BasicHead from "components/common/layout/BasicHead";
 import { search } from "./api/search";
@@ -12,39 +12,61 @@ import calendar from "dayjs/plugin/calendar";
 import Layout from "components/common/layout/Layout";
 import Pagination from "components/common/Pagination";
 import Loader from "components/common/layout/Loader";
+import { useNav } from "contexts/NavigationContext";
+import { useDataCache } from 'contexts/DataCacheContext';
+import { Category } from 'models/Category';
+import { Location } from 'models/Location';
 dayjs.extend(localizedFormat);
 dayjs.extend(calendar);
 
 const PAGE_SIZE = 10;
 
 function Search() {
-    const router = useRouter();
+    const { searchParams, router } = useNav();
+    const { categories, locations } = useDataCache();
+    const [categoryFilter, setCategoryFilter] = useState<Category>(null);
+    const [locationFilter, setLocationFilter] = useState<Location>(null);
 
-    const searchQuery = router?.query?.q ? router?.query?.q.toString() : "";
-    const pageQuery = router.query?.page
-        ? parseInt(router.query?.page.toString()) || 1
-        : 1;
+    useEffect(() => {
+        if (!router) return;
 
-    const readableSearch = searchQuery.split("+").join(" ");
+        if (router.query.qCategoryId) {
+            const category = categories.find(c => c.id === router.query.qCategoryId);
+            category && setCategoryFilter(category);
+        }
+
+        if (router.query.qLocationId) {
+            const location = locations.find(l => l.id === router.query.qLocationId);
+            location && setLocationFilter(location);
+        }
+    }, [router, categories, locations]);
 
     const [totalMatches, setTotalMatches] = useState(0);
     const [results, setResults] = useState(null);
 
     useEffect(() => {
-        if (!searchQuery) return;
+        if (!searchParams) return;
 
         setResults(null);
 
-        search(searchQuery, (pageQuery - 1) * PAGE_SIZE, PAGE_SIZE)
+        search({
+            query: searchParams.q,
+            categoryIdFilter: searchParams.qCategoryId,
+            locationIdFilter: searchParams.qLocationId,
+        }, {
+            limit: PAGE_SIZE,
+            offset: (searchParams.page - 1) * PAGE_SIZE,
+        })
             .then(result => {
                 setTotalMatches(result.estimatedTotalHits);
                 setResults(result.hits);
             })
             .catch(err => {
+                Sentry.captureException(err);
                 console.error(err);
                 toast.error('Something went wrong');
             });
-    }, [ searchQuery, pageQuery ]);
+    }, [ searchParams, setTotalMatches, setResults ]);
 
     return (
         <Layout>
@@ -53,8 +75,28 @@ function Search() {
                 <div className="min-w-[75%]">
                     <div className="flex items-center">
                         <h2 className="text-2xl font-xl font-semibold leading-6 text-black">
-                            {`Search for "${readableSearch}"`}
+                            Search for &quot;
+                            <span className='text-gray-500 font-normal'>{searchParams.q}</span>
+                            &quot;
                         </h2>
+                    </div>
+                    <div className="flex items-center">
+                        {(!!categoryFilter || !!locationFilter) &&
+                            <h3>
+                                {!!categoryFilter &&
+                                    <>
+                                        <span> in</span>
+                                        <span className='text-gray-500 font-normal'> {categoryFilter.category}</span>
+                                    </>
+                                }
+                                {!!locationFilter &&
+                                    <>
+                                        <span> {categoryFilter ? 'x' : 'in'}</span>
+                                        <span className='text-gray-500 font-normal'> {locationFilter.location}</span>
+                                    </>
+                                }
+                            </h3>
+                        }
                     </div>
 
                     <dl className="mt-6 flex flex-col w-full gap-5">

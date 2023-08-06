@@ -3,4 +3,5 @@ export interface Location {
     location: string;
     parentId?: string;
     hidden?: boolean;
+    population: number;
 }

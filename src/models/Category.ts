@@ -4,4 +4,6 @@ export interface Category {
     parentId?: string;
     hidden?: boolean;
     imageName: string;
+    imagePosition?: string;
+    imageTextShadowOpacity?: number;
 }

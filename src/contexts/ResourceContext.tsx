@@ -33,12 +33,12 @@ const ResourceContext = createContext<ResourceContext>({
 });
 
 export const ResourceContextProvider = ({ children, resourceType }: { children: ReactNode, resourceType: ResourceType }) => {
-    const router = useRouter();
+    const { goToNotFoundPage, router } = useNav();
     const { currentCategory, currentLocation } = useNav();
     const [content, setContent] = useState<string>(null);
     const [focusedEditorElementIndex, setFocusedEditorElementIndex] = useState<number>(null);
 
-    const [topicsCollection] = useCollectionOnceWithDependencies(
+    const [topicsCollection, isTopicLoading] = useCollectionOnceWithDependencies(
         () => query(
             collection(db, "topics"),
             where("categoryId", "==", currentCategory.id),
@@ -46,10 +46,15 @@ export const ResourceContextProvider = ({ children, resourceType }: { children: 
         ), [ currentCategory?.id, currentLocation?.id ]
     );
 
+    if (!isTopicLoading && (!topicsCollection || topicsCollection?.docs?.length === 0)) {
+        goToNotFoundPage();
+    };
+
     const topicId = topicsCollection?.docs?.[0]?.id || null;
     const actionId = router?.query?.actionId?.toString();
 
-    const [actionSnapshot, isActionSnapshotLoading] = useDocumentOnceWithDependencies(() => doc(db, "actions", actionId), [ actionId ]);
+    const [actionSnapshot, isActionSnapshotLoading] = useDocumentOnceWithDependencies(
+        () => doc(db, "actions", actionId), [ actionId ]);
 
     let foundContent: string;
     let authorId: string;
@@ -78,7 +83,6 @@ export const ResourceContextProvider = ({ children, resourceType }: { children: 
     useEffect(() => {
         setContent(foundContent);
     }, [setContent, foundContent]);
-
 
     return (
         <ResourceContext.Provider

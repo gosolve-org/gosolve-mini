@@ -3,10 +3,11 @@ const { REGION } = require('../constants');
 const { upsertDocument, deleteDocument, search } = require('./meili');
 const { createDb, getAction, getTopic, getCategory, getLocation } = require('../db');
 const { getFirestoreEventType, editorJsContentToRawText } = require("../utils");
+const { functionWrapper } = require('../sentry');
 
 module.exports.upsertPostToMeiliSearch = functions.region(REGION).firestore
     .document('posts/{docId}')
-    .onWrite(async (change) => {
+    .onWrite(functionWrapper(async (change) => {
         const eventType = getFirestoreEventType(change.before, change.after);
         const id = change.after.id;
 
@@ -19,12 +20,14 @@ module.exports.upsertPostToMeiliSearch = functions.region(REGION).firestore
                 topicId = (await getAction(db, actionId)).topicId;
             }
 
-            const { category, location } = await getTopic(db, topicId);
+            const { category, location, categoryId, locationId } = await getTopic(db, topicId);
 
             await upsertDocument(id, 'post', {
                 topicId,
                 actionId,
+                categoryId,
                 category,
+                locationId,
                 location,
                 title,
                 authorUsername,
@@ -34,11 +37,11 @@ module.exports.upsertPostToMeiliSearch = functions.region(REGION).firestore
         } else if (eventType === 'delete') {
             await deleteDocument(id, 'post');
         }
-    });
+    }));
 
 module.exports.upsertActionToMeiliSearch = functions.region(REGION).firestore
     .document('actions/{docId}')
-    .onWrite(async (change) => {
+    .onWrite(functionWrapper(async (change) => {
         const eventType = getFirestoreEventType(change.before, change.after);
         const id = change.after.id;
 
@@ -46,11 +49,13 @@ module.exports.upsertActionToMeiliSearch = functions.region(REGION).firestore
             const db = createDb();
 
             const { authorUsername, createdAt, topicId, title, content } = change.after.data();
-            const { category, location } = await getTopic(db, topicId);
+            const { category, location, categoryId, locationId } = await getTopic(db, topicId);
 
             await upsertDocument(id, 'action', {
                 topicId,
+                categoryId,
                 category,
+                locationId,
                 location,
                 title,
                 authorUsername,
@@ -60,11 +65,11 @@ module.exports.upsertActionToMeiliSearch = functions.region(REGION).firestore
         } else if (eventType === 'delete') {
             await deleteDocument(id, 'action');
         }
-    });
+    }));
 
 module.exports.upsertTopicToMeiliSearch = functions.region(REGION).firestore
     .document('topics/{docId}')
-    .onWrite(async (change) => {
+    .onWrite(functionWrapper(async (change) => {
         const eventType = getFirestoreEventType(change.before, change.after);
         const id = change.after.id;
 
@@ -78,19 +83,22 @@ module.exports.upsertTopicToMeiliSearch = functions.region(REGION).firestore
             ]);
 
             await upsertDocument(id, 'topic', {
+                categoryId,
                 category,
+                locationId,
                 location,
                 content: editorJsContentToRawText(content),
             });
         } else if (eventType === 'delete') {
             await deleteDocument(id, 'topic');
         }
-    });
+    }));
 
 // Searches through all resources
-module.exports.search = functions.region(REGION).https.onCall(async (data, context) => {
+module.exports.search = functions.region(REGION).https.onCall(functionWrapper(async (data, context) => {
     const query = data.query;
-    if (!query) return [];
+    const options = data.options;
+    if (!query || !options) return [];
 
-    return await search(query, data.offset, data.limit);
-});
+    return await search(query, options);
+}));

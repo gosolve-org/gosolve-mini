@@ -1,0 +1,1773 @@
+[
+    {
+        "location": "World",
+        "countryCode": null,
+        "adminDivisionLevel": -2,
+        "id": "world",
+        "population": 8000000000
+    },
+    {
+        "location": "Andorra",
+        "countryCode": "AD",
+        "adminDivisionLevel": 0,
+        "id": "3041565",
+        "population": 77006
+    },
+    {
+        "location": "United Arab Emirates",
+        "countryCode": "AE",
+        "adminDivisionLevel": 0,
+        "id": "290557",
+        "population": 9630959
+    },
+    {
+        "location": "Afghanistan",
+        "countryCode": "AF",
+        "adminDivisionLevel": 0,
+        "id": "1149361",
+        "population": 37172386
+    },
+    {
+        "location": "Antigua and Barbuda",
+        "countryCode": "AG",
+        "adminDivisionLevel": 0,
+        "id": "3576396",
+        "population": 96286
+    },
+    {
+        "location": "Anguilla",
+        "countryCode": "AI",
+        "adminDivisionLevel": 0,
+        "id": "3573511",
+        "population": 13254
+    },
+    {
+        "location": "Albania",
+        "countryCode": "AL",
+        "adminDivisionLevel": 0,
+        "id": "783754",
+        "population": 2866376
+    },
+    {
+        "location": "Armenia",
+        "countryCode": "AM",
+        "adminDivisionLevel": 0,
+        "id": "174982",
+        "population": 2951776
+    },
+    {
+        "location": "Angola",
+        "countryCode": "AO",
+        "adminDivisionLevel": 0,
+        "id": "3351879",
+        "population": 30809762
+    },
+    {
+        "location": "Antarctica",
+        "countryCode": "AQ",
+        "adminDivisionLevel": 0,
+        "id": "6697173",
+        "population": 0
+    },
+    {
+        "location": "Argentina",
+        "countryCode": "AR",
+        "adminDivisionLevel": 0,
+        "id": "3865483",
+        "population": 44494502
+    },
+    {
+        "location": "American Samoa",
+        "countryCode": "AS",
+        "adminDivisionLevel": 0,
+        "id": "5880801",
+        "population": 55465
+    },
+    {
+        "location": "Austria",
+        "countryCode": "AT",
+        "adminDivisionLevel": 0,
+        "id": "2782113",
+        "population": 8847037
+    },
+    {
+        "location": "Australia",
+        "countryCode": "AU",
+        "adminDivisionLevel": 0,
+        "id": "2077456",
+        "population": 24992369
+    },
+    {
+        "location": "Aruba",
+        "countryCode": "AW",
+        "adminDivisionLevel": 0,
+        "id": "3577279",
+        "population": 105845
+    },
+    {
+        "location": "Aland Islands",
+        "countryCode": "AX",
+        "adminDivisionLevel": 0,
+        "id": "661882",
+        "population": 26711
+    },
+    {
+        "location": "Azerbaijan",
+        "countryCode": "AZ",
+        "adminDivisionLevel": 0,
+        "id": "587116",
+        "population": 9942334
+    },
+    {
+        "location": "Bosnia and Herzegovina",
+        "countryCode": "BA",
+        "adminDivisionLevel": 0,
+        "id": "3277605",
+        "population": 3323929
+    },
+    {
+        "location": "Barbados",
+        "countryCode": "BB",
+        "adminDivisionLevel": 0,
+        "id": "3374084",
+        "population": 286641
+    },
+    {
+        "location": "Bangladesh",
+        "countryCode": "BD",
+        "adminDivisionLevel": 0,
+        "id": "1210997",
+        "population": 161356039
+    },
+    {
+        "location": "Belgium",
+        "countryCode": "BE",
+        "adminDivisionLevel": 0,
+        "id": "2802361",
+        "population": 11422068
+    },
+    {
+        "location": "Burkina Faso",
+        "countryCode": "BF",
+        "adminDivisionLevel": 0,
+        "id": "2361809",
+        "population": 19751535
+    },
+    {
+        "location": "Bulgaria",
+        "countryCode": "BG",
+        "adminDivisionLevel": 0,
+        "id": "732800",
+        "population": 7000039
+    },
+    {
+        "location": "Bahrain",
+        "countryCode": "BH",
+        "adminDivisionLevel": 0,
+        "id": "290291",
+        "population": 1569439
+    },
+    {
+        "location": "Burundi",
+        "countryCode": "BI",
+        "adminDivisionLevel": 0,
+        "id": "433561",
+        "population": 11175378
+    },
+    {
+        "location": "Benin",
+        "countryCode": "BJ",
+        "adminDivisionLevel": 0,
+        "id": "2395170",
+        "population": 11485048
+    },
+    {
+        "location": "Saint Barthelemy",
+        "countryCode": "BL",
+        "adminDivisionLevel": 0,
+        "id": "3578476",
+        "population": 8450
+    },
+    {
+        "location": "Bermuda",
+        "countryCode": "BM",
+        "adminDivisionLevel": 0,
+        "id": "3573345",
+        "population": 63968
+    },
+    {
+        "location": "Brunei",
+        "countryCode": "BN",
+        "adminDivisionLevel": 0,
+        "id": "1820814",
+        "population": 428962
+    },
+    {
+        "location": "Bolivia",
+        "countryCode": "BO",
+        "adminDivisionLevel": 0,
+        "id": "3923057",
+        "population": 11353142
+    },
+    {
+        "location": "Bonaire, Saint Eustatius and Saba ",
+        "countryCode": "BQ",
+        "adminDivisionLevel": 0,
+        "id": "7626844",
+        "population": 18012
+    },
+    {
+        "location": "Brazil",
+        "countryCode": "BR",
+        "adminDivisionLevel": 0,
+        "id": "3469034",
+        "population": 209469333
+    },
+    {
+        "location": "Bahamas",
+        "countryCode": "BS",
+        "adminDivisionLevel": 0,
+        "id": "3572887",
+        "population": 385640
+    },
+    {
+        "location": "Bhutan",
+        "countryCode": "BT",
+        "adminDivisionLevel": 0,
+        "id": "1252634",
+        "population": 754394
+    },
+    {
+        "location": "Bouvet Island",
+        "countryCode": "BV",
+        "adminDivisionLevel": 0,
+        "id": "3371123",
+        "population": 0
+    },
+    {
+        "location": "Botswana",
+        "countryCode": "BW",
+        "adminDivisionLevel": 0,
+        "id": "933860",
+        "population": 2254126
+    },
+    {
+        "location": "Belarus",
+        "countryCode": "BY",
+        "adminDivisionLevel": 0,
+        "id": "630336",
+        "population": 9485386
+    },
+    {
+        "location": "Belize",
+        "countryCode": "BZ",
+        "adminDivisionLevel": 0,
+        "id": "3582678",
+        "population": 383071
+    },
+    {
+        "location": "Canada",
+        "countryCode": "CA",
+        "adminDivisionLevel": 0,
+        "id": "6251999",
+        "population": 37058856
+    },
+    {
+        "location": "Cocos Islands",
+        "countryCode": "CC",
+        "adminDivisionLevel": 0,
+        "id": "1547376",
+        "population": 628
+    },
+    {
+        "location": "Democratic Republic of the Congo",
+        "countryCode": "CD",
+        "adminDivisionLevel": 0,
+        "id": "203312",
+        "population": 84068091
+    },
+    {
+        "location": "Central African Republic",
+        "countryCode": "CF",
+        "adminDivisionLevel": 0,
+        "id": "239880",
+        "population": 4666377
+    },
+    {
+        "location": "Republic of the Congo",
+        "countryCode": "CG",
+        "adminDivisionLevel": 0,
+        "id": "2260494",
+        "population": 5244363
+    },
+    {
+        "location": "Switzerland",
+        "countryCode": "CH",
+        "adminDivisionLevel": 0,
+        "id": "2658434",
+        "population": 8516543
+    },
+    {
+        "location": "Ivory Coast",
+        "countryCode": "CI",
+        "adminDivisionLevel": 0,
+        "id": "2287781",
+        "population": 25069229
+    },
+    {
+        "location": "Cook Islands",
+        "countryCode": "CK",
+        "adminDivisionLevel": 0,
+        "id": "1899402",
+        "population": 21388
+    },
+    {
+        "location": "Chile",
+        "countryCode": "CL",
+        "adminDivisionLevel": 0,
+        "id": "3895114",
+        "population": 18729160
+    },
+    {
+        "location": "Cameroon",
+        "countryCode": "CM",
+        "adminDivisionLevel": 0,
+        "id": "2233387",
+        "population": 25216237
+    },
+    {
+        "location": "China",
+        "countryCode": "CN",
+        "adminDivisionLevel": 0,
+        "id": "1814991",
+        "population": 1411778724
+    },
+    {
+        "location": "Colombia",
+        "countryCode": "CO",
+        "adminDivisionLevel": 0,
+        "id": "3686110",
+        "population": 49648685
+    },
+    {
+        "location": "Costa Rica",
+        "countryCode": "CR",
+        "adminDivisionLevel": 0,
+        "id": "3624060",
+        "population": 4999441
+    },
+    {
+        "location": "Cuba",
+        "countryCode": "CU",
+        "adminDivisionLevel": 0,
+        "id": "3562981",
+        "population": 11338138
+    },
+    {
+        "location": "Cabo Verde",
+        "countryCode": "CV",
+        "adminDivisionLevel": 0,
+        "id": "3374766",
+        "population": 543767
+    },
+    {
+        "location": "Curacao",
+        "countryCode": "CW",
+        "adminDivisionLevel": 0,
+        "id": "7626836",
+        "population": 159849
+    },
+    {
+        "location": "Christmas Island",
+        "countryCode": "CX",
+        "adminDivisionLevel": 0,
+        "id": "2078138",
+        "population": 1500
+    },
+    {
+        "location": "Cyprus",
+        "countryCode": "CY",
+        "adminDivisionLevel": 0,
+        "id": "146669",
+        "population": 1189265
+    },
+    {
+        "location": "Czechia",
+        "countryCode": "CZ",
+        "adminDivisionLevel": 0,
+        "id": "3077311",
+        "population": 10625695
+    },
+    {
+        "location": "Germany",
+        "countryCode": "DE",
+        "adminDivisionLevel": 0,
+        "id": "2921044",
+        "population": 82927922
+    },
+    {
+        "location": "Djibouti",
+        "countryCode": "DJ",
+        "adminDivisionLevel": 0,
+        "id": "223816",
+        "population": 958920
+    },
+    {
+        "location": "Denmark",
+        "countryCode": "DK",
+        "adminDivisionLevel": 0,
+        "id": "2623032",
+        "population": 5797446
+    },
+    {
+        "location": "Dominica",
+        "countryCode": "DM",
+        "adminDivisionLevel": 0,
+        "id": "3575830",
+        "population": 71625
+    },
+    {
+        "location": "Dominican Republic",
+        "countryCode": "DO",
+        "adminDivisionLevel": 0,
+        "id": "3508796",
+        "population": 10627165
+    },
+    {
+        "location": "Algeria",
+        "countryCode": "DZ",
+        "adminDivisionLevel": 0,
+        "id": "2589581",
+        "population": 42228429
+    },
+    {
+        "location": "Ecuador",
+        "countryCode": "EC",
+        "adminDivisionLevel": 0,
+        "id": "3658394",
+        "population": 17084357
+    },
+    {
+        "location": "Estonia",
+        "countryCode": "EE",
+        "adminDivisionLevel": 0,
+        "id": "453733",
+        "population": 1320884
+    },
+    {
+        "location": "Egypt",
+        "countryCode": "EG",
+        "adminDivisionLevel": 0,
+        "id": "357994",
+        "population": 98423595
+    },
+    {
+        "location": "Western Sahara",
+        "countryCode": "EH",
+        "adminDivisionLevel": 0,
+        "id": "2461445",
+        "population": 273008
+    },
+    {
+        "location": "Eritrea",
+        "countryCode": "ER",
+        "adminDivisionLevel": 0,
+        "id": "338010",
+        "population": 6209262
+    },
+    {
+        "location": "Spain",
+        "countryCode": "ES",
+        "adminDivisionLevel": 0,
+        "id": "2510769",
+        "population": 46723749
+    },
+    {
+        "location": "Ethiopia",
+        "countryCode": "ET",
+        "adminDivisionLevel": 0,
+        "id": "337996",
+        "population": 109224559
+    },
+    {
+        "location": "Finland",
+        "countryCode": "FI",
+        "adminDivisionLevel": 0,
+        "id": "660013",
+        "population": 5518050
+    },
+    {
+        "location": "Fiji",
+        "countryCode": "FJ",
+        "adminDivisionLevel": 0,
+        "id": "2205218",
+        "population": 883483
+    },
+    {
+        "location": "Falkland Islands",
+        "countryCode": "FK",
+        "adminDivisionLevel": 0,
+        "id": "3474414",
+        "population": 2638
+    },
+    {
+        "location": "Micronesia",
+        "countryCode": "FM",
+        "adminDivisionLevel": 0,
+        "id": "2081918",
+        "population": 112640
+    },
+    {
+        "location": "Faroe Islands",
+        "countryCode": "FO",
+        "adminDivisionLevel": 0,
+        "id": "2622320",
+        "population": 48497
+    },
+    {
+        "location": "France",
+        "countryCode": "FR",
+        "adminDivisionLevel": 0,
+        "id": "3017382",
+        "population": 66987244
+    },
+    {
+        "location": "Gabon",
+        "countryCode": "GA",
+        "adminDivisionLevel": 0,
+        "id": "2400553",
+        "population": 2119275
+    },
+    {
+        "location": "United Kingdom",
+        "countryCode": "GB",
+        "adminDivisionLevel": 0,
+        "id": "2635167",
+        "population": 66488991
+    },
+    {
+        "location": "Grenada",
+        "countryCode": "GD",
+        "adminDivisionLevel": 0,
+        "id": "3580239",
+        "population": 111454
+    },
+    {
+        "location": "Georgia",
+        "countryCode": "GE",
+        "adminDivisionLevel": 0,
+        "id": "614540",
+        "population": 3731000
+    },
+    {
+        "location": "French Guiana",
+        "countryCode": "GF",
+        "adminDivisionLevel": 0,
+        "id": "3381670",
+        "population": 195506
+    },
+    {
+        "location": "Guernsey",
+        "countryCode": "GG",
+        "adminDivisionLevel": 0,
+        "id": "3042362",
+        "population": 65228
+    },
+    {
+        "location": "Ghana",
+        "countryCode": "GH",
+        "adminDivisionLevel": 0,
+        "id": "2300660",
+        "population": 29767108
+    },
+    {
+        "location": "Gibraltar",
+        "countryCode": "GI",
+        "adminDivisionLevel": 0,
+        "id": "2411586",
+        "population": 33718
+    },
+    {
+        "location": "Greenland",
+        "countryCode": "GL",
+        "adminDivisionLevel": 0,
+        "id": "3425505",
+        "population": 56025
+    },
+    {
+        "location": "Gambia",
+        "countryCode": "GM",
+        "adminDivisionLevel": 0,
+        "id": "2413451",
+        "population": 2280102
+    },
+    {
+        "location": "Guinea",
+        "countryCode": "GN",
+        "adminDivisionLevel": 0,
+        "id": "2420477",
+        "population": 12414318
+    },
+    {
+        "location": "Guadeloupe",
+        "countryCode": "GP",
+        "adminDivisionLevel": 0,
+        "id": "3579143",
+        "population": 443000
+    },
+    {
+        "location": "Equatorial Guinea",
+        "countryCode": "GQ",
+        "adminDivisionLevel": 0,
+        "id": "2309096",
+        "population": 1308974
+    },
+    {
+        "location": "Greece",
+        "countryCode": "GR",
+        "adminDivisionLevel": 0,
+        "id": "390903",
+        "population": 10727668
+    },
+    {
+        "location": "South Georgia and the South Sandwich Islands",
+        "countryCode": "GS",
+        "adminDivisionLevel": 0,
+        "id": "3474415",
+        "population": 30
+    },
+    {
+        "location": "Guatemala",
+        "countryCode": "GT",
+        "adminDivisionLevel": 0,
+        "id": "3595528",
+        "population": 17247807
+    },
+    {
+        "location": "Guam",
+        "countryCode": "GU",
+        "adminDivisionLevel": 0,
+        "id": "4043988",
+        "population": 165768
+    },
+    {
+        "location": "Guinea-Bissau",
+        "countryCode": "GW",
+        "adminDivisionLevel": 0,
+        "id": "2372248",
+        "population": 1874309
+    },
+    {
+        "location": "Guyana",
+        "countryCode": "GY",
+        "adminDivisionLevel": 0,
+        "id": "3378535",
+        "population": 779004
+    },
+    {
+        "location": "Hong Kong",
+        "countryCode": "HK",
+        "adminDivisionLevel": 0,
+        "id": "1819730",
+        "population": 7451000
+    },
+    {
+        "location": "Heard Island and McDonald Islands",
+        "countryCode": "HM",
+        "adminDivisionLevel": 0,
+        "id": "1547314",
+        "population": 0
+    },
+    {
+        "location": "Honduras",
+        "countryCode": "HN",
+        "adminDivisionLevel": 0,
+        "id": "3608932",
+        "population": 9587522
+    },
+    {
+        "location": "Croatia",
+        "countryCode": "HR",
+        "adminDivisionLevel": 0,
+        "id": "3202326",
+        "population": 3871833
+    },
+    {
+        "location": "Haiti",
+        "countryCode": "HT",
+        "adminDivisionLevel": 0,
+        "id": "3723988",
+        "population": 11123176
+    },
+    {
+        "location": "Hungary",
+        "countryCode": "HU",
+        "adminDivisionLevel": 0,
+        "id": "719819",
+        "population": 9768785
+    },
+    {
+        "location": "Indonesia",
+        "countryCode": "ID",
+        "adminDivisionLevel": 0,
+        "id": "1643084",
+        "population": 267663435
+    },
+    {
+        "location": "Ireland",
+        "countryCode": "IE",
+        "adminDivisionLevel": 0,
+        "id": "2963597",
+        "population": 4853506
+    },
+    {
+        "location": "Israel",
+        "countryCode": "IL",
+        "adminDivisionLevel": 0,
+        "id": "294640",
+        "population": 8883800
+    },
+    {
+        "location": "Isle of Man",
+        "countryCode": "IM",
+        "adminDivisionLevel": 0,
+        "id": "3042225",
+        "population": 84077
+    },
+    {
+        "location": "India",
+        "countryCode": "IN",
+        "adminDivisionLevel": 0,
+        "id": "1269750",
+        "population": 1352617328
+    },
+    {
+        "location": "British Indian Ocean Territory",
+        "countryCode": "IO",
+        "adminDivisionLevel": 0,
+        "id": "1282588",
+        "population": 4000
+    },
+    {
+        "location": "Iraq",
+        "countryCode": "IQ",
+        "adminDivisionLevel": 0,
+        "id": "99237",
+        "population": 38433600
+    },
+    {
+        "location": "Iran",
+        "countryCode": "IR",
+        "adminDivisionLevel": 0,
+        "id": "130758",
+        "population": 81800269
+    },
+    {
+        "location": "Iceland",
+        "countryCode": "IS",
+        "adminDivisionLevel": 0,
+        "id": "2629691",
+        "population": 353574
+    },
+    {
+        "location": "Italy",
+        "countryCode": "IT",
+        "adminDivisionLevel": 0,
+        "id": "3175395",
+        "population": 60431283
+    },
+    {
+        "location": "Jersey",
+        "countryCode": "JE",
+        "adminDivisionLevel": 0,
+        "id": "3042142",
+        "population": 90812
+    },
+    {
+        "location": "Jamaica",
+        "countryCode": "JM",
+        "adminDivisionLevel": 0,
+        "id": "3489940",
+        "population": 2934855
+    },
+    {
+        "location": "Jordan",
+        "countryCode": "JO",
+        "adminDivisionLevel": 0,
+        "id": "248816",
+        "population": 9956011
+    },
+    {
+        "location": "Japan",
+        "countryCode": "JP",
+        "adminDivisionLevel": 0,
+        "id": "1861060",
+        "population": 126529100
+    },
+    {
+        "location": "Kenya",
+        "countryCode": "KE",
+        "adminDivisionLevel": 0,
+        "id": "192950",
+        "population": 51393010
+    },
+    {
+        "location": "Kyrgyzstan",
+        "countryCode": "KG",
+        "adminDivisionLevel": 0,
+        "id": "1527747",
+        "population": 6315800
+    },
+    {
+        "location": "Cambodia",
+        "countryCode": "KH",
+        "adminDivisionLevel": 0,
+        "id": "1831722",
+        "population": 16249798
+    },
+    {
+        "location": "Kiribati",
+        "countryCode": "KI",
+        "adminDivisionLevel": 0,
+        "id": "4030945",
+        "population": 115847
+    },
+    {
+        "location": "Comoros",
+        "countryCode": "KM",
+        "adminDivisionLevel": 0,
+        "id": "921929",
+        "population": 832322
+    },
+    {
+        "location": "Saint Kitts and Nevis",
+        "countryCode": "KN",
+        "adminDivisionLevel": 0,
+        "id": "3575174",
+        "population": 52441
+    },
+    {
+        "location": "North Korea",
+        "countryCode": "KP",
+        "adminDivisionLevel": 0,
+        "id": "1873107",
+        "population": 25549819
+    },
+    {
+        "location": "South Korea",
+        "countryCode": "KR",
+        "adminDivisionLevel": 0,
+        "id": "1835841",
+        "population": 51635256
+    },
+    {
+        "location": "Kosovo",
+        "countryCode": "XK",
+        "adminDivisionLevel": 0,
+        "id": "831053",
+        "population": 1845300
+    },
+    {
+        "location": "Kuwait",
+        "countryCode": "KW",
+        "adminDivisionLevel": 0,
+        "id": "285570",
+        "population": 4137309
+    },
+    {
+        "location": "Cayman Islands",
+        "countryCode": "KY",
+        "adminDivisionLevel": 0,
+        "id": "3580718",
+        "population": 64174
+    },
+    {
+        "location": "Kazakhstan",
+        "countryCode": "KZ",
+        "adminDivisionLevel": 0,
+        "id": "1522867",
+        "population": 18276499
+    },
+    {
+        "location": "Laos",
+        "countryCode": "LA",
+        "adminDivisionLevel": 0,
+        "id": "1655842",
+        "population": 7061507
+    },
+    {
+        "location": "Lebanon",
+        "countryCode": "LB",
+        "adminDivisionLevel": 0,
+        "id": "272103",
+        "population": 6848925
+    },
+    {
+        "location": "Saint Lucia",
+        "countryCode": "LC",
+        "adminDivisionLevel": 0,
+        "id": "3576468",
+        "population": 181889
+    },
+    {
+        "location": "Liechtenstein",
+        "countryCode": "LI",
+        "adminDivisionLevel": 0,
+        "id": "3042058",
+        "population": 37910
+    },
+    {
+        "location": "Sri Lanka",
+        "countryCode": "LK",
+        "adminDivisionLevel": 0,
+        "id": "1227603",
+        "population": 21670000
+    },
+    {
+        "location": "Liberia",
+        "countryCode": "LR",
+        "adminDivisionLevel": 0,
+        "id": "2275384",
+        "population": 4818977
+    },
+    {
+        "location": "Lesotho",
+        "countryCode": "LS",
+        "adminDivisionLevel": 0,
+        "id": "932692",
+        "population": 2108132
+    },
+    {
+        "location": "Lithuania",
+        "countryCode": "LT",
+        "adminDivisionLevel": 0,
+        "id": "597427",
+        "population": 2789533
+    },
+    {
+        "location": "Luxembourg",
+        "countryCode": "LU",
+        "adminDivisionLevel": 0,
+        "id": "2960313",
+        "population": 607728
+    },
+    {
+        "location": "Latvia",
+        "countryCode": "LV",
+        "adminDivisionLevel": 0,
+        "id": "458258",
+        "population": 1926542
+    },
+    {
+        "location": "Libya",
+        "countryCode": "LY",
+        "adminDivisionLevel": 0,
+        "id": "2215636",
+        "population": 6678567
+    },
+    {
+        "location": "Morocco",
+        "countryCode": "MA",
+        "adminDivisionLevel": 0,
+        "id": "2542007",
+        "population": 36029138
+    },
+    {
+        "location": "Monaco",
+        "countryCode": "MC",
+        "adminDivisionLevel": 0,
+        "id": "2993457",
+        "population": 38682
+    },
+    {
+        "location": "Moldova",
+        "countryCode": "MD",
+        "adminDivisionLevel": 0,
+        "id": "617790",
+        "population": 3545883
+    },
+    {
+        "location": "Montenegro",
+        "countryCode": "ME",
+        "adminDivisionLevel": 0,
+        "id": "3194884",
+        "population": 622345
+    },
+    {
+        "location": "Saint Martin",
+        "countryCode": "MF",
+        "adminDivisionLevel": 0,
+        "id": "3578421",
+        "population": 37264
+    },
+    {
+        "location": "Madagascar",
+        "countryCode": "MG",
+        "adminDivisionLevel": 0,
+        "id": "1062947",
+        "population": 26262368
+    },
+    {
+        "location": "Marshall Islands",
+        "countryCode": "MH",
+        "adminDivisionLevel": 0,
+        "id": "2080185",
+        "population": 58413
+    },
+    {
+        "location": "North Macedonia",
+        "countryCode": "MK",
+        "adminDivisionLevel": 0,
+        "id": "718075",
+        "population": 2082958
+    },
+    {
+        "location": "Mali",
+        "countryCode": "ML",
+        "adminDivisionLevel": 0,
+        "id": "2453866",
+        "population": 19077690
+    },
+    {
+        "location": "Myanmar",
+        "countryCode": "MM",
+        "adminDivisionLevel": 0,
+        "id": "1327865",
+        "population": 53708395
+    },
+    {
+        "location": "Mongolia",
+        "countryCode": "MN",
+        "adminDivisionLevel": 0,
+        "id": "2029969",
+        "population": 3170208
+    },
+    {
+        "location": "Macao",
+        "countryCode": "MO",
+        "adminDivisionLevel": 0,
+        "id": "1821275",
+        "population": 631636
+    },
+    {
+        "location": "Northern Mariana Islands",
+        "countryCode": "MP",
+        "adminDivisionLevel": 0,
+        "id": "4041468",
+        "population": 56882
+    },
+    {
+        "location": "Martinique",
+        "countryCode": "MQ",
+        "adminDivisionLevel": 0,
+        "id": "3570311",
+        "population": 432900
+    },
+    {
+        "location": "Mauritania",
+        "countryCode": "MR",
+        "adminDivisionLevel": 0,
+        "id": "2378080",
+        "population": 4403319
+    },
+    {
+        "location": "Montserrat",
+        "countryCode": "MS",
+        "adminDivisionLevel": 0,
+        "id": "3578097",
+        "population": 9341
+    },
+    {
+        "location": "Malta",
+        "countryCode": "MT",
+        "adminDivisionLevel": 0,
+        "id": "2562770",
+        "population": 483530
+    },
+    {
+        "location": "Mauritius",
+        "countryCode": "MU",
+        "adminDivisionLevel": 0,
+        "id": "934292",
+        "population": 1265303
+    },
+    {
+        "location": "Maldives",
+        "countryCode": "MV",
+        "adminDivisionLevel": 0,
+        "id": "1282028",
+        "population": 515696
+    },
+    {
+        "location": "Malawi",
+        "countryCode": "MW",
+        "adminDivisionLevel": 0,
+        "id": "927384",
+        "population": 17563749
+    },
+    {
+        "location": "Mexico",
+        "countryCode": "MX",
+        "adminDivisionLevel": 0,
+        "id": "3996063",
+        "population": 126190788
+    },
+    {
+        "location": "Malaysia",
+        "countryCode": "MY",
+        "adminDivisionLevel": 0,
+        "id": "1733045",
+        "population": 31528585
+    },
+    {
+        "location": "Mozambique",
+        "countryCode": "MZ",
+        "adminDivisionLevel": 0,
+        "id": "1036973",
+        "population": 29495962
+    },
+    {
+        "location": "Namibia",
+        "countryCode": "NA",
+        "adminDivisionLevel": 0,
+        "id": "3355338",
+        "population": 2448255
+    },
+    {
+        "location": "New Caledonia",
+        "countryCode": "NC",
+        "adminDivisionLevel": 0,
+        "id": "2139685",
+        "population": 284060
+    },
+    {
+        "location": "Niger",
+        "countryCode": "NE",
+        "adminDivisionLevel": 0,
+        "id": "2440476",
+        "population": 22442948
+    },
+    {
+        "location": "Norfolk Island",
+        "countryCode": "NF",
+        "adminDivisionLevel": 0,
+        "id": "2155115",
+        "population": 1828
+    },
+    {
+        "location": "Nigeria",
+        "countryCode": "NG",
+        "adminDivisionLevel": 0,
+        "id": "2328926",
+        "population": 195874740
+    },
+    {
+        "location": "Nicaragua",
+        "countryCode": "NI",
+        "adminDivisionLevel": 0,
+        "id": "3617476",
+        "population": 6465513
+    },
+    {
+        "location": "Netherlands",
+        "countryCode": "NL",
+        "adminDivisionLevel": 0,
+        "id": "2750405",
+        "population": 17231017
+    },
+    {
+        "location": "Norway",
+        "countryCode": "NO",
+        "adminDivisionLevel": 0,
+        "id": "3144096",
+        "population": 5314336
+    },
+    {
+        "location": "Nepal",
+        "countryCode": "NP",
+        "adminDivisionLevel": 0,
+        "id": "1282988",
+        "population": 28087871
+    },
+    {
+        "location": "Nauru",
+        "countryCode": "NR",
+        "adminDivisionLevel": 0,
+        "id": "2110425",
+        "population": 12704
+    },
+    {
+        "location": "Niue",
+        "countryCode": "NU",
+        "adminDivisionLevel": 0,
+        "id": "4036232",
+        "population": 2166
+    },
+    {
+        "location": "New Zealand",
+        "countryCode": "NZ",
+        "adminDivisionLevel": 0,
+        "id": "2186224",
+        "population": 4885500
+    },
+    {
+        "location": "Oman",
+        "countryCode": "OM",
+        "adminDivisionLevel": 0,
+        "id": "286963",
+        "population": 4829483
+    },
+    {
+        "location": "Panama",
+        "countryCode": "PA",
+        "adminDivisionLevel": 0,
+        "id": "3703430",
+        "population": 4176873
+    },
+    {
+        "location": "Peru",
+        "countryCode": "PE",
+        "adminDivisionLevel": 0,
+        "id": "3932488",
+        "population": 31989256
+    },
+    {
+        "location": "French Polynesia",
+        "countryCode": "PF",
+        "adminDivisionLevel": 0,
+        "id": "4030656",
+        "population": 277679
+    },
+    {
+        "location": "Papua New Guinea",
+        "countryCode": "PG",
+        "adminDivisionLevel": 0,
+        "id": "2088628",
+        "population": 8606316
+    },
+    {
+        "location": "Philippines",
+        "countryCode": "PH",
+        "adminDivisionLevel": 0,
+        "id": "1694008",
+        "population": 106651922
+    },
+    {
+        "location": "Pakistan",
+        "countryCode": "PK",
+        "adminDivisionLevel": 0,
+        "id": "1168579",
+        "population": 212215030
+    },
+    {
+        "location": "Poland",
+        "countryCode": "PL",
+        "adminDivisionLevel": 0,
+        "id": "798544",
+        "population": 37978548
+    },
+    {
+        "location": "Saint Pierre and Miquelon",
+        "countryCode": "PM",
+        "adminDivisionLevel": 0,
+        "id": "3424932",
+        "population": 7012
+    },
+    {
+        "location": "Pitcairn",
+        "countryCode": "PN",
+        "adminDivisionLevel": 0,
+        "id": "4030699",
+        "population": 46
+    },
+    {
+        "location": "Puerto Rico",
+        "countryCode": "PR",
+        "adminDivisionLevel": 0,
+        "id": "4566966",
+        "population": 3195153
+    },
+    {
+        "location": "Palestinian Territory",
+        "countryCode": "PS",
+        "adminDivisionLevel": 0,
+        "id": "6254930",
+        "population": 4569087
+    },
+    {
+        "location": "Portugal",
+        "countryCode": "PT",
+        "adminDivisionLevel": 0,
+        "id": "2264397",
+        "population": 10281762
+    },
+    {
+        "location": "Palau",
+        "countryCode": "PW",
+        "adminDivisionLevel": 0,
+        "id": "1559582",
+        "population": 17907
+    },
+    {
+        "location": "Paraguay",
+        "countryCode": "PY",
+        "adminDivisionLevel": 0,
+        "id": "3437598",
+        "population": 6956071
+    },
+    {
+        "location": "Qatar",
+        "countryCode": "QA",
+        "adminDivisionLevel": 0,
+        "id": "289688",
+        "population": 2781677
+    },
+    {
+        "location": "Reunion",
+        "countryCode": "RE",
+        "adminDivisionLevel": 0,
+        "id": "935317",
+        "population": 776948
+    },
+    {
+        "location": "Romania",
+        "countryCode": "RO",
+        "adminDivisionLevel": 0,
+        "id": "798549",
+        "population": 19473936
+    },
+    {
+        "location": "Serbia",
+        "countryCode": "RS",
+        "adminDivisionLevel": 0,
+        "id": "6290252",
+        "population": 6982084
+    },
+    {
+        "location": "Russia",
+        "countryCode": "RU",
+        "adminDivisionLevel": 0,
+        "id": "2017370",
+        "population": 144478050
+    },
+    {
+        "location": "Rwanda",
+        "countryCode": "RW",
+        "adminDivisionLevel": 0,
+        "id": "49518",
+        "population": 12301939
+    },
+    {
+        "location": "Saudi Arabia",
+        "countryCode": "SA",
+        "adminDivisionLevel": 0,
+        "id": "102358",
+        "population": 33699947
+    },
+    {
+        "location": "Solomon Islands",
+        "countryCode": "SB",
+        "adminDivisionLevel": 0,
+        "id": "2103350",
+        "population": 652858
+    },
+    {
+        "location": "Seychelles",
+        "countryCode": "SC",
+        "adminDivisionLevel": 0,
+        "id": "241170",
+        "population": 96762
+    },
+    {
+        "location": "Sudan",
+        "countryCode": "SD",
+        "adminDivisionLevel": 0,
+        "id": "366755",
+        "population": 41801533
+    },
+    {
+        "location": "South Sudan",
+        "countryCode": "SS",
+        "adminDivisionLevel": 0,
+        "id": "7909807",
+        "population": 8260490
+    },
+    {
+        "location": "Sweden",
+        "countryCode": "SE",
+        "adminDivisionLevel": 0,
+        "id": "2661886",
+        "population": 10183175
+    },
+    {
+        "location": "Singapore",
+        "countryCode": "SG",
+        "adminDivisionLevel": 0,
+        "id": "1880251",
+        "population": 5638676
+    },
+    {
+        "location": "Saint Helena",
+        "countryCode": "SH",
+        "adminDivisionLevel": 0,
+        "id": "3370751",
+        "population": 7460
+    },
+    {
+        "location": "Slovenia",
+        "countryCode": "SI",
+        "adminDivisionLevel": 0,
+        "id": "3190538",
+        "population": 2067372
+    },
+    {
+        "location": "Svalbard and Jan Mayen",
+        "countryCode": "SJ",
+        "adminDivisionLevel": 0,
+        "id": "607072",
+        "population": 2550
+    },
+    {
+        "location": "Slovakia",
+        "countryCode": "SK",
+        "adminDivisionLevel": 0,
+        "id": "3057568",
+        "population": 5447011
+    },
+    {
+        "location": "Sierra Leone",
+        "countryCode": "SL",
+        "adminDivisionLevel": 0,
+        "id": "2403846",
+        "population": 7650154
+    },
+    {
+        "location": "San Marino",
+        "countryCode": "SM",
+        "adminDivisionLevel": 0,
+        "id": "3168068",
+        "population": 33785
+    },
+    {
+        "location": "Senegal",
+        "countryCode": "SN",
+        "adminDivisionLevel": 0,
+        "id": "2245662",
+        "population": 15854360
+    },
+    {
+        "location": "Somalia",
+        "countryCode": "SO",
+        "adminDivisionLevel": 0,
+        "id": "51537",
+        "population": 15008154
+    },
+    {
+        "location": "Suriname",
+        "countryCode": "SR",
+        "adminDivisionLevel": 0,
+        "id": "3382998",
+        "population": 575991
+    },
+    {
+        "location": "Sao Tome and Principe",
+        "countryCode": "ST",
+        "adminDivisionLevel": 0,
+        "id": "2410758",
+        "population": 197700
+    },
+    {
+        "location": "El Salvador",
+        "countryCode": "SV",
+        "adminDivisionLevel": 0,
+        "id": "3585968",
+        "population": 6420744
+    },
+    {
+        "location": "Sint Maarten",
+        "countryCode": "SX",
+        "adminDivisionLevel": 0,
+        "id": "7609695",
+        "population": 40654
+    },
+    {
+        "location": "Syria",
+        "countryCode": "SY",
+        "adminDivisionLevel": 0,
+        "id": "163843",
+        "population": 16906283
+    },
+    {
+        "location": "Eswatini",
+        "countryCode": "SZ",
+        "adminDivisionLevel": 0,
+        "id": "934841",
+        "population": 1136191
+    },
+    {
+        "location": "Turks and Caicos Islands",
+        "countryCode": "TC",
+        "adminDivisionLevel": 0,
+        "id": "3576916",
+        "population": 37665
+    },
+    {
+        "location": "Chad",
+        "countryCode": "TD",
+        "adminDivisionLevel": 0,
+        "id": "2434508",
+        "population": 15477751
+    },
+    {
+        "location": "French Southern Territories",
+        "countryCode": "TF",
+        "adminDivisionLevel": 0,
+        "id": "1546748",
+        "population": 140
+    },
+    {
+        "location": "Togo",
+        "countryCode": "TG",
+        "adminDivisionLevel": 0,
+        "id": "2363686",
+        "population": 7889094
+    },
+    {
+        "location": "Thailand",
+        "countryCode": "TH",
+        "adminDivisionLevel": 0,
+        "id": "1605651",
+        "population": 69428524
+    },
+    {
+        "location": "Tajikistan",
+        "countryCode": "TJ",
+        "adminDivisionLevel": 0,
+        "id": "1220409",
+        "population": 9100837
+    },
+    {
+        "location": "Tokelau",
+        "countryCode": "TK",
+        "adminDivisionLevel": 0,
+        "id": "4031074",
+        "population": 1466
+    },
+    {
+        "location": "Timor Leste",
+        "countryCode": "TL",
+        "adminDivisionLevel": 0,
+        "id": "1966436",
+        "population": 1267972
+    },
+    {
+        "location": "Turkmenistan",
+        "countryCode": "TM",
+        "adminDivisionLevel": 0,
+        "id": "1218197",
+        "population": 5850908
+    },
+    {
+        "location": "Tunisia",
+        "countryCode": "TN",
+        "adminDivisionLevel": 0,
+        "id": "2464461",
+        "population": 11565204
+    },
+    {
+        "location": "Tonga",
+        "countryCode": "TO",
+        "adminDivisionLevel": 0,
+        "id": "4032283",
+        "population": 103197
+    },
+    {
+        "location": "Turkey",
+        "countryCode": "TR",
+        "adminDivisionLevel": 0,
+        "id": "298795",
+        "population": 82319724
+    },
+    {
+        "location": "Trinidad and Tobago",
+        "countryCode": "TT",
+        "adminDivisionLevel": 0,
+        "id": "3573591",
+        "population": 1389858
+    },
+    {
+        "location": "Tuvalu",
+        "countryCode": "TV",
+        "adminDivisionLevel": 0,
+        "id": "2110297",
+        "population": 11508
+    },
+    {
+        "location": "Taiwan",
+        "countryCode": "TW",
+        "adminDivisionLevel": 0,
+        "id": "1668284",
+        "population": 23451837
+    },
+    {
+        "location": "Tanzania",
+        "countryCode": "TZ",
+        "adminDivisionLevel": 0,
+        "id": "149590",
+        "population": 56318348
+    },
+    {
+        "location": "Ukraine",
+        "countryCode": "UA",
+        "adminDivisionLevel": 0,
+        "id": "690791",
+        "population": 44622516
+    },
+    {
+        "location": "Uganda",
+        "countryCode": "UG",
+        "adminDivisionLevel": 0,
+        "id": "226074",
+        "population": 42723139
+    },
+    {
+        "location": "United States Minor Outlying Islands",
+        "countryCode": "UM",
+        "adminDivisionLevel": 0,
+        "id": "5854968",
+        "population": 0
+    },
+    {
+        "location": "United States",
+        "countryCode": "US",
+        "adminDivisionLevel": 0,
+        "id": "6252001",
+        "population": 327167434
+    },
+    {
+        "location": "Uruguay",
+        "countryCode": "UY",
+        "adminDivisionLevel": 0,
+        "id": "3439705",
+        "population": 3449299
+    },
+    {
+        "location": "Uzbekistan",
+        "countryCode": "UZ",
+        "adminDivisionLevel": 0,
+        "id": "1512440",
+        "population": 32955400
+    },
+    {
+        "location": "Vatican",
+        "countryCode": "VA",
+        "adminDivisionLevel": 0,
+        "id": "3164670",
+        "population": 921
+    },
+    {
+        "location": "Saint Vincent and the Grenadines",
+        "countryCode": "VC",
+        "adminDivisionLevel": 0,
+        "id": "3577815",
+        "population": 110211
+    },
+    {
+        "location": "Venezuela",
+        "countryCode": "VE",
+        "adminDivisionLevel": 0,
+        "id": "3625428",
+        "population": 28870195
+    },
+    {
+        "location": "British Virgin Islands",
+        "countryCode": "VG",
+        "adminDivisionLevel": 0,
+        "id": "3577718",
+        "population": 29802
+    },
+    {
+        "location": "U.S. Virgin Islands",
+        "countryCode": "VI",
+        "adminDivisionLevel": 0,
+        "id": "4796775",
+        "population": 106977
+    },
+    {
+        "location": "Vietnam",
+        "countryCode": "VN",
+        "adminDivisionLevel": 0,
+        "id": "1562822",
+        "population": 95540395
+    },
+    {
+        "location": "Vanuatu",
+        "countryCode": "VU",
+        "adminDivisionLevel": 0,
+        "id": "2134431",
+        "population": 292680
+    },
+    {
+        "location": "Wallis and Futuna",
+        "countryCode": "WF",
+        "adminDivisionLevel": 0,
+        "id": "4034749",
+        "population": 16025
+    },
+    {
+        "location": "Samoa",
+        "countryCode": "WS",
+        "adminDivisionLevel": 0,
+        "id": "4034894",
+        "population": 196130
+    },
+    {
+        "location": "Yemen",
+        "countryCode": "YE",
+        "adminDivisionLevel": 0,
+        "id": "69543",
+        "population": 28498687
+    },
+    {
+        "location": "Mayotte",
+        "countryCode": "YT",
+        "adminDivisionLevel": 0,
+        "id": "1024031",
+        "population": 279471
+    },
+    {
+        "location": "South Africa",
+        "countryCode": "ZA",
+        "adminDivisionLevel": 0,
+        "id": "953987",
+        "population": 57779622
+    },
+    {
+        "location": "Zambia",
+        "countryCode": "ZM",
+        "adminDivisionLevel": 0,
+        "id": "895949",
+        "population": 17351822
+    },
+    {
+        "location": "Zimbabwe",
+        "countryCode": "ZW",
+        "adminDivisionLevel": 0,
+        "id": "878675",
+        "population": 14439018
+    },
+    {
+        "location": "Serbia and Montenegro",
+        "countryCode": "CS",
+        "adminDivisionLevel": 0,
+        "id": "8505033",
+        "population": 10829175
+    },
+    {
+        "location": "Netherlands Antilles",
+        "countryCode": "AN",
+        "adminDivisionLevel": 0,
+        "id": "8505032",
+        "population": 300000
+    }
+]

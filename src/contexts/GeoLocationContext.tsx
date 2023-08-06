@@ -37,7 +37,7 @@ export const GeoLocationContextProvider = ({ children }: { children: ReactNode }
                 requestLocationAccess();
             }
         });
-    }, [setIsGeoLocationAvailable]);
+    }, [setIsGeoLocationAvailable, requestLocationAccess]);
 
     return (
         <GeoLocationContext.Provider

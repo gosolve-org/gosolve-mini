@@ -65,7 +65,7 @@ function SearchBar() {
             const location = locations.find(l => l.id === router.query.qLocationId);
             location && setLocationFilter(countryLocationToSearchResult(location));
         }
-    }, [router, categories, locations]);
+    }, [router, categories, locations, setCategoryFilter, setLocationFilter]);
 
     const handleSearchQueryChange = (e: FormEvent<HTMLInputElement>) =>
     {

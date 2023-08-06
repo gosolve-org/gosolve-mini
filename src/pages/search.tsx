@@ -75,9 +75,9 @@ function Search() {
                 <div className="min-w-[75%]">
                     <div className="flex items-center">
                         <h2 className="text-2xl font-xl font-semibold leading-6 text-black">
-                            Search for "
+                            Search for &quot;
                             <span className='text-gray-500 font-normal'>{searchParams.q}</span>
-                            "
+                            &quot;
                         </h2>
                     </div>
                     <div className="flex items-center">

@@ -1,4 +1,4 @@
-import { useState, SyntheticEvent, FormEvent } from "react";
+import { useState, SyntheticEvent, FormEvent, useEffect } from "react";
 import { useRouter } from "next/router";
 import * as Sentry from '@sentry/react'
 
@@ -29,9 +29,16 @@ function Login() {
         getGoogleCredentials,
         setShouldRemember,
         registerWithGoogle,
-        doesUserExist
+        doesUserExist,
+        isAuthenticated
     } = useAuth();
     const router = useRouter();
+
+    useEffect(() => {
+        if (!isLoading && isAuthenticated()) {
+            router.push("/");
+        }
+    }, [isAuthenticated, isLoading]);
 
     const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();

@@ -93,3 +93,7 @@ Create a json key for this service account, base64 encode it, and save it in the
 -   Setting up a new database requires going through the authentication and firestore database setups
     -   For authorisation, add authorised domains under authentication -> settings
     -   Add env variables to deploy/local which can be found in project settings -> general -> your apps (search for `process.env` to see which ones are needed)
+
+## License
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)  
+goSolve is open-source. We use the [GNU AGPLv3 licensing strategy](LICENSE).

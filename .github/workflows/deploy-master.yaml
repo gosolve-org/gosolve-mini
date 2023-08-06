@@ -7,45 +7,15 @@ on:
         description: 'What environment do you want to deploy to?'
         type: environment
         required: true
+      release:
+        description: 'The release version to deploy (ex: 1.0.0)'
+        type: string
+        required: true
 
 jobs:
-  create-github-release-tag:
-    if: github.ref == 'refs/heads/main'
-    environment: ${{ inputs.environment }}
-    name: GitHub Tags
-    runs-on: ubuntu-latest
-    outputs:
-      new_tag: ${{ steps.taggerFinal.outputs.new_tag }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Generate Final Version
-        id: taggerFinal
-        uses: anothrNick/github-tag-action@1.67.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Echo New Tag
-        run: echo "The new tag version will be ${{ steps.taggerFinal.outputs.new_tag }}"
-  create-github-release:
-    if: github.ref == 'refs/heads/main'
-    environment: ${{ inputs.environment }}
-    needs: create-github-release-tag
-    name: GitHub Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Create Release
-        uses: ncipollo/release-action@v1.12.0
-        with:
-          tag: ${{ needs.create-github-release-tag.outputs.new_tag }}
-          token: ${{ secrets.GITHUB_TOKEN_RELEASE }}
   deploy-sentry:
     if: github.ref == 'refs/heads/main'
     environment: ${{ inputs.environment }}
-    needs: [create-github-release-tag, create-github-release]
     name: Sentry Release
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +38,7 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: ${{ inputs.environment }}
-          version: ${{ steps.split_repo_name.outputs._1 }}@${{ needs.create-github-release-tag.outputs.new_tag }}
+          version: ${{ steps.split_repo_name.outputs._1 }}@${{ inputs.release }}
   deploy-firebase:
     if: github.ref == 'refs/heads/main'
     needs: deploy-sentry

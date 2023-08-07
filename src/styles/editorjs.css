@@ -11,5 +11,5 @@
 /* END WIDTH HACK */
 
 .codex-editor {
-    position: initial !important;
+    z-index: initial !important;
 }

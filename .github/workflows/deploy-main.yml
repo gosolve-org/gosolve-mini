@@ -1,4 +1,4 @@
-name: Firebase Functions CI/CD - Master
+name: CI/CD - Main
 
 on:
   workflow_dispatch:

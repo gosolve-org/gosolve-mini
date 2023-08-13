@@ -14,8 +14,11 @@ import { USER_VALIDATIONS } from "constants/validationRules";
 import GoogleIconSvg from "svgs/GoogleIconSvg";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Layout from "components/common/layout/Layout";
+import { AnalyticsEvent } from 'models/AnalyticsEvent';
+import { useAnalytics } from 'contexts/AnalyticsContext';
 
 function Register() {
+    const { logAnalyticsEvent } = useAnalytics();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [shouldRememberCheckbox, setShouldRememberCheckbox] = useState<boolean>(false);
@@ -46,6 +49,7 @@ function Register() {
         try {
             setShouldRemember(shouldRememberCheckbox);
             await registerWithEmail(email, password);
+            logAnalyticsEvent(AnalyticsEvent.RegisterEmail, { shouldRemember: shouldRememberCheckbox });
             await router.push("/register/details");
         } catch (err) {
             if (err instanceof ErrorWithCode && err.code === ERROR_CODES.userAlreadyExists) {
@@ -69,6 +73,7 @@ function Register() {
             setIsLoginFinished(false);
             const credentials = await getGoogleCredentials();
             await registerWithGoogle(credentials);
+            logAnalyticsEvent(AnalyticsEvent.RegisterGoogle, { shouldRemember: shouldRememberCheckbox });
             await router.push("/register/details");
         } catch (err) {
             if (err.code === ERROR_CODES.popupClosedByUser) {

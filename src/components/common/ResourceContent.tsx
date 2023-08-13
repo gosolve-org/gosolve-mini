@@ -8,20 +8,23 @@ import { updateTopic } from "pages/api/topic";
 import { updateAction } from "pages/api/action";
 import { useNav } from "contexts/NavigationContext";
 import { toast } from "react-toastify";
+import { AnalyticsEvent } from "models/AnalyticsEvent";
+import { useAnalytics } from "contexts/AnalyticsContext";
 
 const EditorJs = dynamic(() => import("components/common/Editor"), {
     ssr: false,
 });
 
-function ResourceContent()
-{
+function ResourceContent() {
     const { isAuthenticated, hasEditorRights, isUserProfileLoading, user } = useAuth();
+    const { logAnalyticsEvent } = useAnalytics();
     const { resourceType, content, setContent, authorId, actionId, topicId, title, createdAt } = useResource();
     const { currentCategory, currentLocation } = useNav();
     const canUserEdit = hasEditorRights() && (resourceType !== ResourceType.Action || user?.uid === authorId);
 
     const handleSaveData = useCallback(async (savedData: string) => {
         if (resourceType === ResourceType.Action) {
+            logAnalyticsEvent(AnalyticsEvent.ActionUpdate, { topicTitle: title });
             await updateAction(actionId, {
                 authorId: user.uid,
                 title: title,
@@ -41,6 +44,7 @@ function ResourceContent()
                     console.error(err);
                 });
         } else if (resourceType === ResourceType.Topic) {
+            logAnalyticsEvent(AnalyticsEvent.TopicUpdate, { topicTitle: title });
             await updateTopic(topicId, {
                 title: `${currentCategory.category} in ${currentLocation.location}`,
                 content: savedData,
@@ -60,7 +64,7 @@ function ResourceContent()
             console.error("Can't save content, unknown resource type:", resourceType);
             toast.error("Something went wrong");
         }
-    }, [currentCategory, currentLocation, resourceType, topicId, title, createdAt, user, actionId, setContent]);
+    }, [currentCategory, currentLocation, resourceType, topicId, title, createdAt, user, actionId, setContent, logAnalyticsEvent]);
 
     return (
         <>

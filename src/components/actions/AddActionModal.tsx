@@ -17,6 +17,8 @@ import { toUrlPart } from "utils/textUtils";
 import { ACTION_VALIDATIONS } from "constants/validationRules";
 import { useNav } from "contexts/NavigationContext";
 import Modal from "../common/layout/Modal";
+import { AnalyticsEvent } from "models/AnalyticsEvent";
+import { useAnalytics } from "contexts/AnalyticsContext";
 
 interface AddActionModalProps {
     open: boolean;
@@ -24,6 +26,7 @@ interface AddActionModalProps {
 }
 
 function AddActionModal({ open, onClose }: AddActionModalProps) {
+    const { logAnalyticsEvent } = useAnalytics();
     const { user } = useAuth();
     const router = useRouter();
     const titleInput = useRef(null);
@@ -65,6 +68,8 @@ function AddActionModal({ open, onClose }: AddActionModalProps) {
                 authorUsername: user.username,
                 createdAt: new Date()
             });
+
+            logAnalyticsEvent(AnalyticsEvent.ActionCreate, { topicId });
 
             await router.push(
                 `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/actions/${docId}`

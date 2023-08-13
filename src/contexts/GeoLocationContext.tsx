@@ -1,4 +1,6 @@
+import { AnalyticsEvent } from "models/AnalyticsEvent";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import { useAnalytics } from "./AnalyticsContext";
 
 interface GeoLocationContext {
     isGeoLocationAvailable: boolean;
@@ -15,18 +17,20 @@ export const GeoLocationContext = createContext<GeoLocationContext>({
 });
 
 export const GeoLocationContextProvider = ({ children }: { children: ReactNode }) => {
+    const { logAnalyticsEvent } = useAnalytics();
     const [isGeoLocationAvailable, setIsGeoLocationAvailable] = useState<boolean>(false);
     const [isGeoLocationGranted, setIsGeoLocationGranted] = useState<boolean>(false);
     const [location, setLocation] = useState<GeolocationCoordinates | null>(null);
 
     const requestLocationAccess = useCallback(() => {
         navigator.geolocation.getCurrentPosition((position) => {
+            logAnalyticsEvent(AnalyticsEvent.InstantSearchLocationAccessEnable);
             setLocation(position.coords);
             setIsGeoLocationGranted(true);
         }, () => {
             setIsGeoLocationGranted(false);
         });
-    }, [setLocation, setIsGeoLocationGranted]);
+    }, [setLocation, setIsGeoLocationGranted, logAnalyticsEvent]);
 
     useEffect(() => {
         setIsGeoLocationAvailable(!!navigator.geolocation);

@@ -5,6 +5,7 @@ import { connectFirestoreEmulator, DocumentData, DocumentReference, DocumentSnap
 import { useCollectionOnce, useDocumentOnce } from "react-firebase-hooks/firestore";
 import { OnceOptions } from "react-firebase-hooks/firestore/dist/firestore/types";
 import { ErrorWithCode } from "models/ErrorWithCode";
+import { getAnalytics as getFirebaseAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,6 +22,8 @@ const app = getApps.length > 0 ? getApp() : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const functions = getFunctions(app);
+export const getAnalytics = () => getFirebaseAnalytics(app);
+
 if (process.env.NEXT_PUBLIC_FIREBASE_EMULATORS === 'true' || process.env.NEXT_PUBLIC_FIREBASE_EMULATORS?.toString() === 'true') {
     console.log('Using Firebase Emulators');
     connectFunctionsEmulator(functions, "localhost", 5001);

@@ -114,10 +114,10 @@ module.exports.notifyCommentCreation = functions.region(REGION).firestore
                 if (!!actionId) {
                     const action = await getAction(db, actionId);
                     topic = await getTopic(db, action.topicId);
-                    link = `https://mini.gosolve.org/${toUrlPart(topic.category)}/${toUrlPart(topic.location)}/actions/${actionId}/community/${postId}`;
+                    link = `https://mini.gosolve.org/${toUrlPart(topic.category)}/${toUrlPart(topic.location)}/actions/${actionId}/community/${postId}?commentId=${id}`;
                 } else {
                     topic = await getTopic(db, topicId);
-                    link = `https://mini.gosolve.org/${toUrlPart(topic.category)}/${toUrlPart(topic.location)}/community/${postId}`;
+                    link = `https://mini.gosolve.org/${toUrlPart(topic.category)}/${toUrlPart(topic.location)}/community/${postId}?commentId=${id}`;
                 }
     
                 await createDiscordActivityNotification(
@@ -165,7 +165,7 @@ module.exports.notifyPostCreation = functions.region(REGION).firestore
         if (createNovuNotification && authorId !== action.authorId) {
             promises.push(triggerNotification(constants.NOVU.TRIGGERS.NEW_ACTION_POST, [action.authorId], {
                 username: authorUsername,
-                actionTitle,
+                actionTitle: action.title,
                 category: toUrlPart(category),
                 location: toUrlPart(location),
                 postId: id,

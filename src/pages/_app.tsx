@@ -13,6 +13,7 @@ import { NavigationContextProvider } from 'contexts/NavigationContext';
 import Route from 'components/nav/Route';
 import { GeoLocationContextProvider } from 'contexts/GeoLocationContext';
 import { DataCacheContextProvider } from 'contexts/DataCacheContext';
+import { AnalyticsContextProvider } from 'contexts/AnalyticsContext';
 
 function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
@@ -21,6 +22,7 @@ function App({ Component, pageProps }: AppProps) {
         DataCacheContextProvider,
         MediaQueryContextProvider,
         AuthContextProvider,
+        AnalyticsContextProvider,
         GeoLocationContextProvider,
     ];
 

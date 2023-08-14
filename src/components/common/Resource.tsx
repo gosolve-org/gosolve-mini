@@ -27,7 +27,7 @@ function Resource()
                 {resourceType === ResourceType.Topic &&
                     <>
                         {!currentCategory?.hidden && <SideBarActionsOverview />}
-                        <SideBarPostsOverview />
+                        {!currentCategory?.hidden && <SideBarPostsOverview />}
                     </>
                 }
             </div>
@@ -78,7 +78,7 @@ function Resource()
                     {resourceType === ResourceType.Topic &&
                         <>
                             {!currentCategory?.hidden && <SideBarActionsOverview />}
-                            <SideBarPostsOverview />
+                            {!currentCategory?.hidden && <SideBarPostsOverview />}
                         </>
                     }
                 </SideBar>

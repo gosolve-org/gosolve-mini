@@ -14,6 +14,8 @@ import BasicHead from "components/common/layout/BasicHead";
 import ReplyForm from "components/posts/ReplyForm";
 import Comment from "components/posts/Comment";
 import ProfileIconSvg from "svgs/ProfileIconSvg";
+import { AnalyticsEvent } from "models/AnalyticsEvent";
+import { useAnalytics } from "contexts/AnalyticsContext";
 dayjs.extend(localizedFormat);
 dayjs.extend(calendar);
 
@@ -23,6 +25,7 @@ interface PostProps {
 
 function Post({ postId } : PostProps) {
     const { user, isAuthenticated } = useAuth();
+    const { logAnalyticsEvent } = useAnalytics();
     const [replyParentCommentId, setReplyParentCommentId] = useState(null);
     const [replyClickCounter, setReplyClickCounter] = useState(0);
     const [discussionCount, setDiscussionCount] = useState(0);
@@ -51,7 +54,9 @@ function Post({ postId } : PostProps) {
                 parentId,
             },
         });
-    }, [ user, userProfile, postId ]);
+
+        logAnalyticsEvent(AnalyticsEvent.CommentCreate, { postId: postId });
+    }, [ user, userProfile, postId, logAnalyticsEvent ]);
 
     const handleReplyButtonClick = useCallback((id: string) => {
         setReplyParentCommentId(id);

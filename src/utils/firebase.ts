@@ -5,6 +5,7 @@ import { connectFirestoreEmulator, DocumentData, DocumentReference, DocumentSnap
 import { useCollectionOnce, useDocumentOnce } from "react-firebase-hooks/firestore";
 import { OnceOptions } from "react-firebase-hooks/firestore/dist/firestore/types";
 import { ErrorWithCode } from "models/ErrorWithCode";
+import { getAnalytics as getFirebaseAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,6 +14,7 @@ const firebaseConfig = {
     storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASURMENT_ID,
 };
 
 const app = getApps.length > 0 ? getApp() : initializeApp(firebaseConfig);
@@ -20,6 +22,8 @@ const app = getApps.length > 0 ? getApp() : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const functions = getFunctions(app);
+export const getAnalytics = () => getFirebaseAnalytics(app);
+
 if (process.env.NEXT_PUBLIC_FIREBASE_EMULATORS === 'true' || process.env.NEXT_PUBLIC_FIREBASE_EMULATORS?.toString() === 'true') {
     console.log('Using Firebase Emulators');
     connectFunctionsEmulator(functions, "localhost", 5001);
@@ -27,9 +31,6 @@ if (process.env.NEXT_PUBLIC_FIREBASE_EMULATORS === 'true' || process.env.NEXT_PU
     connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
 }
 
-interface FirestoreCollectionHookOptions {
-    useCache: boolean;
-}
 export const useCollectionOnceWithDependencies = (
     query: () => Query<DocumentData>,
     dependencies: any[]):[QuerySnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
@@ -38,7 +39,6 @@ export const useCollectionOnceWithDependencies = (
     };
 
 interface FirestoreDocumentHookOptions {
-    useCache: boolean;
     onceOptions?: OnceOptions | undefined;
 }
 export const useDocumentOnceWithDependencies = (

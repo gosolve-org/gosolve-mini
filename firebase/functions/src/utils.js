@@ -1,5 +1,9 @@
 const functions = require('firebase-functions');
 
+module.exports.truncate = (str, n) => {
+    return (str.length > n) ? str.slice(0, n) + '…' : str;
+}
+
 module.exports.toUrlPart = (content) => content?.split(" ").join("-");
 
 module.exports.getFirestoreEventType = (before, after) => {

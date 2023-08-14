@@ -50,7 +50,7 @@ function ResourceContent() {
                 content: savedData,
                 categoryId: currentCategory.id,
                 locationId: currentLocation.id,
-            })
+            }, user.username)
                 .then(() => {
                     toast.success("Saved!");
                     setContent(savedData);

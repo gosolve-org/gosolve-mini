@@ -12,9 +12,12 @@ import { updateUser } from "./api/user";
 import { USER_VALIDATIONS } from "constants/validationRules";
 import BasicHead from "components/common/layout/BasicHead";
 import Link from "next/link";
+import { AnalyticsEvent } from 'models/AnalyticsEvent';
+import { useAnalytics } from 'contexts/AnalyticsContext';
 
 function Settings() {
     const { user, logout } = useAuth();
+    const { logAnalyticsEvent } = useAnalytics();
     const router = useRouter();
 
     const [userProfile] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
@@ -63,6 +66,7 @@ function Settings() {
             details: { name, username, birthYear },
         })
         .then(() => {
+            logAnalyticsEvent(AnalyticsEvent.ProfileUpdate);
             toast.success('Saved!');
         })
         .catch(err => {
@@ -100,6 +104,7 @@ function Settings() {
 
     const handleLogoutClick = async () => {
         setIsLoading(true);
+        logAnalyticsEvent(AnalyticsEvent.Logout);
         try {
             await logout();
             await router.push("/login");

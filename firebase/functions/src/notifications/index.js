@@ -1,10 +1,11 @@
 const functions = require("firebase-functions");
 const { REGION } = require('../constants');
 const constants = require('../constants');
-const { toUrlPart } = require('../utils');
+const { toUrlPart, truncate, getFirestoreEventType } = require('../utils');
 const { triggerNotification, createSubscriber } = require('./novu');
-const { createDb, getPost, getTopic, getAction } = require('../db');
+const { createDb, getPost, getTopic, getAction, getCategory, getLocation, getUserById } = require('../db');
 const { functionWrapper } = require('../sentry');
+const { createDiscordActivityNotification, DiscordActivityNotificationTypes, isDiscordActivityTypeEnabled, escape } = require('./discord');
 
 const handleRootCommentCreation = async (commentId, commentAuthorUsername, commentAuthorId, postId) => {
         const db = createDb();
@@ -93,14 +94,45 @@ module.exports.createSubscriber = functions.region(REGION).firestore
 module.exports.notifyCommentCreation = functions.region(REGION).firestore
     .document('comments/{docId}')
     .onCreate(functionWrapper(async (snapshot) => {
+        const db = createDb();
         const id = snapshot.id;
-        const { authorUsername, authorId, postId, parentId } = snapshot.data();
+        const { authorUsername, authorId, postId, parentId, content } = snapshot.data();
+
+        const promises = [];
 
         if (!!parentId) {
-            await handleCommentReply(id, authorUsername, authorId, postId, parentId);
+            promises.push(handleCommentReply(id, authorUsername, authorId, postId, parentId));
         } else {
-            await handleRootCommentCreation(id, authorUsername, authorId, postId);
+            promises.push(handleRootCommentCreation(id, authorUsername, authorId, postId));
         }
+
+        if (isDiscordActivityTypeEnabled(DiscordActivityNotificationTypes.Comments)) {
+            promises.push((async () => {
+                const { title, actionId, topicId } = await getPost(db, postId);
+                let topic;
+                let link;
+                if (!!actionId) {
+                    const action = await getAction(db, actionId);
+                    topic = await getTopic(db, action.topicId);
+                    link = `https://mini.gosolve.org/${toUrlPart(topic.category)}/${toUrlPart(topic.location)}/actions/${actionId}/community/${postId}?commentId=${id}`;
+                } else {
+                    topic = await getTopic(db, topicId);
+                    link = `https://mini.gosolve.org/${toUrlPart(topic.category)}/${toUrlPart(topic.location)}/community/${postId}?commentId=${id}`;
+                }
+    
+                await createDiscordActivityNotification(
+                    DiscordActivityNotificationTypes.Comments,
+                    'New Comment',
+                    {
+                        Author: authorUsername,
+                        Comment: escape(truncate(content, 100)),
+                        ['Post title']: escape(truncate(title, 100)),
+                    },
+                    link);
+            })());
+        }
+
+        await Promise.all(promises);
     }));
 
 module.exports.notifyPostCreation = functions.region(REGION).firestore
@@ -108,22 +140,106 @@ module.exports.notifyPostCreation = functions.region(REGION).firestore
     .onCreate(functionWrapper(async (snapshot) => {
         const db = createDb();
         const id = snapshot.id;
-        const { authorId, authorUsername, actionId } = snapshot.data();
+        const { authorId, authorUsername, actionId, topicId, title, content } = snapshot.data();
 
-        if (!actionId) return;
+        const shouldCreateDiscordActivityNotification = isDiscordActivityTypeEnabled(DiscordActivityNotificationTypes.Posts);
+        const createNovuNotification = !!actionId;
 
-        const { topicId, title: actionTitle, authorId: actionAuthorId } = await getAction(db, actionId);
+        if (!shouldCreateDiscordActivityNotification && !createNovuNotification) return;
 
-        const { category, location } = await getTopic(db, topicId);
+        let topic;
+        let action;
+        let category;
+        let location;
+        if (!!actionId) {
+            action = await getAction(db, actionId);
+            topic = await getTopic(db, action.topicId);
+        } else {
+            topic = await getTopic(db, topicId);
+        }
+        category = topic.category;
+        location = topic.location;
 
-        if (authorId === actionAuthorId) return;
+        const promises = [];
 
-        await triggerNotification(constants.NOVU.TRIGGERS.NEW_ACTION_POST, [actionAuthorId], {
-            username: authorUsername,
-            actionTitle,
-            category: toUrlPart(category),
-            location: toUrlPart(location),
-            postId: id,
-            actionId,
-        });
+        if (createNovuNotification && authorId !== action.authorId) {
+            promises.push(triggerNotification(constants.NOVU.TRIGGERS.NEW_ACTION_POST, [action.authorId], {
+                username: authorUsername,
+                actionTitle: action.title,
+                category: toUrlPart(category),
+                location: toUrlPart(location),
+                postId: id,
+                actionId,
+            }));
+        }
+
+        if (shouldCreateDiscordActivityNotification) {
+            const notificationData = {
+                Author: authorUsername,
+                Title: escape(truncate(title, 100)),
+                Post: escape(truncate(content, 100)),
+            };
+            let link;
+            if (!!actionId) {
+                notificationData.Action = escape(truncate(action.title, 100));
+                link = `https://mini.gosolve.org/${toUrlPart(category)}/${toUrlPart(location)}/actions/${actionId}/community/${id}`;
+            } else {
+                notificationData.Topic = escape(truncate(topic.title, 100));
+                link = `https://mini.gosolve.org/${toUrlPart(category)}/${toUrlPart(location)}/community/${id}`;
+            }
+            await createDiscordActivityNotification(
+                DiscordActivityNotificationTypes.Posts,
+                'New Post',
+                notificationData,
+                link);
+        }
+
+        await Promise.all(promises);
+    }));
+
+module.exports.notifyActionWrite = functions.region(REGION).firestore
+    .document('actions/{docId}')
+    .onWrite(functionWrapper(async (change) => {
+        if (!isDiscordActivityTypeEnabled(DiscordActivityNotificationTypes.Actions)) return;
+        const eventType = getFirestoreEventType(change.before, change.after);
+
+        if (eventType !== 'create' && eventType !== 'update') return;
+
+        const db = createDb();
+        const id = change.after.id;
+        const { authorUsername, topicId, title } = change.after.data();
+
+        const topic = await getTopic(db, topicId);
+
+        await createDiscordActivityNotification(
+            DiscordActivityNotificationTypes.Actions,
+            eventType === 'create' ? 'New Action' : 'Action Updated',
+            {
+                Author: authorUsername,
+                Title: escape(truncate(title, 100)),
+                Topic: topic.title,
+            },
+            `https://mini.gosolve.org/${toUrlPart(topic.category)}/${toUrlPart(topic.location)}/actions/${id}`);
+    }));
+
+module.exports.notifyTopicUpdate = functions.region(REGION).firestore
+    .document('topicHistory/{docId}')
+    .onCreate(functionWrapper(async (snapshot) => {
+        if (!isDiscordActivityTypeEnabled(DiscordActivityNotificationTypes.Topics)) return;
+        const db = createDb();
+        const { title, categoryId, locationId, authorUsername } = snapshot.data();
+
+        const [category, location] = await Promise.all([
+            getCategory(db, categoryId),
+            getLocation(db, locationId),
+        ]);
+
+        await createDiscordActivityNotification(
+            DiscordActivityNotificationTypes.Topics,
+            'Topic Updated',
+            {
+                Author: authorUsername,
+                Topic: title,
+            },
+            `https://mini.gosolve.org/${toUrlPart(category.category)}/${toUrlPart(location.location)}`);
     }));

@@ -8,9 +8,12 @@ import BasicToast from "components/common/layout/BasicToast";
 import { USER_VALIDATIONS } from "constants/validationRules";
 import BasicHead from "components/common/layout/BasicHead";
 import Logo from "components/common/layout/Logo";
+import { AnalyticsEvent } from 'models/AnalyticsEvent';
+import { useAnalytics } from 'contexts/AnalyticsContext';
 
 function Details() {
     const { user, isAuthenticated } = useAuth();
+    const { logAnalyticsEvent } = useAnalytics();
 
     const [name, setName] = useState<string>(user?.name || user?.displayName || "");
     const [username, setUsername] = useState<string>(user?.username || "");
@@ -56,6 +59,7 @@ function Details() {
                     isOnboarded: true
                 },
             });
+            logAnalyticsEvent(AnalyticsEvent.ProfileOnboarding);
             await router.push("/");
         } catch (err) {
             if (err.code === 'functions/invalid-argument') {

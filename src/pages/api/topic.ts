@@ -3,10 +3,11 @@ import { db } from "utils/firebase";
 import { collection, updateDoc, doc, getDoc, addDoc } from "firebase/firestore";
 import { Topic } from "models/Topic";
 
-const addTopicHistory = async ({ details }: { details: Topic }) => {
+const addTopicHistory = async ({ details, authorUsername }: { details: Topic, authorUsername: string }) => {
     try {
         return await addDoc(collection(db, "topicHistory"), {
             ...details,
+            authorUsername,
             createdAt: new Date().getTime(),
             updatedAt: new Date().getTime(),
         }).then((docRef) => docRef.id);
@@ -17,7 +18,7 @@ const addTopicHistory = async ({ details }: { details: Topic }) => {
     }
 };
 
-const addTopic = async (details: Topic) => {
+const addTopic = async (details: Topic, authorUsername: string) => {
     try {
         const id = await addDoc(collection(db, "topics"), {
             ...details,
@@ -25,7 +26,7 @@ const addTopic = async (details: Topic) => {
             updatedAt: new Date().getTime(),
         }).then(doc => doc.id);
 
-        await addTopicHistory({ details });
+        await addTopicHistory({ details, authorUsername });
 
         return id;
     } catch (err) {
@@ -35,9 +36,9 @@ const addTopic = async (details: Topic) => {
     }
 };
 
-const updateTopic = async (docId: string, details: Topic) => {
+const updateTopic = async (docId: string, details: Topic, authorUsername: string) => {
     try {
-        if (!docId) await addTopic(details);
+        if (!docId) await addTopic(details, authorUsername);
         else {
             const topicRef = doc(db, "topics", docId);
             const docSnap = await getDoc(topicRef);
@@ -48,11 +49,11 @@ const updateTopic = async (docId: string, details: Topic) => {
                     updatedAt: new Date().getTime(),
                 });
 
-                await addTopicHistory({ details });
+                await addTopicHistory({ details, authorUsername });
 
                 return docId;
             } else {
-                return await addTopic(details);
+                return await addTopic(details, authorUsername);
             }
         }
 

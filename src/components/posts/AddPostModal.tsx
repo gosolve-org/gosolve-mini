@@ -15,6 +15,8 @@ import { toUrlPart } from "utils/textUtils";
 import { POST_VALIDATIONS } from "constants/validationRules";
 import Modal from "../common/layout/Modal";
 import { useNav } from "contexts/NavigationContext";
+import { AnalyticsEvent } from "models/AnalyticsEvent";
+import { useAnalytics } from "contexts/AnalyticsContext";
 
 interface AddCommunityPostProps {
     open: boolean;
@@ -25,6 +27,7 @@ interface AddCommunityPostProps {
 
 function AddCommunityPostModal({ open, onClose, parentResourceType, parentResourceId }: AddCommunityPostProps) {
     const { user } = useAuth();
+    const { logAnalyticsEvent } = useAnalytics();
     const { currentCategory, currentLocation } = useNav();
     const router = useRouter();
 
@@ -67,6 +70,7 @@ function AddCommunityPostModal({ open, onClose, parentResourceType, parentResour
                 category: currentCategory.category,
                 location: currentLocation.location
             });
+            logAnalyticsEvent(AnalyticsEvent.PostCreate, { category: currentCategory.category, location: currentLocation.location, actionId: actionId || null });
 
             await router.push(parentResourceType === ResourceType.Topic
                 ? `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/community/${docId}`

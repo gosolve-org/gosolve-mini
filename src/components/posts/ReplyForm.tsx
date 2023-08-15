@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/react";
+import { AnalyticsEvent } from "models/AnalyticsEvent";
 import { FormEvent, MutableRefObject, SyntheticEvent, useState } from "react";
 import { toast } from "react-toastify";
 

@@ -13,8 +13,11 @@ import BasicHead from "components/common/layout/BasicHead";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import GoogleIconSvg from "svgs/GoogleIconSvg";
 import Layout from "components/common/layout/Layout";
+import { AnalyticsEvent } from "models/AnalyticsEvent";
+import { useAnalytics } from "contexts/AnalyticsContext";
 
 function Login() {
+    const { logAnalyticsEvent } = useAnalytics();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [shouldRememberCheckbox, setShouldRememberCheckbox] =
@@ -38,7 +41,7 @@ function Login() {
         if (!isLoading && isAuthenticated()) {
             router.push("/");
         }
-    }, [isAuthenticated, isLoading]);
+    }, [isAuthenticated, isLoading, router]);
 
     const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -47,6 +50,7 @@ function Login() {
         setShouldRemember(shouldRememberCheckbox);
         try{
             await login(email, password);
+            logAnalyticsEvent(AnalyticsEvent.LoginEmail, { shouldRemember: shouldRememberCheckbox });
             await router.push("/");
         } catch (err) {
             setLoginFailed(true);
@@ -82,9 +86,11 @@ function Login() {
             const credentials = await getGoogleCredentials();
     
             if (!await doesUserExist(credentials.user.email)) {
+                logAnalyticsEvent(AnalyticsEvent.RegisterGoogle, { shouldRemember: shouldRememberCheckbox });
                 await registerWithGoogle(credentials);
                 await router.push("/register/details");
             } else {
+                logAnalyticsEvent(AnalyticsEvent.LoginGoogle, { shouldRemember: shouldRememberCheckbox });
                 await router.push("/");
             }
         } catch (err) {

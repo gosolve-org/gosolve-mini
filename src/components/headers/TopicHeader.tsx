@@ -6,8 +6,9 @@ import { useMediaQueries } from "contexts/MediaQueryContext";
 import { useNav } from "contexts/NavigationContext";
 import Image from "next/image";
 import { CATEGORY_IMAGE_DIR_URI } from "constants/uris";
+import { isHomePage } from "utils/topicUtils";
 
-const DEFAULT_PAGE_TITLE = 'Welcome to goSolve mini';
+const DEFAULT_PAGE_TITLE = 'Welcome to goSolve';
 const TAB_WIDTH = 200;
 const HEADER_SHADOW_OPACITY_BEFORE_IMAGE_LOAD = 0.4;
 const HEADER_SHADOW_OPACITY_AFTER_IMAGE_LOAD = 1;
@@ -15,7 +16,7 @@ const HEADER_SHADOW_OPACITY_AFTER_IMAGE_LOAD = 1;
 const tabs = [
     { name: "Topic", href: "", value: Tab.Topic, showOnHiddenTopics: true },
     { name: "Actions", href: "actions", value: Tab.Actions, showOnHiddenTopics: false },
-    { name: "Community", href: "community", value: Tab.Community, showOnHiddenTopics: true },
+    { name: "Community", href: "community", value: Tab.Community, showOnHiddenTopics: false },
 ];
 
 const tabsContainerStyle = (amountOfTabs: number) => ({
@@ -46,6 +47,11 @@ function TopicHeader() {
     useEffect(() => {
         defineHeaderShadowOpacity();
     }, [currentCategory, defineHeaderShadowOpacity]);
+
+    let tabsToDisplay = tabs.filter(el => !currentCategory?.hidden || el.showOnHiddenTopics);
+    if (tabsToDisplay.length === 1 && tabsToDisplay[0].value === Tab.Topic) {
+        tabsToDisplay = [];
+    }
 
     return (
         <div className="relative w-full">
@@ -82,7 +88,7 @@ function TopicHeader() {
                                 `0px -5px 17px rgba(0, 0, 0, ${headerShadowOpacity})`,
                         }}
                     >
-                        {currentCategory?.hidden || currentLocation?.hidden
+                        {isHomePage(currentCategory, currentLocation)
                             ? DEFAULT_PAGE_TITLE
                             : (currentCategory?.id && currentLocation?.id
                                 ? `${currentCategory?.category} in ${currentLocation?.location}`
@@ -93,7 +99,7 @@ function TopicHeader() {
                 </div>
                 <div
                     className="mt-5 w-full sm:w-auto"
-                    style={!isMobile ? tabsContainerStyle(tabs.filter(el => (!currentCategory?.hidden && !currentLocation?.hidden) || el.showOnHiddenTopics).length) : {}}
+                    style={!isMobile ? tabsContainerStyle(tabsToDisplay.length) : {}}
                 >
                     <div className="hidden">
                         <label htmlFor="tabs" className="sr-only">
@@ -117,41 +123,39 @@ function TopicHeader() {
                             className="isolate flex divide-x divide-gray-200 rounded-lg shadow"
                             aria-label="Tabs"
                         >
-                            {!!currentCategory?.id && !!currentLocation?.id && tabs
-                                .filter(el => (!currentCategory?.hidden && !currentLocation?.hidden) || el.showOnHiddenTopics)
-                                .map((tab, tabIdx, tabArr) => (
-                                    <Link
-                                        key={tab.value}
-                                        href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/${tab.href}`}
-                                        style={tab.value === currentTab ? {
-                                            backgroundColor: '#E5E5FF',
-                                        } : {}}
+                            {!!currentCategory?.id && !!currentLocation?.id && tabsToDisplay.map((tab, tabIdx, tabArr) => (
+                                <Link
+                                    key={tab.value}
+                                    href={`/${toUrlPart(currentCategory?.category)}/${toUrlPart(currentLocation?.location)}/${tab.href}`}
+                                    style={tab.value === currentTab ? {
+                                        backgroundColor: '#E5E5FF',
+                                    } : {}}
+                                    className={classNames(
+                                        tab.value === currentTab
+                                            ? "text-gray-700"
+                                            : "text-gray-500 hover:text-gray-700",
+                                        tabIdx === 0 && !isMobile ? "rounded-l-lg" : "",
+                                        tabIdx === tabArr.length - 1 && !isMobile ? "rounded-r-lg" : "",
+                                        "group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
+                                    )}
+                                    aria-current={
+                                        tab.value === currentTab ? "page" : undefined
+                                    }
+                                >
+                                    <span>{tab.name}</span>
+                                    <span
+                                        aria-hidden="true"
+                                        style={{
+                                            height: '3px',
+                                        }}
                                         className={classNames(
                                             tab.value === currentTab
-                                                ? "text-gray-700"
-                                                : "text-gray-500 hover:text-gray-700",
-                                            tabIdx === 0 && !isMobile ? "rounded-l-lg" : "",
-                                            tabIdx === tabArr.length - 1 && !isMobile ? "rounded-r-lg" : "",
-                                            "group relative min-w-0 flex-1 overflow-hidden bg-white py-2 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
+                                                ? "bg-indigo-500"
+                                                : "bg-transparent",
+                                            "absolute inset-x-0 bottom-0"
                                         )}
-                                        aria-current={
-                                            tab.value === currentTab ? "page" : undefined
-                                        }
-                                    >
-                                        <span>{tab.name}</span>
-                                        <span
-                                            aria-hidden="true"
-                                            style={{
-                                                height: '3px',
-                                            }}
-                                            className={classNames(
-                                                tab.value === currentTab
-                                                    ? "bg-indigo-500"
-                                                    : "bg-transparent",
-                                                "absolute inset-x-0 bottom-0"
-                                            )}
-                                        />
-                                    </Link>
+                                    />
+                                </Link>
                             ))}
                         </nav>
                     </div>

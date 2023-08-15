@@ -1,4 +1,20 @@
-This is a [Next.js](https://nextjs.org/) project with Tailwind and Firebase.
+<p align="center">
+  <img src="./docs/images/gosolve-screenshot.png" alt="goSolve screenshot" />
+</p>
+<p align="center">
+  <a href="https://github.com/gosolve-org/gosolve-mini/actions/workflows/deploy-main.yml?query=branch:main" target="_blank">
+    <img src="https://github.com/gosolve-org/gosolve-mini/actions/workflows/deploy-main.yml/badge.svg?branch=main" alt="Github Workflow deploy on main" />
+  </a>
+  <a href="https://discord.gg/tKuFNHp5Ra" target="_blank">
+    <img src="https://badgen.net/badge/icon/discord?icon=discord&label" alt="Discord invite" />
+  </a>
+</p>
+
+---
+Connect and strategize with people in your community.  
+goSolve is a space to solve world problems.  
+  
+<sub>This is a [Next.js](https://nextjs.org/) project with [Tailwind](https://tailwindcss.com/) and [Firebase](https://firebase.google.com/).</sub>  
 
 ## Initial Firebase project setup
 - Create Firebase project
@@ -22,6 +38,7 @@ firebase login # Log in with your google account that has access to the dev fire
 
 # Setting up environment variables
 # These will need to be filled in, ask a team member for the correct values.
+# Don't fill in NEXT_PUBLIC_FIREBASE_MEASURMENT_ID for local development, since we don't want to track analytics locally.
 cp .env-example .env
 (cd firebase/functions/ && cp .env-example .env)
 ```

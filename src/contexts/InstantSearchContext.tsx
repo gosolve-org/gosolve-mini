@@ -3,7 +3,8 @@ import { MeiliSearch } from 'meilisearch';
 import { useGeoLocation } from './GeoLocationContext';
 import { categoryToSearchResult, countryLocationToSearchResult, meiliHitsToCategorySearchResults, meiliHitsToLocationSearchResults } from 'utils/mapper';
 import { useDataCache } from './DataCacheContext';
-import { useNav } from './NavigationContext';
+import { AnalyticsEvent } from 'models/AnalyticsEvent';
+import { useAnalytics } from './AnalyticsContext';
 
 // TODO: Bug: When immediately selecting filter, the default results are still shown even though they should be hidden (since filter is already selected)
 
@@ -90,6 +91,7 @@ export interface CategorySearchResult
 
 export const InstantSearchContextProvider = ({ children }: { children: ReactNode }) => {
     const { location, isGeoLocationGranted } = useGeoLocation();
+    const { logAnalyticsEvent } = useAnalytics();
     const [loading, setLoading] = useState(false);
     const { locations: cachedLocations, categories: cachedCategories } = useDataCache();
     const [locationResults, setLocationResults] = useState<LocationSearchResult[]>(null);
@@ -109,6 +111,7 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
             return;
         } 
 
+        logAnalyticsEvent(AnalyticsEvent.InstantSearchReadDefaults);
         searchClient.multiSearch({
             queries: [
                 getLocationQuery('', isGeoLocationGranted ? location : null),
@@ -130,7 +133,7 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
 
             addToCache('', locationValueResults, categoryValueResults);
         });
-    }, [setDefaultLocationResults, setDefaultCategoryResults, setLocationResults, setCategoryResults, location, isGeoLocationGranted]);
+    }, [setDefaultLocationResults, setDefaultCategoryResults, setLocationResults, setCategoryResults, logAnalyticsEvent, location, isGeoLocationGranted]);
 
     useEffect(() => {
         fetchDefaultResults(true);
@@ -211,6 +214,7 @@ export const InstantSearchContextProvider = ({ children }: { children: ReactNode
                 return;
             }
 
+            logAnalyticsEvent(AnalyticsEvent.InstantSearchRead);
             searchClient.multiSearch({ queries }).then(value => {
                 const locationHits = !isLocationFilterApplied
                     ? meiliHitsToLocationSearchResults(value.results[0].hits ?? [])

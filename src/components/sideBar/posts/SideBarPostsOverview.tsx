@@ -131,7 +131,7 @@ function SideBarPostsOverview()
                 open={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 parentResourceType={resourceType}
-                parentResourceId={topicId}
+                parentResourceId={resourceType == ResourceType.Action ? actionId : topicId}
             />
         </SideBarItem>
     );

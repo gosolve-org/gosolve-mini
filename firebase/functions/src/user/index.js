@@ -33,7 +33,7 @@ module.exports.updateUser =
             updatedAt: new Date().getTime(),
         };
 
-        if (data.isOnboarded !== undefined) updateData.isOnboarded = data.isOnboarded;
+        if (data.isOnboarded != undefined) updateData.isOnboarded = data.isOnboarded;
 
         await updateUser(db, userId, updateData);
     }));

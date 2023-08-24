@@ -1,19 +1,19 @@
-import 'styles/globals.css';
+import 'common/styles/globals.css';
 import "react-toastify/dist/ReactToastify.css";
+import 'features/Nav/Navbar/burger-menu.css'
+import 'features/Notifications/novu.css';
+import 'features/Editor/editorjs.css';
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import { AuthContextProvider } from "contexts/AuthContext";
-import ProtectedRoute from "components/nav/ProtectedRoute";
-import { PROTECTED_ROUTES } from "constants/protectedRoutes";
-import { MediaQueryContextProvider } from "contexts/MediaQueryContext";
-import '../styles/burger-menu.css';
-import '../styles/novu.css';
-import '../styles/editorjs.css';
-import { NavigationContextProvider } from 'contexts/NavigationContext';
-import Route from 'components/nav/Route';
-import { GeoLocationContextProvider } from 'contexts/GeoLocationContext';
-import { DataCacheContextProvider } from 'contexts/DataCacheContext';
-import { AnalyticsContextProvider } from 'contexts/AnalyticsContext';
+import { AuthContextProvider } from "features/Auth/AuthContext";
+import ProtectedRoute from "features/Nav/ProtectedRoute";
+import { PROTECTED_ROUTES } from "features/Nav/protectedRoutes";
+import { MediaQueryContextProvider } from "common/contexts/MediaQueryContext";
+import { NavigationContextProvider } from 'features/Nav/NavigationContext';
+import { GeoLocationContextProvider } from 'common/contexts/GeoLocationContext';
+import { DataCacheContextProvider } from 'common/contexts/DataCacheContext';
+import { AnalyticsContextProvider } from 'features/Analytics/AnalyticsContext';
+import Route from 'features/Nav/Route';
 
 function App({ Component, pageProps }: AppProps) {
     const router = useRouter();

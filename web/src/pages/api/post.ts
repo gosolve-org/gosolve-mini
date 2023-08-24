@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react'
 import { db } from "utils/firebase";
 import { collection, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
-import { Post } from "models/Post";
+import { Post } from 'features/Post/types/Post';
 
 const addPost = async ({ details, category, location }: { details: Post, category: string, location: string }) => {
     try {

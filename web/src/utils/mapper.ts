@@ -1,7 +1,7 @@
-import { CategorySearchResult, LocationSearchResult } from "contexts/InstantSearchContext";
+import { Category } from "common/models/Category";
+import { Location } from "common/models/Location";
+import { CategorySearchResult, LocationSearchResult } from "features/Search/InstantSearchContext";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
-import { Category } from "models/Category";
-import { Location } from "models/Location";
 
 export const docToCategory =
     (document: QueryDocumentSnapshot<DocumentData>): Category => {

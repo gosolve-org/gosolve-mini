@@ -1,8 +1,7 @@
 import * as Sentry from '@sentry/react'
 import { db } from "utils/firebase";
 import { collection, addDoc } from "firebase/firestore";
-
-import { Comment } from "models/Comment";
+import { Comment } from 'features/Post/types/Comment';
 
 const addComment = async ({ details }: { details?: Comment }) => {
     try {

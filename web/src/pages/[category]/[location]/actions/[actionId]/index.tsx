@@ -1,21 +1,37 @@
-import Action from "components/pages/Action";
-import { useNav } from "contexts/NavigationContext";
-import { ResourceContextProvider } from "contexts/ResourceContext";
-import { ResourceType } from "models/ResourceType";
-import { Tab } from "models/Tab";
+import { useNav } from "features/Nav/NavigationContext";
+import { ResourceContextProvider } from "features/Resource/ResourceContext";
+import { doc } from "firebase/firestore";
+import { ResourceType } from "features/Resource/types/ResourceType";
+import { Tab } from "features/Resource/types/Tab";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
+import { db } from "utils/firebase";
+import BasicHead from "common/components/layout/BasicHead";
+import Layout from "common/components/layout/Layout";
+import Action from "features/Resource/Action/Action";
 
 function TopicActionPage() {
+    const router = useRouter();
     const { handleCurrentTabChange } = useNav();
 
+    const actionId = router?.query?.actionId?.toString();
+
+    const [actionSnapshot] = useDocumentOnce(doc(db, "actions", actionId));
+    
     useEffect(() => {
-        handleCurrentTabChange(Tab.Action);
+        handleCurrentTabChange('Action');
     }, [ handleCurrentTabChange ]);
 
     return (
-        <ResourceContextProvider resourceType={ResourceType.Action}>
-            <Action />
-        </ResourceContextProvider>
+        <>
+            <BasicHead title={`goSolve | ${actionSnapshot?.data()?.title ?? ''}`} />
+            <ResourceContextProvider resourceType={'Action'}>
+                <Layout>
+                    <Action />
+                </Layout>
+            </ResourceContextProvider>
+        </>
     );
 }
 

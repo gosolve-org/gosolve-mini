@@ -4,8 +4,8 @@ import { getAuth, connectAuthEmulator } from "@firebase/auth";
 import { connectFirestoreEmulator, DocumentData, DocumentReference, DocumentSnapshot, FirestoreError, getFirestore, Query, QuerySnapshot } from "firebase/firestore";
 import { useCollectionOnce, useDocumentOnce } from "react-firebase-hooks/firestore";
 import { OnceOptions } from "react-firebase-hooks/firestore/dist/firestore/types";
-import { ErrorWithCode } from "models/ErrorWithCode";
 import { getAnalytics as getFirebaseAnalytics } from "firebase/analytics";
+import { ErrorWithCode } from "common/models/ErrorWithCode";
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,

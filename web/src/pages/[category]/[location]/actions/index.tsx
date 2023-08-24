@@ -1,23 +1,28 @@
-import BasicHead from "components/common/layout/BasicHead";
-import ActionsOverview from "components/pages/ActionsOverview";
-import { useNav } from "contexts/NavigationContext";
-import { ResourceContextProvider } from "contexts/ResourceContext";
-import { ResourceType } from "models/ResourceType";
-import { Tab } from "models/Tab";
+import ActionsOverview from "features/Resource/Action/ActionsOverview";
+import { useNav } from "features/Nav/NavigationContext";
+import { ResourceContextProvider } from "features/Resource/ResourceContext";
+import { ResourceType } from "features/Resource/types/ResourceType";
+import { Tab } from "features/Resource/types/Tab";
 import { useEffect } from "react";
+import BasicHead from "common/components/layout/BasicHead";
+import Layout from "common/components/layout/Layout";
 
 function TopicActionsOverviewPage() {
     const { handleCurrentTabChange } = useNav();
 
     useEffect(() => {
-        handleCurrentTabChange(Tab.Actions);
+        handleCurrentTabChange('Actions');
     }, [ handleCurrentTabChange ]);
 
     return (
-        <ResourceContextProvider resourceType={ResourceType.Action}>
+        <>
             <BasicHead title="goSolve | Actions" />
-            <ActionsOverview />
-        </ResourceContextProvider>
+            <ResourceContextProvider resourceType={'Action'}>
+                <Layout>
+                    <ActionsOverview />
+                </Layout>
+            </ResourceContextProvider>
+        </>
     );
 }
 

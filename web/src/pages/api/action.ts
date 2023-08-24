@@ -1,8 +1,7 @@
 import * as Sentry from '@sentry/react'
 import { db } from "utils/firebase";
 import { collection, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
-
-import { Action } from "models/Action";
+import { Action } from 'features/Resource/Action/types/Action';
 
 const addAction = async (details: Action) => {
     try {

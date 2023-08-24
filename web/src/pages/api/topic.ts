@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react'
 import { db } from "utils/firebase";
 import { collection, updateDoc, doc, getDoc, addDoc } from "firebase/firestore";
-import { Topic } from "models/Topic";
+import { Topic } from 'features/Resource/Topic/types/Topic';
 
 const addTopicHistory = async ({ details, authorUsername }: { details: Topic, authorUsername: string }) => {
     try {

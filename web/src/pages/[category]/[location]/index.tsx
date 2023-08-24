@@ -1,21 +1,33 @@
-import Topic from "components/pages/Topic";
-import { useNav } from "contexts/NavigationContext";
-import { ResourceContextProvider } from "contexts/ResourceContext";
-import { ResourceType } from "models/ResourceType";
-import { Tab } from "models/Tab";
+import Topic from "features/Resource/Topic/Topic";
+import { useNav } from "features/Nav/NavigationContext";
+import { ResourceContextProvider } from "features/Resource/ResourceContext";
+import { ResourceType } from "features/Resource/types/ResourceType";
+import { Tab } from "features/Resource/types/Tab";
 import { useEffect } from "react";
+import { isHomePage } from "utils/topicUtils";
+import BasicHead from "common/components/layout/BasicHead";
+import Layout from "common/components/layout/Layout";
 
 function TopicPage() {
-    const { handleCurrentTabChange } = useNav();
+    const { handleCurrentTabChange, currentCategory, currentLocation } = useNav();
 
     useEffect(() => {
-        handleCurrentTabChange(Tab.Topic);
+        handleCurrentTabChange('Topic');
     }, [ handleCurrentTabChange ]);
 
+    const title = isHomePage(currentCategory, currentLocation)
+        ? 'goSolve | Welcome'
+        : `goSolve | ${currentCategory?.category ?? ''} in ${currentLocation?.location ?? ''}`;
+
     return (
-        <ResourceContextProvider resourceType={ResourceType.Topic}>
-            <Topic />
-        </ResourceContextProvider>
+        <>
+            <BasicHead title={title} />
+            <ResourceContextProvider resourceType={'Topic'}>
+                <Layout>
+                    <Topic />
+                </Layout>
+            </ResourceContextProvider>
+        </>
     );
 }
 

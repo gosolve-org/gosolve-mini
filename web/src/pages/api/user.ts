@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react'
 import { db, wrappedHttpsCallable } from "utils/firebase";
 import { doc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
-import { User } from "models/User";
+import { User } from 'features/Auth/types/User';
 
 const updateUserFunction = wrappedHttpsCallable('updateUser');
 const registerUserFunction = wrappedHttpsCallable('registerUser');

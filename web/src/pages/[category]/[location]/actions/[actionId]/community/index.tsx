@@ -1,24 +1,29 @@
-import BasicHead from "components/common/layout/BasicHead";
-import CommunityOverview from "components/pages/CommunityOverview";
-import { useNav } from "contexts/NavigationContext";
-import { ResourceContextProvider } from "contexts/ResourceContext";
-import { ResourceType } from "models/ResourceType";
-import { Tab } from "models/Tab";
+import CommunityOverview from "features/Resource/CommunityOverview";
+import { useNav } from "features/Nav/NavigationContext";
+import { ResourceContextProvider } from "features/Resource/ResourceContext";
+import { ResourceType } from "features/Resource/types/ResourceType";
+import { Tab } from "features/Resource/types/Tab";
 import { useEffect } from "react";
+import BasicHead from "common/components/layout/BasicHead";
+import Layout from "common/components/layout/Layout";
 
-function ActionCommunityPage() {
+function ActionCommunityOverviewPage() {
     const { handleCurrentTabChange } = useNav();
 
     useEffect(() => {
-        handleCurrentTabChange(Tab.Community);
+        handleCurrentTabChange('Community');
     }, [ handleCurrentTabChange ]);
 
     return (
-        <ResourceContextProvider resourceType={ResourceType.Action}>
+        <>
             <BasicHead title="goSolve | Community" />
-            <CommunityOverview resourceType={ResourceType.Action} />
-        </ResourceContextProvider>
+            <ResourceContextProvider resourceType={'Action'}>
+                <Layout>
+                    <CommunityOverview resourceType={'Action'} />
+                </Layout>
+            </ResourceContextProvider>
+        </>
     );
 }
 
-export default ActionCommunityPage;
+export default ActionCommunityOverviewPage;

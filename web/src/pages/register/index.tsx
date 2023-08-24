@@ -7,7 +7,7 @@ function RegisterPage() {
         <>
             <BasicHead title="goSolve | Register" />
             <Layout>
-                <Register/>
+                <Register />
             </Layout>
         </>
     );

@@ -7,7 +7,7 @@ function SearchPage() {
         <>
             <BasicHead title="goSolve | Search" />
             <Layout>
-                <SearchResults/>
+                <SearchResults />
             </Layout>
         </>
     );

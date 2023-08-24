@@ -7,7 +7,7 @@ function SettingsPage() {
         <>
             <BasicHead title="goSolve | Account settings" />
             <Layout>
-                <AccountSettings/>
+                <AccountSettings />
             </Layout>
         </>
     );

@@ -6,7 +6,7 @@ function RegisterDetailsPage() {
         <>
             <BasicHead title="goSolve | Onboarding" />
             <main>
-                <RegisterDetails/>
+                <RegisterDetails />
             </main>
         </>
     );

@@ -7,7 +7,7 @@ function LoginPage() {
         <>
             <BasicHead title="goSolve | Login" />
             <Layout>
-                <Login/>
+                <Login />
             </Layout>
         </>
     );

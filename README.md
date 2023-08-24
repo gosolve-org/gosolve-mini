@@ -16,14 +16,6 @@ goSolve is a space to solve world problems.
   
 <sub>This is a [Next.js](https://nextjs.org/) project with [Tailwind](https://tailwindcss.com/) and [Firebase](https://firebase.google.com/).</sub>  
 
-## Initial Firebase project setup
-- Create Firebase project
-- Go to Cloud Firestore -> Create (in production mode)
-- Go to Functions -> Get started (until you see the empty Dashboard)
-- Go to Project Settings -> Set "Default GCP resource location"
-- Go to https://console.cloud.google.com/artifacts and enable the Artifact API for your project
-- Go to https://console.cloud.google.com/apis/library/cloudbuild.googleapis.com and enable the Cloud Build API for your project
-
 ## First-time setup
 ```bash
 # Installing NPM packages
@@ -53,6 +45,7 @@ npm run dev
 ## Running the front-end
 Run the development server:
 ```bash
+cd web
 npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -64,17 +57,22 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 │   ├── functions // Contains all cloud functions
 |── public // Contains all public resources for the Front-end app
 |── src // Contains all source code for the Front-end app
-│   ├── components
-│   |   ├── common // Common components used throughout app
-│   |   ├── pages // Specific components used in each page, follows page structure
-│   ├── constants
-│   ├── context
-│   ├── models
+│   ├── features // Contains all features of the app
+│   |   ├── Notifications // All notifications related code (components, types, contexts, ...)
+│   |   ├── ...
+│   ├── common // Common components, models, contexts, ... used throughout app
 │   ├── pages // Pages with folder structure to follow URL
 │   │   ├── api // API functionality
-│   ├── styles // App styles
 │   ├── utils // Utility tools
 ```
+
+## Initial Firebase project setup
+- Create Firebase project
+- Go to Cloud Firestore -> Create (in production mode)
+- Go to Functions -> Get started (until you see the empty Dashboard)
+- Go to Project Settings -> Set "Default GCP resource location"
+- Go to https://console.cloud.google.com/artifacts and enable the Artifact API for your project
+- Go to https://console.cloud.google.com/apis/library/cloudbuild.googleapis.com and enable the Cloud Build API for your project
 
 ## Continuous Deployment
 We don't manually make changes or manually deploy to Firebase or Netlify. The following setup is used for automatic deployments.
@@ -108,7 +106,7 @@ Create a json key for this service account, base64 encode it, and save it in the
 
 ## Firebase notes (not relevant for local setup)
 -   Setting up a new database requires going through the authentication and firestore database setups
-    -   For authorisation, add authorised domains under authentication -> settings
+    -   For authorization, add authorized domains under authentication -> settings
     -   Add env variables to deploy/local which can be found in project settings -> general -> your apps (search for `process.env` to see which ones are needed)
 
 ## License

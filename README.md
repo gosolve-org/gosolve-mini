@@ -16,6 +16,11 @@ goSolve is a space to solve world problems.
   
 <sub>This is a [Next.js](https://nextjs.org/) project with [Tailwind](https://tailwindcss.com/) and [Firebase](https://firebase.google.com/).</sub>  
 
+## Project structure
+<p align="center">
+  <img src="./docs/images/project-structure.jpg" alt="Project structure" />
+</p>
+
 ## First-time setup
 ```bash
 # Installing NPM packages

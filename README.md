@@ -31,7 +31,7 @@ npm install
 firebase login # Log in with your google account that has access to the dev firebase project
 (cd firebase/ && firebase use default)
 (cd firebase/ && firebase init emulators) # Select Authentication Emulator, Functions Emulator and Firestore Emulator
-(cd firebase/ && cp -r exported-dev-data.example exported-dev-data) # Copy basic dummy data required for your emulators
+(cd firebase/ && cp -r exported-dev-data.example exported-dev-data) # Copies basic dummy data required for your emulators
 
 # Setting up environment variables
 # These will need to be filled in, ask a team member for the correct values.

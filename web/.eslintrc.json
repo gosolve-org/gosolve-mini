@@ -4,11 +4,11 @@
         "es2021": true
     },
     "extends": [
-        "react-app",
         "standard-with-typescript",
         "plugin:react/recommended",
         "airbnb",
         "airbnb-typescript",
+        "plugin:@next/next/recommended",
         "plugin:import/typescript",
         "plugin:prettier/recommended"
     ],

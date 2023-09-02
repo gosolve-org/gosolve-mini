@@ -1,36 +1,39 @@
-//@ts-nocheck
 // https://github.com/Jungwoo-An/react-editor-js/issues/193
-import { useCallback, useEffect, useRef, useState } from "react";
-import { createReactEditorJS } from "react-editor-js";
-import { useLeavePageConfirm } from "utils/customHooks";
-import { useResource } from "features/Resource/ResourceContext";
-import { EDITOR_JS_TOOLS } from "./editorTools";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createReactEditorJS } from 'react-editor-js';
+import { useLeavePageConfirm } from 'utils/customHooks';
+import { useResource } from 'features/Resource/ResourceContext';
+import { type OutputData } from '@editorjs/editorjs';
+import { EDITOR_JS_TOOLS } from './editorTools';
+
+interface EditorCore {
+    destroy: () => Promise<void>;
+    clear: () => Promise<void>;
+    save: () => Promise<OutputData>;
+    render: (data: OutputData) => Promise<void>;
+    get dangerouslyLowLevelInstance(): any | null;
+}
 
 interface EditorProps {
     defaultValue?: string;
     saveData?: (savedData: string) => Promise<void>;
-    onChange?: (savedData: string) => Promise<void>;
     readOnly?: boolean;
 }
 
-const Editor = ({
-    defaultValue,
-    saveData,
-    readOnly = true,
-}: EditorProps) => {
+const Editor = ({ defaultValue, saveData, readOnly = true }: EditorProps) => {
     const { focusedEditorElementIndex } = useResource();
 
     const ReactEditorJS = createReactEditorJS();
 
-    const editorJS = useRef(null);
-    const containerRef = useRef(null);
+    const editorJS = useRef<EditorCore | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
 
     const [hasChanges, setHasChanges] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     useLeavePageConfirm(hasChanges);
 
-    const handleInitialize = useCallback(async (instance) => {
+    const handleInitialize = useCallback(async (instance: EditorCore) => {
         if (!editorJS.current) editorJS.current = instance;
     }, []);
 
@@ -38,7 +41,7 @@ const Editor = ({
         try {
             setIsLoading(true);
             const savedData = await editorJS?.current?.save();
-            saveData && await saveData(JSON.stringify(savedData));
+            if (saveData) await saveData(JSON.stringify(savedData));
             setHasChanges(false);
         } finally {
             setIsLoading(false);
@@ -53,19 +56,23 @@ const Editor = ({
     }, []);
 
     useEffect(() => {
-        if (focusedEditorElementIndex === null || editorJS.current == null) {
+        if (
+            focusedEditorElementIndex == null ||
+            editorJS.current == null ||
+            containerRef.current == null
+        ) {
             return;
         }
 
-        const blockEls = [...containerRef.current.querySelectorAll('.ce-block')];
+        const blockEls = Array.from(containerRef.current.querySelectorAll('.ce-block'));
         if (blockEls.length <= focusedEditorElementIndex) {
             return;
         }
 
         const elToFocus = blockEls[focusedEditorElementIndex];
         elToFocus.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        elToFocus.focus({ preventScroll: true });
-    }, [ focusedEditorElementIndex, editorJS, containerRef ]);
+        if (elToFocus instanceof HTMLElement) elToFocus.focus({ preventScroll: true });
+    }, [focusedEditorElementIndex, editorJS, containerRef]);
 
     return (
         <div className="content" ref={containerRef}>
@@ -87,11 +94,11 @@ const Editor = ({
                 holder="editorjs-container"
                 onChange={handleChange}
                 readOnly={readOnly}
-                enableReInitialize={true}
+                // enableReInitialize
                 onInitialize={handleInitialize}
                 tools={EDITOR_JS_TOOLS}
-                defaultValue={!!defaultValue ? JSON.parse(defaultValue) : null}
-                minHeight="100"
+                defaultValue={defaultValue ? JSON.parse(defaultValue) : null}
+                minHeight={100}
             />
         </div>
     );

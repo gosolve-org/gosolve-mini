@@ -1,8 +1,8 @@
-import BasicHead from "common/components/layout/BasicHead";
-import Layout from "common/components/layout/Layout";
-import SearchResults from "features/Search/SearchResults";
+import BasicHead from 'common/components/layout/BasicHead';
+import Layout from 'common/components/layout/Layout';
+import SearchResults from 'features/Search/SearchResults';
 
-function SearchPage() {
+const SearchPage = () => {
     return (
         <>
             <BasicHead title="goSolve | Search" />
@@ -11,6 +11,6 @@ function SearchPage() {
             </Layout>
         </>
     );
-}
+};
 
 export default SearchPage;

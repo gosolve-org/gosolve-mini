@@ -1,10 +1,10 @@
 export interface Action {
-    id?: string;
-    title?: string;
-    content?: string;
-    topicId?: string;
-    authorId?: string;
-    authorUsername?: string;
-    updatedAt?: Date;
-    createdAt?: Date;
+    id: string | null;
+    title: string | null;
+    content: string | null;
+    topicId: string | null;
+    authorId: string | null;
+    authorUsername: string | null;
+    updatedAt: Date | null;
+    createdAt: Date | null;
 }

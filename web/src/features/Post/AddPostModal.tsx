@@ -1,22 +1,18 @@
-import * as Sentry from "@sentry/react";
-import {
-    useState,
-    FormEvent,
-    SyntheticEvent,
-} from "react";
-import { useRouter } from "next/router";
-import { Dialog } from "@headlessui/react";
+import * as Sentry from '@sentry/react';
+import { useState, type FormEvent, type SyntheticEvent } from 'react';
+import { useRouter } from 'next/router';
+import { Dialog } from '@headlessui/react';
 
-import { useAuth } from "features/Auth/AuthContext";
-import { addPost } from "pages/api/post";
-import { ResourceType } from "features/Resource/types/ResourceType";
-import { toast } from "react-toastify";
-import { toUrlPart } from "utils/textUtils";
-import { useNav } from "features/Nav/NavigationContext";
-import { AnalyticsEventEnum } from "features/Analytics/AnalyticsEventEnum";
-import { useAnalytics } from "features/Analytics/AnalyticsContext";
-import Modal from "common/components/layout/Modal";
-import { POST_VALIDATIONS } from "./validationRules";
+import { useAuth } from 'features/Auth/AuthContext';
+import { addPost } from 'pages/api/post';
+import { type ResourceType } from 'features/Resource/types/ResourceType';
+import { toast } from 'react-toastify';
+import { toUrlPart } from 'utils/textUtils';
+import { useNav } from 'features/Nav/NavigationContext';
+import { AnalyticsEventEnum } from 'features/Analytics/AnalyticsEventEnum';
+import { useAnalytics } from 'features/Analytics/AnalyticsContext';
+import Modal from 'common/components/layout/Modal';
+import { POST_VALIDATIONS } from './validationRules';
 
 interface AddCommunityPostProps {
     open: boolean;
@@ -25,60 +21,73 @@ interface AddCommunityPostProps {
     parentResourceId: string;
 }
 
-function AddCommunityPostModal({ open, onClose, parentResourceType, parentResourceId }: AddCommunityPostProps) {
+const AddCommunityPostModal = ({
+    open,
+    onClose,
+    parentResourceType,
+    parentResourceId,
+}: AddCommunityPostProps) => {
     const { user } = useAuth();
     const { logAnalyticsEvent } = useAnalytics();
     const { currentCategory, currentLocation } = useNav();
     const router = useRouter();
 
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const actionId = router?.query?.actionId?.toString() ?? '';
 
-    const handleTitleChange = (e: FormEvent<HTMLInputElement>) =>
-        setTitle(e.currentTarget.value);
+    const handleTitleChange = (e: FormEvent<HTMLInputElement>) => setTitle(e.currentTarget.value);
 
     const handleDescriptionChange = (e: FormEvent<HTMLTextAreaElement>) =>
         setDescription(e.currentTarget.value);
 
-    const hasChanges = () => !!title && !!location;
+    const hasChanges = () => !!title && !!description;
 
-    const handleAddCommuntyPostSubmit = async (
-        e: SyntheticEvent<HTMLFormElement>
-    ) => {
+    const handleAddCommuntyPostSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (user == null) return;
 
         if (isLoading) return;
         setIsLoading(true);
 
         const originDetails = {
-            [(parentResourceType === 'Action' ? 'actionId' : 'topicId')]: parentResourceId
+            [parentResourceType === 'Action' ? 'actionId' : 'topicId']: parentResourceId,
         };
 
         try {
             const docId = await addPost({
-                details: {
-                    ...originDetails,
-                    authorId: user.uid,
-                    title,
-                    content: description,
-                    authorUsername: user.username,
-                    createdAt: new Date()
-                },
-                category: currentCategory.category,
-                location: currentLocation.location
+                id: null,
+                actionId: null,
+                topicId: null,
+                ...originDetails,
+                authorId: user.uid,
+                title,
+                content: description,
+                authorUsername: user.username,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             });
-            logAnalyticsEvent(AnalyticsEventEnum.PostCreate, { category: currentCategory.category, location: currentLocation.location, actionId: actionId || null });
+            logAnalyticsEvent(AnalyticsEventEnum.PostCreate, {
+                category: currentCategory.category,
+                location: currentLocation.location,
+                actionId: actionId || null,
+            });
 
-            await router.push(parentResourceType === 'Topic'
-                ? `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/community/${docId}`
-                : `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/actions/${actionId}/community/${docId}`
+            await router.push(
+                parentResourceType === 'Topic'
+                    ? `/${toUrlPart(currentCategory.category)}/${toUrlPart(
+                          currentLocation.location,
+                      )}/community/${docId}`
+                    : `/${toUrlPart(currentCategory.category)}/${toUrlPart(
+                          currentLocation.location,
+                      )}/actions/${actionId}/community/${docId}`,
             );
         } catch (err) {
             Sentry.captureException(err);
-            toast.error("Something went wrong");
+            toast.error('Something went wrong');
             console.error(err);
         } finally {
             setIsLoading(false);
@@ -89,25 +98,14 @@ function AddCommunityPostModal({ open, onClose, parentResourceType, parentResour
         <Modal open={open} onClose={onClose}>
             <div className="sm:flex sm:items-start">
                 <div className="mt-3 text-left sm:mt-0 ">
-                    <Dialog.Title
-                        as="h3"
-                        className="text-xs text-gray-500 font-normal"
-                    >
+                    <Dialog.Title as="h3" className="text-xs text-gray-500 font-normal">
                         {`You're creating a post in the community for "${currentCategory?.category} in ${currentLocation?.location}"`}
                     </Dialog.Title>
                 </div>
             </div>
-            <form
-                action="#"
-                method="POST"
-                className="mt-8"
-                onSubmit={handleAddCommuntyPostSubmit}
-            >
+            <form action="#" method="POST" className="mt-8" onSubmit={handleAddCommuntyPostSubmit}>
                 <div>
-                    <label
-                        htmlFor="title"
-                        className="block text-m font-medium text-black"
-                    >
+                    <label htmlFor="title" className="block text-m font-medium text-black">
                         Title
                     </label>
                     <div className="mt-1">
@@ -125,24 +123,19 @@ function AddCommunityPostModal({ open, onClose, parentResourceType, parentResour
                     </div>
                 </div>
                 <div className="mt-6">
-                    <label
-                        htmlFor="description"
-                        className="block text-m font-medium text-black"
-                    >
+                    <label htmlFor="description" className="block text-m font-medium text-black">
                         Description
                     </label>
                     <div className="mt-1">
                         <textarea
                             tabIndex={2}
-                            onChange={
-                                handleDescriptionChange
-                            }
+                            onChange={handleDescriptionChange}
                             rows={4}
                             maxLength={POST_VALIDATIONS.contentMaxLength}
                             name="description"
                             id="description"
                             className="p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                            defaultValue={""}
+                            defaultValue=""
                             placeholder="Write a comment..."
                         />
                     </div>
@@ -160,6 +153,6 @@ function AddCommunityPostModal({ open, onClose, parentResourceType, parentResour
             </form>
         </Modal>
     );
-}
+};
 
 export default AddCommunityPostModal;

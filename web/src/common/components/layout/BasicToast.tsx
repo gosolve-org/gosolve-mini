@@ -1,11 +1,11 @@
-import { TOAST_IDS } from "common/constants/toastConstants";
-import { ToastContainer } from "react-toastify";
+import { TOAST_IDS } from 'common/constants/toastConstants';
+import { ToastContainer } from 'react-toastify';
 
 interface LinkToastProps {
-    enableMultiToast?: boolean|null;
+    enableMultiToast?: boolean;
 }
 
-function BasicToast({ enableMultiToast }: LinkToastProps) {
+const BasicToast = ({ enableMultiToast = false }: LinkToastProps) => {
     return (
         <ToastContainer
             position="bottom-center"
@@ -22,6 +22,6 @@ function BasicToast({ enableMultiToast }: LinkToastProps) {
             containerId={TOAST_IDS.basicToastId}
         />
     );
-}
+};
 
 export default BasicToast;

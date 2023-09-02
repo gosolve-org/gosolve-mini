@@ -1,82 +1,83 @@
-import * as Sentry from "@sentry/react";
-import {
-    useState,
-    FormEvent,
-    SyntheticEvent,
-    useRef,
-} from "react";
-import { useRouter } from "next/router";
-import { Dialog } from "@headlessui/react";
-import { collection, query, where } from "firebase/firestore";
+import * as Sentry from '@sentry/react';
+import { useState, type FormEvent, type SyntheticEvent, useRef } from 'react';
+import { useRouter } from 'next/router';
+import { Dialog } from '@headlessui/react';
+import { collection, query, where } from 'firebase/firestore';
 
-import { addAction } from "pages/api/action";
-import { useAuth } from "features/Auth/AuthContext";
-import { db, useCollectionOnceWithDependencies } from "utils/firebase";
-import { toast } from "react-toastify";
-import { toUrlPart } from "utils/textUtils";
-import { useNav } from "features/Nav/NavigationContext";
-import { AnalyticsEventEnum } from "features/Analytics/AnalyticsEventEnum";
-import { useAnalytics } from "features/Analytics/AnalyticsContext";
-import Modal from "common/components/layout/Modal";
-import { ACTION_VALIDATIONS } from "../validationRules";
+import { addAction } from 'pages/api/action';
+import { useAuth } from 'features/Auth/AuthContext';
+import { db, useCollectionOnceWithDependencies } from 'utils/firebase';
+import { toast } from 'react-toastify';
+import { toUrlPart } from 'utils/textUtils';
+import { useNav } from 'features/Nav/NavigationContext';
+import { AnalyticsEventEnum } from 'features/Analytics/AnalyticsEventEnum';
+import { useAnalytics } from 'features/Analytics/AnalyticsContext';
+import Modal from 'common/components/layout/Modal';
+import { ACTION_VALIDATIONS } from '../validationRules';
 
 interface AddActionModalProps {
     open: boolean;
     onClose: () => void;
 }
 
-function AddActionModal({ open, onClose }: AddActionModalProps) {
+const AddActionModal = ({ open, onClose }: AddActionModalProps) => {
     const { logAnalyticsEvent } = useAnalytics();
     const { user } = useAuth();
     const router = useRouter();
-    const titleInput = useRef(null);
+    const titleInput = useRef<HTMLInputElement>(null);
     const { currentCategory, currentLocation } = useNav();
 
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const [topicsCollection] = useCollectionOnceWithDependencies(
-        () => query(
-            collection(db, "topics"),
-            where("categoryId", "==", currentCategory.id),
-            where("locationId", "==", currentLocation.id)
-        ), [ currentCategory?.id, currentLocation?.id ]
+        () =>
+            query(
+                collection(db, 'topics'),
+                where('categoryId', '==', currentCategory.id),
+                where('locationId', '==', currentLocation.id),
+            ),
+        [currentCategory?.id, currentLocation?.id],
     );
 
-    const handleTitleChange = (e: FormEvent<HTMLInputElement>) =>
-        setTitle(e.currentTarget.value);
+    const handleTitleChange = (e: FormEvent<HTMLInputElement>) => setTitle(e.currentTarget.value);
 
     const hasChanges = () => !!title;
 
-    const handleAddActionSubmit = async (
-        e: SyntheticEvent<HTMLFormElement>
-    ) => {
+    const handleAddActionSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (user == null) return;
 
         if (isLoading) return;
         setIsLoading(true);
 
-        const topicId = topicsCollection?.docs?.[0]?.id;
+        const topicId = topicsCollection?.docs?.[0]?.id ?? null;
 
-        const actionTitle = title || titleInput.current.value;
+        const actionTitle = title || (titleInput.current?.value ?? null);
 
         try {
             const docId = await addAction({
+                id: '',
                 authorId: user.uid,
                 title: actionTitle,
                 topicId,
                 authorUsername: user.username,
-                createdAt: new Date()
+                content: null,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             });
 
             logAnalyticsEvent(AnalyticsEventEnum.ActionCreate, { topicId });
 
             await router.push(
-                `/${toUrlPart(currentCategory.category)}/${toUrlPart(currentLocation.location)}/actions/${docId}`
+                `/${toUrlPart(currentCategory.category)}/${toUrlPart(
+                    currentLocation.location,
+                )}/actions/${docId}`,
             );
         } catch (err) {
             Sentry.captureException(err);
-            toast.error("Something went wrong");
+            toast.error('Something went wrong');
             console.error(err);
         } finally {
             setIsLoading(false);
@@ -87,25 +88,14 @@ function AddActionModal({ open, onClose }: AddActionModalProps) {
         <Modal open={open} onClose={onClose}>
             <div className="sm:flex sm:items-start">
                 <div className="mt-3 text-left sm:mt-0 ">
-                    <Dialog.Title
-                        as="h3"
-                        className="text-xs text-gray-500 font-normal"
-                    >
+                    <Dialog.Title as="h3" className="text-xs text-gray-500 font-normal">
                         {`You're creating an action for "${currentCategory?.category} in ${currentLocation?.location}"`}
                     </Dialog.Title>
                 </div>
             </div>
-            <form
-                className="mt-8"
-                action="#"
-                method="POST"
-                onSubmit={handleAddActionSubmit}
-            >
+            <form className="mt-8" action="#" method="POST" onSubmit={handleAddActionSubmit}>
                 <div>
-                    <label
-                        htmlFor="title"
-                        className="block text-m font-medium text-black"
-                    >
+                    <label htmlFor="title" className="block text-m font-medium text-black">
                         Title
                     </label>
                     <div className="mt-1">
@@ -135,8 +125,8 @@ function AddActionModal({ open, onClose }: AddActionModalProps) {
                     </button>
                 </div>
             </form>
-        </Modal>        
+        </Modal>
     );
-}
+};
 
 export default AddActionModal;

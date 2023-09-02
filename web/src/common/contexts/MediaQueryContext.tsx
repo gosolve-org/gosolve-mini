@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { useMediaQuery } from "react-responsive";
+import { createContext, type ReactNode, useContext, useEffect, useState, useMemo } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 interface MediaQueryContext {
     isDesktopOrLaptop: boolean;
@@ -41,29 +41,42 @@ export const MediaQueryContextProvider = ({ children }: { children: ReactNode })
         const handleResize = () => {
             setScreenWidth(global.window?.innerWidth);
             setScreenHeight(global.window?.innerHeight);
-        }
+        };
 
-        global.window?.addEventListener("resize", handleResize);
+        global.window?.addEventListener('resize', handleResize);
         handleResize();
-        return () => global?.window?.removeEventListener("resize", handleResize);
+        return () => {
+            global?.window?.removeEventListener('resize', handleResize);
+        };
     }, []);
 
+    const providerValue = useMemo(
+        () => ({
+            isDesktopOrLaptop,
+            isBigScreen,
+            isTabletOrMobile,
+            isTablet,
+            isMobile,
+            isPortrait,
+            isRetina,
+            screenWidth,
+            screenHeight,
+        }),
+        [
+            isDesktopOrLaptop,
+            isBigScreen,
+            isTabletOrMobile,
+            isTablet,
+            isMobile,
+            isPortrait,
+            isRetina,
+            screenWidth,
+            screenHeight,
+        ],
+    );
+
     return (
-        <MediaQueryContext.Provider
-            value={{
-                isDesktopOrLaptop,
-                isBigScreen,
-                isTabletOrMobile,
-                isTablet,
-                isMobile,
-                isPortrait,
-                isRetina,
-                screenWidth,
-                screenHeight,
-            }}
-        >
-            {children}
-        </MediaQueryContext.Provider>
+        <MediaQueryContext.Provider value={providerValue}>{children}</MediaQueryContext.Provider>
     );
 };
 
@@ -71,7 +84,7 @@ export const useMediaQueries = () => {
     const context = useContext(MediaQueryContext);
 
     if (context === undefined) {
-        throw new Error("useMediaQueries must be used within a MediaQueryContextProvider");
+        throw new Error('useMediaQueries must be used within a MediaQueryContextProvider');
     }
 
     return context;

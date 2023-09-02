@@ -1,9 +1,9 @@
-import { Category } from "common/models/Category";
-import { Location } from "common/models/Location";
-import { collection } from "firebase/firestore";
-import { createContext, ReactNode, useContext } from "react";
-import { db, useCollectionOnceWithDependencies } from "utils/firebase";
-import { docToCategory, docToLocation } from "utils/mapper";
+import { type Category } from 'common/models/Category';
+import { type Location } from 'common/models/Location';
+import { collection } from 'firebase/firestore';
+import { createContext, type ReactNode, useContext, useMemo } from 'react';
+import { db, useCollectionOnceWithDependencies } from 'utils/firebase';
+import { docToCategory, docToLocation } from 'utils/mapper';
 
 interface DataCacheContext {
     locations: Location[];
@@ -16,26 +16,25 @@ export const DataCacheContext = createContext<DataCacheContext>({
 });
 
 export const DataCacheContextProvider = ({ children }: { children: ReactNode }) => {
-    const [locations] = useCollectionOnceWithDependencies(() => collection(db, "locations"), []);
-    const [categories] = useCollectionOnceWithDependencies(() => collection(db, "categories"), []);
+    const [locations] = useCollectionOnceWithDependencies(() => collection(db, 'locations'), []);
+    const [categories] = useCollectionOnceWithDependencies(() => collection(db, 'categories'), []);
 
-    return (
-        <DataCacheContext.Provider
-            value={{
-                locations: locations?.docs.map(docToLocation) as Location[] ?? [],
-                categories: categories?.docs.map(docToCategory) as Category[] ?? [],
-            }}
-        >
-            {children}
-        </DataCacheContext.Provider>
+    const providerValue = useMemo(
+        () => ({
+            locations: (locations?.docs.map(docToLocation) as Location[]) ?? [],
+            categories: (categories?.docs.map(docToCategory) as Category[]) ?? [],
+        }),
+        [locations, categories],
     );
+
+    return <DataCacheContext.Provider value={providerValue}>{children}</DataCacheContext.Provider>;
 };
 
 export const useDataCache = () => {
     const context = useContext(DataCacheContext);
 
     if (context === undefined) {
-        throw new Error("useDataCache must be used within a DataCacheContextProvider");
+        throw new Error('useDataCache must be used within a DataCacheContextProvider');
     }
 
     return context;

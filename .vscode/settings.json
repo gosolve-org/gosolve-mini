@@ -1,0 +1,7 @@
+{
+    "eslint.workingDirectories": [
+      "./firebase",
+      "./tools",
+      "./web",
+    ]
+}

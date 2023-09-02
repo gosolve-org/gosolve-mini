@@ -1,10 +1,12 @@
-export interface User {
-    email?: string;
-    name?: string;
-    username?: string;
-    birthYear?: number;
-    role?: "user" | "editor" | "admin";
-    createdAt?: Date;
-    updatedAt?: Date;
-    isOnboarded?: boolean;
+interface User {
+    email: string | null;
+    name: string | null;
+    username: string | null;
+    birthYear: number | null;
+    role: 'user' | 'editor' | 'admin' | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+    isOnboarded: boolean | null;
 }
+
+export default User;

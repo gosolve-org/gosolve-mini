@@ -1,6 +1,6 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Fragment } from "react";
+import { Dialog, Transition } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { Fragment } from 'react';
 
 interface ModalProps {
     open: boolean;
@@ -8,7 +8,7 @@ interface ModalProps {
     children: React.ReactNode;
 }
 
-function Modal({ open, children, onClose } : ModalProps) {
+const Modal = ({ open, children, onClose }: ModalProps) => {
     return (
         <Transition.Root show={open} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -44,10 +44,7 @@ function Modal({ open, children, onClose } : ModalProps) {
                                         onClick={onClose}
                                     >
                                         <span className="sr-only">Close</span>
-                                        <XMarkIcon
-                                            className="h-6 w-6"
-                                            aria-hidden="true"
-                                        />
+                                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                                     </button>
                                 </div>
                                 {children}
@@ -58,6 +55,6 @@ function Modal({ open, children, onClose } : ModalProps) {
             </Dialog>
         </Transition.Root>
     );
-}
+};
 
 export default Modal;

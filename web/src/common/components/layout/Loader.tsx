@@ -1,10 +1,10 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 interface LoaderProps {
     size?: number;
-};
+}
 
-function Loader({ size = 48 }: LoaderProps) {
+const Loader = ({ size = 48 }: LoaderProps) => {
     return (
         <div className="flex h-full w-full justify-center items-center">
             <Image
@@ -17,6 +17,6 @@ function Loader({ size = 48 }: LoaderProps) {
             />
         </div>
     );
-}
+};
 
 export default Loader;

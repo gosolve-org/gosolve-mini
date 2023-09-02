@@ -1,113 +1,139 @@
-import { collection, doc, query, where } from "firebase/firestore";
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from "react";
-import { db, useCollectionOnceWithDependencies, useDocumentOnceWithDependencies } from "utils/firebase";
-import actionEditorTemplate from "features/Editor/actionEditorTemplate.json";
-import { ResourceType } from "features/Resource/types/ResourceType";
-import { useNav } from "../Nav/NavigationContext";
+import { collection, doc, query, where } from 'firebase/firestore';
+import {
+    createContext,
+    type Dispatch,
+    type ReactNode,
+    type SetStateAction,
+    useContext,
+    useEffect,
+    useState,
+    useMemo,
+} from 'react';
+import {
+    db,
+    useCollectionOnceWithDependencies,
+    useDocumentOnceWithDependencies,
+} from 'utils/firebase';
+import actionEditorTemplate from 'features/Editor/actionEditorTemplate.json';
+import { type ResourceType } from 'features/Resource/types/ResourceType';
+import { useNav } from '../Nav/NavigationContext';
 
 interface ResourceContext {
     resourceType: ResourceType;
-    content: string;
+    content: string | null;
     setContent: Dispatch<SetStateAction<string>>;
-    authorId: string;
-    title: string;
-    createdAt: Date;
-    topicId: string;
-    actionId: string;
-    focusedEditorElementIndex?: number;
-    setFocusedEditorElementIndex: Dispatch<SetStateAction<Number>>;
+    authorId: string | null;
+    title: string | null;
+    createdAt: Date | null;
+    topicId: string | null;
+    actionId: string | null;
+    focusedEditorElementIndex?: number | null;
+    setFocusedEditorElementIndex: Dispatch<SetStateAction<number>>;
 }
 
-const ResourceContext = createContext<ResourceContext>({
-    resourceType: null,
-    content: null,
-    setContent: null,
-    authorId: null,
-    title: null,
-    createdAt: null,
-    topicId: null,
-    actionId: null,
-    focusedEditorElementIndex: null,
-    setFocusedEditorElementIndex: null,
-});
+const ResourceContext = createContext<ResourceContext | null>(null);
 
-export const ResourceContextProvider = ({ children, resourceType }: { children: ReactNode, resourceType: ResourceType }) => {
+export const ResourceContextProvider = ({
+    children,
+    resourceType,
+}: {
+    children: ReactNode;
+    resourceType: ResourceType;
+}) => {
     const { goToNotFoundPage, router } = useNav();
     const { currentCategory, currentLocation } = useNav();
-    const [content, setContent] = useState<string>(null);
-    const [focusedEditorElementIndex, setFocusedEditorElementIndex] = useState<number>(null);
+    const [content, setContent] = useState<string | null>(null);
+    const [focusedEditorElementIndex, setFocusedEditorElementIndex] = useState<number | null>(null);
 
     const [topicsCollection, isTopicLoading] = useCollectionOnceWithDependencies(
-        () => query(
-            collection(db, "topics"),
-            where("categoryId", "==", currentCategory.id),
-            where("locationId", "==", currentLocation.id)
-        ), [ currentCategory?.id, currentLocation?.id ]
+        () =>
+            query(
+                collection(db, 'topics'),
+                where('categoryId', '==', currentCategory.id),
+                where('locationId', '==', currentLocation.id),
+            ),
+        [currentCategory?.id, currentLocation?.id],
     );
 
     if (!isTopicLoading && (!topicsCollection || topicsCollection?.docs?.length === 0)) {
         goToNotFoundPage();
-    };
+    }
 
     const topicId = topicsCollection?.docs?.[0]?.id || null;
-    const actionId = router?.query?.actionId?.toString();
+    const actionId = router?.query?.actionId?.toString() || null;
 
     const [actionSnapshot, isActionSnapshotLoading] = useDocumentOnceWithDependencies(
-        () => doc(db, "actions", actionId), [ actionId ]);
+        () => doc(db, 'actions', actionId!),
+        [actionId],
+    );
 
-    let foundContent: string;
-    let authorId: string;
-    let title: string;
-    let createdAt: Date;
-    switch (resourceType)
-    {
-        case 'Action':
+    let foundContent: string | null = null;
+    let authorId: string | null = null;
+    let title: string | null = null;
+    let createdAt: Date | null = null;
+    switch (resourceType) {
+        case 'Action': {
             const actionData = !isActionSnapshotLoading ? actionSnapshot?.data() : null;
-            foundContent = !isActionSnapshotLoading ? (actionData?.content || JSON.stringify(actionEditorTemplate)) : null;
+            foundContent = !isActionSnapshotLoading
+                ? actionData?.content || JSON.stringify(actionEditorTemplate)
+                : null;
             authorId = actionData?.authorId;
             createdAt = actionData?.createdAt;
             title = actionData?.title;
             break;
-        case 'Topic':
+        }
+        case 'Topic': {
             const topicData = topicsCollection?.docs?.[0]?.data();
             foundContent = topicData?.content;
             createdAt = topicData?.createdAt;
             title = topicData?.title;
             break;
-        default:
+        }
+        default: {
             foundContent = null;
             break;
+        }
     }
 
     useEffect(() => {
         setContent(foundContent);
     }, [setContent, foundContent]);
 
-    return (
-        <ResourceContext.Provider
-            value={{
-                resourceType,
-                content,
-                setContent,
-                authorId,
-                createdAt,
-                title,
-                topicId,
-                actionId,
-                focusedEditorElementIndex,
-                setFocusedEditorElementIndex,
-            }}
-        >
-            {children}
-        </ResourceContext.Provider>
+    const providerValue = useMemo(
+        () => ({
+            resourceType,
+            content,
+            setContent,
+            authorId,
+            createdAt,
+            title,
+            topicId,
+            actionId,
+            focusedEditorElementIndex,
+            setFocusedEditorElementIndex,
+        }),
+        [
+            resourceType,
+            content,
+            setContent,
+            authorId,
+            createdAt,
+            title,
+            topicId,
+            actionId,
+            focusedEditorElementIndex,
+            setFocusedEditorElementIndex,
+        ],
     );
+
+    return <ResourceContext.Provider value={providerValue}>{children}</ResourceContext.Provider>;
 };
 
 export const useResource = () => {
     const context = useContext(ResourceContext);
 
-    if (context === undefined) {
-        throw new Error("useResource must be used within a ResourceContextProvider");
+    if (context == null) {
+        throw new Error('useResource must be used within a ResourceContextProvider');
     }
 
     return context;

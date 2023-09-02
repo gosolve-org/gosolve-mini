@@ -1,20 +1,21 @@
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 
 interface PaginationProps {
-    pageSize?: number;
-    totalCount?: number;
+    pageSize: number;
+    totalCount: number;
 }
 
-function Pagination({ pageSize = 10, totalCount = 0 }: PaginationProps) {
+const Pagination = ({ pageSize = 10, totalCount = 0 }: PaginationProps) => {
     const router = useRouter();
-    const pathname = router.pathname;
+    const { pathname } = router;
     const routerQuery = router.query;
+    const pageQueryStr =
+        routerQuery?.page != null && typeof routerQuery.page === 'string' ? routerQuery.page : null;
 
-    const pageQuery = routerQuery?.page
-        ? parseInt(routerQuery?.page.toString()) || 1
-        : 1;
+    let pageQuery = pageQueryStr != null ? parseInt(pageQueryStr) : 1;
+    if (pageQuery < 1) pageQuery = 1;
 
     const pageCount = Math.ceil(totalCount / pageSize);
     const firstIndexOnPage = (pageQuery - 1) * pageSize + 1;
@@ -41,10 +42,7 @@ function Pagination({ pageSize = 10, totalCount = 0 }: PaginationProps) {
                         className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
                     >
                         <span className="sr-only">Previous</span>
-                        <ChevronLeftIcon
-                            className="h-5 w-5"
-                            aria-hidden="true"
-                        />
+                        <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
                     </Link>
                 ) : null}
 
@@ -121,10 +119,7 @@ function Pagination({ pageSize = 10, totalCount = 0 }: PaginationProps) {
                         className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
                     >
                         <span className="sr-only">Next</span>
-                        <ChevronRightIcon
-                            className="h-5 w-5"
-                            aria-hidden="true"
-                        />
+                        <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
                     </Link>
                 ) : null}
             </nav>
@@ -162,31 +157,25 @@ function Pagination({ pageSize = 10, totalCount = 0 }: PaginationProps) {
             <div className="hidden sm:flex sm:flex-1 items-center sm:justify-between">
                 <div>
                     <p className="text-sm text-gray-700">
-                        Showing{" "}
+                        Showing{' '}
                         {totalCount === 0 ? null : (
                             <>
-                                <span className="font-medium">
-                                    {firstIndexOnPage}
-                                </span>{" "}
+                                <span className="font-medium">{firstIndexOnPage}</span>{' '}
                                 {lastIndexOnPage !== 1 ? (
                                     <>
-                                        to{" "}
-                                        <span className="font-medium">
-                                            {lastIndexOnPage}
-                                        </span>{" "}
+                                        to <span className="font-medium">{lastIndexOnPage}</span>{' '}
                                     </>
                                 ) : null}
-                                of{" "}
+                                of{' '}
                             </>
                         )}
-                        <span className="font-medium">{totalCount}</span>{" "}
-                        results
+                        <span className="font-medium">{totalCount}</span> results
                     </p>
                 </div>
                 <div>{renderPageControls()}</div>
             </div>
         </div>
     );
-}
+};
 
 export default Pagination;

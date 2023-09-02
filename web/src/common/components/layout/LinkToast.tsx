@@ -1,22 +1,31 @@
-import { TOAST_IDS } from "common/constants/toastConstants";
-import Link from "next/link";
-import { toast, ToastContainer } from "react-toastify";
+import { TOAST_IDS } from 'common/constants/toastConstants';
+import Link from 'next/link';
+import { toast, ToastContainer } from 'react-toastify';
 
-export const showLinkToast = (type:'info'|'warning'|'success'|'error', message: string, href: string) => {
-    toast[type](<div className="text-center"><Link href={href}>{message}</Link></div>, {
-        containerId: TOAST_IDS.linkToastId
-    });
+export const showLinkToast = (
+    type: 'info' | 'warning' | 'success' | 'error',
+    message: string,
+    href: string,
+) => {
+    toast[type](
+        <div className="text-center">
+            <Link href={href}>{message}</Link>
+        </div>,
+        {
+            containerId: TOAST_IDS.linkToastId,
+        },
+    );
 };
 
 interface LinkToastProps {
-    enableMultiToast?: boolean|null;
+    enableMultiToast?: boolean;
 }
 
-function LinkToast({ enableMultiToast }: LinkToastProps) {
+const LinkToast = ({ enableMultiToast = false }: LinkToastProps) => {
     return (
         <ToastContainer
             position="bottom-center"
-            hideProgressBar={true}
+            hideProgressBar
             newestOnTop={false}
             enableMultiContainer={enableMultiToast ?? false}
             containerId={TOAST_IDS.linkToastId}
@@ -24,9 +33,9 @@ function LinkToast({ enableMultiToast }: LinkToastProps) {
             draggable
             theme="light"
             closeOnClick={false}
-            closeButton={true}
+            closeButton
         />
     );
-}
+};
 
 export default LinkToast;

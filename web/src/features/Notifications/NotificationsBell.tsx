@@ -1,18 +1,30 @@
-import { IMessage, NotificationBell, NovuProvider, PopoverNotificationCenter } from "../../../external/novu-notification-center";
-import Tippy from "@tippyjs/react";
-import { ReactElement } from "react";
-import { useAuth } from "features/Auth/AuthContext";
+import Tippy from '@tippyjs/react';
+import { type ReactElement } from 'react';
+import { useAuth } from 'features/Auth/AuthContext';
+import * as Sentry from '@sentry/react';
+import {
+    type IMessage,
+    NotificationBell,
+    NovuProvider,
+    PopoverNotificationCenter,
+} from '../../../external/novu-notification-center';
 
-function NotificationsBell({ bellIcon }: { bellIcon: ReactElement }) {
+const NotificationsBell = ({ bellIcon }: { bellIcon: ReactElement }) => {
     const auth = useAuth();
 
     const onNotificationClick = (message: IMessage) => {
         if (message?.cta?.data?.url) {
-          window.location.href = message.cta.data.url;
+            window.location.href = message.cta.data.url;
         }
-    }
+    };
 
     if (!auth?.user?.uid) return null;
+
+    if (process.env.NEXT_PUBLIC_NOVU_APPLICATION_ID == null) {
+        console.error('NEXT_PUBLIC_NOVU_APPLICATION_ID is not set');
+        Sentry.captureMessage('NEXT_PUBLIC_NOVU_APPLICATION_ID is not set', 'error');
+        return null;
+    }
 
     return (
         <NovuProvider
@@ -21,19 +33,19 @@ function NotificationsBell({ bellIcon }: { bellIcon: ReactElement }) {
         >
             <PopoverNotificationCenter
                 onNotificationClick={onNotificationClick}
-                colorScheme={'light'}
-                footer={() => null}
+                colorScheme="light"
+                footer={() => null as any}
             >
-                {({ unseenCount }) =>
+                {({ unseenCount }) => (
                     <Tippy content="Notifications">
                         <div>
                             <NotificationBell unseenCount={unseenCount} bellIcon={bellIcon} />
                         </div>
                     </Tippy>
-                }
+                )}
             </PopoverNotificationCenter>
         </NovuProvider>
     );
-}
+};
 
 export default NotificationsBell;

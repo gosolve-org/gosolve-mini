@@ -1,11 +1,11 @@
-import * as Sentry from '@sentry/react'
-import { db } from "utils/firebase";
-import { collection, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
-import { Action } from 'features/Resource/Action/types/Action';
+import * as Sentry from '@sentry/react';
+import { db } from 'utils/firebase';
+import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
+import { type Action } from 'features/Resource/Action/types/Action';
 
 const addAction = async (details: Action) => {
     try {
-        return await addDoc(collection(db, "actions"), {
+        return await addDoc(collection(db, 'actions'), {
             ...details,
             createdAt: new Date().getTime(),
             updatedAt: new Date().getTime(),
@@ -13,13 +13,13 @@ const addAction = async (details: Action) => {
     } catch (err) {
         Sentry.captureException(err);
         console.error(err);
-        throw new Error("Not allowed");
+        throw new Error('Not allowed');
     }
 };
 
 const updateAction = async (docId: string, details: Action) => {
     try {
-        const actionRef = doc(db, "actions", docId);
+        const actionRef = doc(db, 'actions', docId);
         const docSnap = await getDoc(actionRef);
 
         if (docSnap.exists()) {
@@ -29,13 +29,13 @@ const updateAction = async (docId: string, details: Action) => {
             });
 
             return docId;
-        } else {
-            return await addAction(details);
         }
+
+        return await addAction(details);
     } catch (err) {
         Sentry.captureException(err);
         console.error(err);
-        throw new Error("Not allowed");
+        throw new Error('Not allowed');
     }
 };
 

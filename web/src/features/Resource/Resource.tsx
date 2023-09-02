@@ -1,15 +1,13 @@
-import ResourceContent from "./ResourceContent";
-import { useResource } from "features/Resource/ResourceContext";
-import { ResourceType } from "features/Resource/types/ResourceType";
-import { useNav } from "features/Nav/NavigationContext";
-import { useMediaQueries } from "common/contexts/MediaQueryContext";
-import SidebarPostsOverview from "features/Sidebar/PostsOverview/SidebarPostsOverview";
-import SidebarActionsOverview from "features/Sidebar/ActionsOverview/SidebarActionsOverview";
-import Sidebar from "features/Sidebar";
-import SidebarTableOfContents from "features/Sidebar/SidebarTableOfContents";
+import { useResource } from 'features/Resource/ResourceContext';
+import { useNav } from 'features/Nav/NavigationContext';
+import { useMediaQueries } from 'common/contexts/MediaQueryContext';
+import SidebarPostsOverview from 'features/Sidebar/PostsOverview/SidebarPostsOverview';
+import SidebarActionsOverview from 'features/Sidebar/ActionsOverview/SidebarActionsOverview';
+import Sidebar from 'features/Sidebar';
+import SidebarTableOfContents from 'features/Sidebar/SidebarTableOfContents';
+import ResourceContent from './ResourceContent';
 
-function Resource()
-{
+const Resource = () => {
     const { resourceType } = useResource();
     const { currentCategory } = useNav();
     const { isDesktopOrLaptop, isBigScreen, isTabletOrMobile } = useMediaQueries();
@@ -19,17 +17,13 @@ function Resource()
     const renderForMobile = () => (
         <>
             <div>
-                {resourceType === 'Action' &&
-                    <>
-                        <SidebarPostsOverview />
-                    </>
-                }
-                {resourceType === 'Topic' &&
+                {resourceType === 'Action' && <SidebarPostsOverview />}
+                {resourceType === 'Topic' && (
                     <>
                         {!currentCategory?.hidden && <SidebarActionsOverview />}
                         {!currentCategory?.hidden && <SidebarPostsOverview />}
                     </>
-                }
+                )}
             </div>
 
             {/* CONTENT */}
@@ -42,7 +36,7 @@ function Resource()
     const renderForDesktop = () => (
         <div className="flex">
             {/* LEFT BAR */}
-            {resourceType === 'Topic' &&
+            {resourceType === 'Topic' && (
                 <div
                     className="shrink-0"
                     style={{
@@ -55,7 +49,7 @@ function Resource()
                         </div>
                     </Sidebar>
                 </div>
-            }
+            )}
 
             {/* CONTENT */}
             <div className="grow">
@@ -70,27 +64,19 @@ function Resource()
                 }}
             >
                 <Sidebar>
-                    {resourceType === 'Action' &&
-                        <>
-                            <SidebarPostsOverview />
-                        </>
-                    }
-                    {resourceType === 'Topic' &&
+                    {resourceType === 'Action' && <SidebarPostsOverview />}
+                    {resourceType === 'Topic' && (
                         <>
                             {!currentCategory?.hidden && <SidebarActionsOverview />}
                             {!currentCategory?.hidden && <SidebarPostsOverview />}
                         </>
-                    }
+                    )}
                 </Sidebar>
             </div>
         </div>
     );
 
-    return (
-        <>
-            {isTabletOrMobile ? renderForMobile() : renderForDesktop()}
-        </>
-    );
-}
+    return isTabletOrMobile ? renderForMobile() : renderForDesktop();
+};
 
 export default Resource;

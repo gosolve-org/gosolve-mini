@@ -4,15 +4,32 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'What environment do you want to deploy to?'
+        description: "What environment do you want to deploy to?"
         type: environment
         required: true
       release:
-        description: 'The release version to deploy (ex: 1.0.0)'
+        description: "The release version to deploy (ex: 1.0.0)"
         type: string
         required: true
 
 jobs:
+  web-linter:
+    name: Web Linter
+    environment: develop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - name: Install Dependencies
+        working-directory: ./web
+        run: npm install
+      - name: Lint
+        working-directory: ./web
+        run: npm run lint
   deploy-sentry:
     if: github.ref == 'refs/heads/main'
     environment: ${{ inputs.environment }}

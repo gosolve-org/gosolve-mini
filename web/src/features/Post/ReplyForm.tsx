@@ -1,6 +1,6 @@
-import * as Sentry from "@sentry/react";
-import { FormEvent, MutableRefObject, SyntheticEvent, useState } from "react";
-import { toast } from "react-toastify";
+import * as Sentry from '@sentry/react';
+import { type FormEvent, type SyntheticEvent, useState, type RefObject } from 'react';
+import { toast } from 'react-toastify';
 
 interface ReplyFormProps {
     handleSubmit: (reply: string) => Promise<void>;
@@ -8,17 +8,17 @@ interface ReplyFormProps {
     placeholderText?: string;
     showSuccessToast?: boolean;
     successToastMessage?: string;
-    textareaRef?: MutableRefObject<any>;
+    textareaRef?: RefObject<HTMLTextAreaElement>;
 }
 
-function ReplyForm({
+const ReplyForm = ({
     handleSubmit,
     buttonText = 'Post reply',
     placeholderText = 'Add your reply',
     showSuccessToast = false,
     successToastMessage,
-    textareaRef
-}: ReplyFormProps) {
+    textareaRef,
+}: ReplyFormProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [reply, setReply] = useState('');
 
@@ -43,14 +43,8 @@ function ReplyForm({
     };
 
     return (
-    <>
         <div className="min-w-0 flex-1 mt-4">
-            <form
-                action="#"
-                className="relative"
-                method="POST"
-                onSubmit={handleReplySubmit}
-            >
+            <form action="#" className="relative" method="POST" onSubmit={handleReplySubmit}>
                 <div className="overflow-hidden rounded-lg border border-gray-300 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500">
                     <label htmlFor="comment" className="sr-only">
                         {placeholderText}
@@ -63,7 +57,7 @@ function ReplyForm({
                         placeholder={placeholderText}
                         value={reply}
                         onChange={handleReplyChange}
-                        ref={!!textareaRef ? textareaRef : null}
+                        ref={textareaRef != null ? textareaRef : null}
                     />
                 </div>
 
@@ -78,7 +72,7 @@ function ReplyForm({
                 </div>
             </form>
         </div>
-    </>);
-}
+    );
+};
 
 export default ReplyForm;

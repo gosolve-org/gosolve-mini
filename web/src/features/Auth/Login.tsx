@@ -1,24 +1,23 @@
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
-import { useState, SyntheticEvent, FormEvent, useEffect } from "react";
-import { useRouter } from "next/router";
-import * as Sentry from '@sentry/react'
-import { useAuth } from "features/Auth/AuthContext";
-import { toast } from "react-toastify";
-import { AnalyticsEventEnum } from "features/Analytics/AnalyticsEventEnum";
-import { useAnalytics } from "features/Analytics/AnalyticsContext";
-import { ErrorWithCode } from "common/models/ErrorWithCode";
-import { ERROR_CODES } from "common/constants/errorCodes";
-import LinkToast, { showLinkToast } from "common/components/layout/LinkToast";
-import { TOAST_IDS } from "common/constants/toastConstants";
-import GoogleIconSvg from "common/components/svgs/GoogleIconSvg";
-import BasicToast from "common/components/layout/BasicToast";
+import { ArrowRightIcon } from '@heroicons/react/20/solid';
+import { useState, type SyntheticEvent, type FormEvent, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import * as Sentry from '@sentry/react';
+import { useAuth } from 'features/Auth/AuthContext';
+import { toast } from 'react-toastify';
+import { AnalyticsEventEnum } from 'features/Analytics/AnalyticsEventEnum';
+import { useAnalytics } from 'features/Analytics/AnalyticsContext';
+import { ErrorWithCode } from 'common/models/ErrorWithCode';
+import ERROR_CODES from 'common/constants/errorCodes';
+import LinkToast, { showLinkToast } from 'common/components/layout/LinkToast';
+import { TOAST_IDS } from 'common/constants/toastConstants';
+import GoogleIconSvg from 'common/components/svgs/GoogleIconSvg';
+import BasicToast from 'common/components/layout/BasicToast';
 
-function Login() {
+const Login = () => {
     const { logAnalyticsEvent } = useAnalytics();
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [shouldRememberCheckbox, setShouldRememberCheckbox] =
-        useState<boolean>(false);
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [shouldRememberCheckbox, setShouldRememberCheckbox] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(false);
     const [loginFailed, setLoginFailed] = useState(false);
 
@@ -30,48 +29,56 @@ function Login() {
         setShouldRemember,
         registerWithGoogle,
         doesUserExist,
-        isAuthenticated
+        isAuthenticated,
     } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
         if (!isLoading && isAuthenticated()) {
-            router.push("/");
+            void router.push('/');
         }
     }, [isAuthenticated, isLoading, router]);
 
-    const handleSubmitEmail = async (e: SyntheticEvent<HTMLFormElement>) => {
+    const handleSubmitEmail = (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         setIsLoading(true);
         setShouldRemember(shouldRememberCheckbox);
-        try{
-            await login(email, password);
-            logAnalyticsEvent(AnalyticsEventEnum.LoginEmail, { shouldRemember: shouldRememberCheckbox });
-            await router.push("/");
-        } catch (err) {
-            setLoginFailed(true);
-            if ((err instanceof ErrorWithCode)) {
-                if (err.code === ERROR_CODES.notFound) {
-                    showLinkToast(
-                        'error',
-                        'No account with this email exists. Click here to create a new account',
-                        `./register`);
-                    return;
+        login(email, password)
+            .then(async () => {
+                logAnalyticsEvent(AnalyticsEventEnum.LoginEmail, {
+                    shouldRemember: shouldRememberCheckbox,
+                });
+                await router.push('/');
+            })
+            .catch((err) => {
+                setLoginFailed(true);
+                if (err instanceof ErrorWithCode) {
+                    if (err.code === ERROR_CODES.notFound) {
+                        showLinkToast(
+                            'error',
+                            'No account with this email exists. Click here to create a new account',
+                            `./register`,
+                        );
+                        return;
+                    }
+
+                    if (err.code === ERROR_CODES.wrongPassword) {
+                        toast.error(
+                            'Password is incorrect. Please try again or login with your Google account.',
+                            {
+                                containerId: TOAST_IDS.basicToastId,
+                            },
+                        );
+                        return;
+                    }
                 }
 
-                if (err.code === ERROR_CODES.wrongPassword) {
-                    toast.error('Password is incorrect. Please try again or login with your Google account.', { containerId: TOAST_IDS.basicToastId });
-                    return;
-                }
-            }
-
-            Sentry.captureException(err);
-            console.error(err);
-            toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
-        } finally {
-            setIsLoading(false);
-        }
+                Sentry.captureException(err);
+                console.error(err);
+                toast.error('Something went wrong', { containerId: TOAST_IDS.basicToastId });
+            })
+            .finally(() => setIsLoading(false));
     };
 
     const handleGmailLogin = async () => {
@@ -81,14 +88,22 @@ function Login() {
         try {
             setIsLoginFinished(false);
             const credentials = await getGoogleCredentials();
-    
-            if (!await doesUserExist(credentials.user.email)) {
-                logAnalyticsEvent(AnalyticsEventEnum.RegisterGoogle, { shouldRemember: shouldRememberCheckbox });
+
+            if (credentials.user.email == null) {
+                throw new Error('Google login failed');
+            }
+
+            if (!(await doesUserExist(credentials.user.email))) {
+                logAnalyticsEvent(AnalyticsEventEnum.RegisterGoogle, {
+                    shouldRemember: shouldRememberCheckbox,
+                });
                 await registerWithGoogle(credentials);
-                await router.push("/register/details");
+                await router.push('/register/details');
             } else {
-                logAnalyticsEvent(AnalyticsEventEnum.LoginGoogle, { shouldRemember: shouldRememberCheckbox });
-                await router.push("/");
+                logAnalyticsEvent(AnalyticsEventEnum.LoginGoogle, {
+                    shouldRemember: shouldRememberCheckbox,
+                });
+                await router.push('/');
             }
         } catch (err) {
             if (err.code === ERROR_CODES.popupClosedByUser) {
@@ -104,19 +119,15 @@ function Login() {
             } catch (logoutErr) {
                 Sentry.captureException(logoutErr);
                 console.error(logoutErr);
-                toast.error('Could not log out after unsuccessful login.', { containerId: TOAST_IDS.basicToastId });
+                toast.error('Could not log out after unsuccessful login.', {
+                    containerId: TOAST_IDS.basicToastId,
+                });
             }
         } finally {
             setIsLoading(false);
             setIsLoginFinished(true);
         }
     };
-
-    const handleEmailChange = (e: FormEvent<HTMLInputElement>) =>
-        setEmail(e.currentTarget.value);
-
-    const handlePasswordChange = (e: FormEvent<HTMLInputElement>) =>
-        setPassword(e.currentTarget.value);
 
     const handleShouldRememberChange = (e: FormEvent<HTMLInputElement>) =>
         setShouldRememberCheckbox(e.currentTarget.checked);
@@ -148,7 +159,7 @@ function Login() {
                                             autoComplete="email"
                                             required
                                             className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                            onChange={handleEmailChange}
+                                            onChange={(e) => setEmail(e.currentTarget.value)}
                                         />
                                     </div>
                                 </div>
@@ -168,7 +179,7 @@ function Login() {
                                             autoComplete="current-password"
                                             required
                                             className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                            onChange={handlePasswordChange}
+                                            onChange={(e) => setPassword(e.currentTarget.value)}
                                         />
                                     </div>
                                 </div>
@@ -217,47 +228,53 @@ function Login() {
                                 <div className="mt-6 grid grid-cols-1 gap-3">
                                     <div>
                                         <button
+                                            type="button"
                                             disabled={isLoading}
                                             onClick={handleGmailLogin}
                                             className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50"
                                         >
-                                            <span className="sr-only">
-                                                Sign in with Google
-                                            </span>
+                                            <span className="sr-only">Sign in with Google</span>
                                             <GoogleIconSvg
                                                 className="h-5 w-5 text-gray-500"
                                                 width={24}
-                                                height={24}/>
+                                                height={24}
+                                            />
                                         </button>
                                     </div>
                                 </div>
-                                {(loginFailed) &&
+                                {loginFailed && (
                                     <div className="mt-6 grid grid-cols-1 gap-3">
-                                        <small className="text-gray-400 text-center">Having trouble signing in? Contact us at team@gosolve.org</small>
+                                        <small className="text-gray-400 text-center">
+                                            Having trouble signing in? Contact us at
+                                            team@gosolve.org
+                                        </small>
                                     </div>
-                                }
+                                )}
                             </div>
                         </div>
                     </div>
 
                     <div className="sm:mx-auto w-full sm:max-w-md relative">
-                        <div
-                            onClick={() => router.push('/register')}
-                            className="bg-white hover:bg-gray-100 cursor-pointer py-4 shadow sm:rounded-lg px-4 sm:px-10 text-gray-400 text-center"
+                        <button
+                            type="button"
+                            onClick={async () => {
+                                await router.push('/register');
+                            }}
+                            className="w-full bg-white hover:bg-gray-100 cursor-pointer py-4 shadow sm:rounded-lg px-4 sm:px-10 text-gray-400 text-center"
                         >
                             New Solver? Register here
                             <ArrowRightIcon
                                 className="h-4 w-4 inline-block items-center ml-1"
                                 aria-hidden="true"
                             />
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>
-            <BasicToast enableMultiToast={true} />
-            <LinkToast enableMultiToast={true} />
+            <BasicToast enableMultiToast />
+            <LinkToast enableMultiToast />
         </>
     );
-}
+};
 
 export default Login;

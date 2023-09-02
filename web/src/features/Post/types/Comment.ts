@@ -1,10 +1,10 @@
 export interface Comment {
-    id?: string;
-    content?: string;
-    authorId?: string;
-    authorUsername?: string;
-    postId?: string;
-    parentId?: string;
-    updatedAt?: Date;
-    createdAt?: Date;
+    id: string | null;
+    content: string | null;
+    authorId: string | null;
+    authorUsername: string | null;
+    postId: string | null;
+    parentId: string | null;
+    updatedAt: Date | null;
+    createdAt: Date | null;
 }

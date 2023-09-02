@@ -1,37 +1,35 @@
-import * as Sentry from '@sentry/react'
-import { db, wrappedHttpsCallable } from "utils/firebase";
-import { doc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
-import { User } from 'features/Auth/types/User';
+import * as Sentry from '@sentry/react';
+import { db, wrappedHttpsCallable } from 'utils/firebase';
+import { doc, getDoc, query, collection, where, getDocs } from 'firebase/firestore';
+import type UserUpdate from 'features/Auth/types/UserUpdate';
+import type User from 'features/Auth/types/User';
 
-const updateUserFunction = wrappedHttpsCallable('updateUser');
+const updateUserFunction: (details: UserUpdate) => Promise<any> =
+    wrappedHttpsCallable('updateUser');
 const registerUserFunction = wrappedHttpsCallable('registerUser');
 
-const registerUser = async ({ email, password, userId, authMethod }: {
-    email: string,
-    password?: string,
-    userId?: string,
-    authMethod: 'email'|'google'
-}) => {
-    email = email.toLowerCase().trim();
-    await registerUserFunction({ email, password, userId, authMethod });
-};
-
-const updateUser = async ({
-    details,
+const registerUser = async ({
+    email,
+    password,
+    userId,
+    authMethod,
 }: {
-    details: User;
+    email: string;
+    password?: string;
+    userId?: string;
+    authMethod: 'email' | 'google';
 }) => {
-    await updateUserFunction({
-        name: details.name,
-        username: details.username,
-        birthYear: details.birthYear,
-        isOnboarded: details.isOnboarded,
-    });
+    const trimmedEmail = email.toLowerCase().trim();
+    await registerUserFunction({ email: trimmedEmail, password, userId, authMethod });
 };
 
-const getUser = async (uid: string): Promise<User> => {
+const updateUser = async (details: UserUpdate) => {
+    await updateUserFunction(details);
+};
+
+const getUser = async (uid: string): Promise<User | null> => {
     try {
-        const userRef = doc(db, "user", uid);
+        const userRef = doc(db, 'user', uid);
         const docSnap = await getDoc(userRef);
 
         if (!docSnap.exists()) return null;
@@ -39,14 +37,15 @@ const getUser = async (uid: string): Promise<User> => {
     } catch (err) {
         Sentry.captureException(err);
         console.error(err);
-        throw new Error("Not allowed");
+        throw new Error('Not allowed');
     }
 };
 
 const doesUserExist = async (email: string): Promise<boolean> => {
-    email = email.toLowerCase().trim();
+    const trimmedEmail = email.toLowerCase().trim();
     try {
-        return !(await getDocs(query(collection(db, 'user'), where('email', '==', email)))).empty;
+        return !(await getDocs(query(collection(db, 'user'), where('email', '==', trimmedEmail))))
+            .empty;
     } catch (err) {
         Sentry.captureException(err);
         console.error(err);
@@ -56,7 +55,7 @@ const doesUserExist = async (email: string): Promise<boolean> => {
 
 const isUserOnboarded = async (userId: string) => {
     try {
-        const userRef = doc(db, "user", userId);
+        const userRef = doc(db, 'user', userId);
         const docSnap = await getDoc(userRef);
 
         if (!docSnap.exists()) return false;
@@ -64,7 +63,7 @@ const isUserOnboarded = async (userId: string) => {
     } catch (err) {
         Sentry.captureException(err);
         console.error(err);
-        throw new Error("Not allowed");
+        throw new Error('Not allowed');
     }
 };
 

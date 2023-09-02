@@ -2,7 +2,7 @@ import BasicHead from 'common/components/layout/BasicHead';
 import Layout from 'common/components/layout/Layout';
 import Register from 'features/Auth/Register';
 
-function RegisterPage() {
+const RegisterPage = () => {
     return (
         <>
             <BasicHead title="goSolve | Register" />
@@ -11,6 +11,6 @@ function RegisterPage() {
             </Layout>
         </>
     );
-}
+};
 
 export default RegisterPage;

@@ -1,9 +1,9 @@
 export interface Topic {
-    id?: string;
-    title?: string;
-    content?: string;
-    locationId?: string;
-    categoryId?: string;
-    updatedAt?: Date;
-    createdAt?: Date;
+    id: string | null;
+    title: string | null;
+    content: string | null;
+    locationId: string | null;
+    categoryId: string | null;
+    updatedAt: Date | null;
+    createdAt?: Date | null;
 }

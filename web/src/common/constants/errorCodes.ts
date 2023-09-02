@@ -1,6 +1,8 @@
-export const ERROR_CODES = {
+const ERROR_CODES = {
     notFound: 'not-found',
     userAlreadyExists: 'user-already-exists',
     wrongPassword: 'wrong-password',
     popupClosedByUser: 'auth/popup-closed-by-user',
 };
+
+export default ERROR_CODES;

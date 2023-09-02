@@ -1,23 +1,23 @@
-import * as Sentry from '@sentry/react'
-import { useState, SyntheticEvent, FormEvent } from "react";
-import { useRouter } from "next/router";
-import { useAuth } from "features/Auth/AuthContext";
-import { updateUser } from "pages/api/user";
-import { toast } from "react-toastify";
+import * as Sentry from '@sentry/react';
+import { useState, type SyntheticEvent, type FormEvent } from 'react';
+import { useRouter } from 'next/router';
+import { useAuth } from 'features/Auth/AuthContext';
+import { updateUser } from 'pages/api/user';
+import { toast } from 'react-toastify';
 import { AnalyticsEventEnum } from 'features/Analytics/AnalyticsEventEnum';
 import { useAnalytics } from 'features/Analytics/AnalyticsContext';
-import { USER_VALIDATIONS } from './validationRules';
 import Logo from 'common/components/layout/Logo';
 import BasicToast from 'common/components/layout/BasicToast';
+import { USER_VALIDATIONS } from './validationRules';
 
-function RegisterDetails() {
+const RegisterDetails = () => {
     const { user, isAuthenticated } = useAuth();
     const { logAnalyticsEvent } = useAnalytics();
 
-    const [name, setName] = useState<string>(user?.name || user?.displayName || "");
-    const [username, setUsername] = useState<string>(user?.username || "");
-    const [birthYear, setBirthYear] = useState<number|null>(user?.birthYear ?? null);
-    const [isLoading, setIsLoading] =  useState(false);
+    const [name, setName] = useState<string>(user?.name || user?.displayName || '');
+    const [username, setUsername] = useState<string>(user?.username || '');
+    const [birthYear, setBirthYear] = useState<number | null>(user?.birthYear ?? null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
 
@@ -25,7 +25,7 @@ function RegisterDetails() {
         e.preventDefault();
 
         if (!isAuthenticated()) {
-            router.push('/login');
+            await router.push('/login');
         }
 
         if (isLoading) return;
@@ -41,25 +41,68 @@ function RegisterDetails() {
             return true;
         };
 
-        if (!validate(new Date().getFullYear() - birthYear >= USER_VALIDATIONS.birthYearMinAge, `You need to be at least ${USER_VALIDATIONS.birthYearMinAge} years old to join our platform.`)) return;
-        if (!validate(birthYear >= USER_VALIDATIONS.birthYearMin, 'Please enter a valid birth year.')) return;
-        if (!validate(name.length >= USER_VALIDATIONS.nameMinLength, 'Please enter a valid name.')) return;
-        if (!validate(name.length <= USER_VALIDATIONS.nameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.nameMaxLength} characters.`)) return;
-        if (!validate(username.length >= USER_VALIDATIONS.usernameMinLength, `Your username needs to be at least ${USER_VALIDATIONS.usernameMinLength} characters.`)) return;
-        if (!validate(username.length <= USER_VALIDATIONS.usernameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.usernameMaxLength} characters.`)) return;
-        if (!validate(/^[a-zA-Z0-9\.\_\-]+$/.test(username), 'Your username can only contain letters, numbers, hyphens, underscores and periods.')) return;
+        if (
+            !validate(
+                birthYear != null &&
+                    new Date().getFullYear() - birthYear >= USER_VALIDATIONS.birthYearMinAge,
+                `You need to be at least ${USER_VALIDATIONS.birthYearMinAge} years old to join our platform.`,
+            )
+        ) {
+            return;
+        }
+        if (
+            !validate(
+                birthYear != null && birthYear >= USER_VALIDATIONS.birthYearMin,
+                'Please enter a valid birth year.',
+            )
+        ) {
+            return;
+        }
+        if (!validate(name.length >= USER_VALIDATIONS.nameMinLength, 'Please enter a valid name.'))
+            return;
+        if (
+            !validate(
+                name.length <= USER_VALIDATIONS.nameMaxLength,
+                `Your username cannot exceed ${USER_VALIDATIONS.nameMaxLength} characters.`,
+            )
+        ) {
+            return;
+        }
+        if (
+            !validate(
+                username.length >= USER_VALIDATIONS.usernameMinLength,
+                `Your username needs to be at least ${USER_VALIDATIONS.usernameMinLength} characters.`,
+            )
+        ) {
+            return;
+        }
+        if (
+            !validate(
+                username.length <= USER_VALIDATIONS.usernameMaxLength,
+                `Your username cannot exceed ${USER_VALIDATIONS.usernameMaxLength} characters.`,
+            )
+        ) {
+            return;
+        }
+        if (
+            !validate(
+                /^[a-zA-Z0-9._-]+$/.test(username),
+                'Your username can only contain letters, numbers, hyphens, underscores and periods.',
+            )
+        ) {
+            return;
+        }
 
         try {
             await updateUser({
-                details: {
-                    name,
-                    username,
-                    birthYear,
-                    isOnboarded: true
-                },
+                name,
+                username,
+                birthYear: birthYear!,
+                isOnboarded: true,
+                updatedAt: new Date(),
             });
             logAnalyticsEvent(AnalyticsEventEnum.ProfileOnboarding);
-            await router.push("/");
+            await router.push('/');
         } catch (err) {
             if (err.code === 'functions/invalid-argument') {
                 toast.error(err.message);
@@ -73,17 +116,15 @@ function RegisterDetails() {
         }
     };
 
-    const handleNameChange = (e: FormEvent<HTMLInputElement>) =>
-        setName(e.currentTarget.value);
+    const handleNameChange = (e: FormEvent<HTMLInputElement>) => setName(e.currentTarget.value);
 
     const handleUsernameChange = (e: FormEvent<HTMLInputElement>) =>
         setUsername(e.currentTarget.value);
 
-    const handleBirthYearChange = (e: FormEvent<HTMLInputElement>) =>
-    {
+    const handleBirthYearChange = (e: FormEvent<HTMLInputElement>) => {
         if (!e.currentTarget.value) return;
         setBirthYear(e.currentTarget.valueAsNumber);
-    }
+    };
 
     return (
         <>
@@ -117,7 +158,10 @@ function RegisterDetails() {
                                             name="name"
                                             type="name"
                                             maxLength={USER_VALIDATIONS.nameMaxLength}
-                                            value={name.substring(0, USER_VALIDATIONS.nameMaxLength)}
+                                            value={name.substring(
+                                                0,
+                                                USER_VALIDATIONS.nameMaxLength,
+                                            )}
                                             autoComplete="name"
                                             required
                                             className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -139,7 +183,10 @@ function RegisterDetails() {
                                             name="username"
                                             type="username"
                                             maxLength={USER_VALIDATIONS.usernameMaxLength}
-                                            value={username.substring(0, USER_VALIDATIONS.usernameMaxLength)}
+                                            value={username.substring(
+                                                0,
+                                                USER_VALIDATIONS.usernameMaxLength,
+                                            )}
                                             autoComplete="current-username"
                                             required
                                             className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -186,6 +233,6 @@ function RegisterDetails() {
             <BasicToast />
         </>
     );
-}
+};
 
 export default RegisterDetails;

@@ -1,11 +1,20 @@
-import { getApp, getApps, initializeApp } from "firebase/app";
-import { connectFunctionsEmulator, getFunctions, httpsCallable } from "firebase/functions";
-import { getAuth, connectAuthEmulator } from "@firebase/auth";
-import { connectFirestoreEmulator, DocumentData, DocumentReference, DocumentSnapshot, FirestoreError, getFirestore, Query, QuerySnapshot } from "firebase/firestore";
-import { useCollectionOnce, useDocumentOnce } from "react-firebase-hooks/firestore";
-import { OnceOptions } from "react-firebase-hooks/firestore/dist/firestore/types";
-import { getAnalytics as getFirebaseAnalytics } from "firebase/analytics";
-import { ErrorWithCode } from "common/models/ErrorWithCode";
+import { getApp, getApps, initializeApp } from 'firebase/app';
+import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions';
+import { getAuth, connectAuthEmulator } from '@firebase/auth';
+import {
+    connectFirestoreEmulator,
+    type DocumentData,
+    type DocumentReference,
+    type DocumentSnapshot,
+    type FirestoreError,
+    getFirestore,
+    type Query,
+    type QuerySnapshot,
+} from 'firebase/firestore';
+import { useCollectionOnce, useDocumentOnce } from 'react-firebase-hooks/firestore';
+import { type OnceOptions } from 'react-firebase-hooks/firestore/dist/firestore/types';
+import { getAnalytics as getFirebaseAnalytics } from 'firebase/analytics';
+import { ErrorWithCode } from 'common/models/ErrorWithCode';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -24,39 +33,61 @@ export const db = getFirestore(app);
 export const functions = getFunctions(app);
 export const getAnalytics = () => getFirebaseAnalytics(app);
 
-if (process.env.NEXT_PUBLIC_FIREBASE_EMULATORS === 'true' || process.env.NEXT_PUBLIC_FIREBASE_EMULATORS?.toString() === 'true') {
+if (
+    process.env.NEXT_PUBLIC_FIREBASE_EMULATORS === 'true' ||
+    process.env.NEXT_PUBLIC_FIREBASE_EMULATORS?.toString() === 'true'
+) {
     console.log('Using Firebase Emulators');
-    connectFunctionsEmulator(functions, "localhost", 5001);
-    connectFirestoreEmulator(db, "localhost", 8080);
-    connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
+    connectFunctionsEmulator(functions, 'localhost', 5001);
+    connectFirestoreEmulator(db, 'localhost', 8080);
+    connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
 }
 
 export const useCollectionOnceWithDependencies = (
-    query: () => Query<DocumentData>,
-    dependencies: any[]):[QuerySnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
-        const [collection, isLoading, err, reloadData] = useCollectionOnce(dependencies.every(Boolean) && query ? query() : null);
-        return [collection, (isLoading || dependencies.some(el => !el) || collection?.docs === undefined), err, reloadData];
-    };
+    query: (() => Query<DocumentData>) | null,
+    dependencies: any[],
+): [QuerySnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
+    const [collection, isLoading, err, reloadData] = useCollectionOnce(
+        dependencies.every(Boolean) && query != null ? query() : null,
+    );
+    return [
+        collection,
+        isLoading ||
+            dependencies.some((el) => (typeof el === 'boolean' ? !el : el == null)) ||
+            collection?.docs === undefined,
+        err,
+        reloadData,
+    ];
+};
 
 interface FirestoreDocumentHookOptions {
     onceOptions?: OnceOptions | undefined;
 }
 export const useDocumentOnceWithDependencies = (
-    docRef: () => DocumentReference,
+    docRef: (() => DocumentReference) | null,
     dependencies: any[],
-    options?: FirestoreDocumentHookOptions):[DocumentSnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
-        const [snapshot, isLoading, err, reloadData] = useDocumentOnce(dependencies.every(Boolean) && docRef ? docRef() : null, options?.onceOptions);
-        return [snapshot, (isLoading || dependencies.some(el => !el)), err, reloadData];
-    };
+    options?: FirestoreDocumentHookOptions,
+): [DocumentSnapshot | undefined, boolean, FirestoreError | undefined, () => Promise<void>] => {
+    const [snapshot, isLoading, err, reloadData] = useDocumentOnce(
+        dependencies.every(Boolean) && docRef != null ? docRef() : null,
+        options?.onceOptions,
+    );
+    return [
+        snapshot,
+        isLoading || dependencies.some((el) => (typeof el === 'boolean' ? !el : el == null)),
+        err,
+        reloadData,
+    ];
+};
 
-export const wrappedHttpsCallable =  (functionName: string) => {
+export const wrappedHttpsCallable = (functionName: string) => {
     const callable = httpsCallable(functions, functionName);
     return async (data?: unknown) => {
         const result = await callable(data);
-        const resultData = (result.data as any);
+        const resultData = result.data as any;
 
-        if (resultData?.error) {
-            if (resultData.error.code) {
+        if (resultData?.error != null) {
+            if (resultData.error.code != null) {
                 throw new ErrorWithCode(resultData.error.code);
             } else {
                 console.error('Received error without code from function.', resultData.error);
@@ -66,4 +97,4 @@ export const wrappedHttpsCallable =  (functionName: string) => {
 
         return resultData;
     };
-}
+};

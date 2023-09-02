@@ -1,6 +1,6 @@
-import Resource from "features/Resource/Resource";
+import Resource from 'features/Resource/Resource';
 
-function Action() {
+const Action = () => {
     return (
         <div className="flex min-h-full flex-col justify-center items-center py-6 sm:py-12 xl:px-6">
             <div className="w-full max-w-screen-2xl">
@@ -8,6 +8,6 @@ function Action() {
             </div>
         </div>
     );
-}
+};
 
 export default Action;

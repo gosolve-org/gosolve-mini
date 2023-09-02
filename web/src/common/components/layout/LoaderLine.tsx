@@ -24,7 +24,7 @@ const LoaderContainerDiv = styled.div`
 `;
 
 const LoaderLineDiv = styled.div`
-    content: "";
+    content: '';
     position: absolute;
     left: -50%;
     height: 100%;
@@ -34,12 +34,12 @@ const LoaderLineDiv = styled.div`
     border-radius: 20px;
 `;
 
-function LoaderLine() {
+const LoaderLine = () => {
     return (
         <LoaderContainerDiv>
             <LoaderLineDiv />
         </LoaderContainerDiv>
     );
-}
+};
 
 export default LoaderLine;

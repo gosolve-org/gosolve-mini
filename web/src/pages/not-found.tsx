@@ -1,7 +1,7 @@
-import BasicHead from "common/components/layout/BasicHead";
-import Layout from "common/components/layout/Layout";
+import BasicHead from 'common/components/layout/BasicHead';
+import Layout from 'common/components/layout/Layout';
 
-function NotFoundPage() {
+const NotFoundPage = () => {
     return (
         <>
             <BasicHead title="goSolve | Not Found" />
@@ -14,14 +14,12 @@ function NotFoundPage() {
                     </div>
 
                     <div className="mt-3 sm:mx-auto w-full sm:max-w-md text-center">
-                        <span>
-                            The page you are looking for does not exist.
-                        </span>
+                        <span>The page you are looking for does not exist.</span>
                     </div>
                 </div>
             </Layout>
         </>
     );
-}
+};
 
 export default NotFoundPage;

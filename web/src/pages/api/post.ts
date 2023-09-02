@@ -1,11 +1,11 @@
-import * as Sentry from '@sentry/react'
-import { db } from "utils/firebase";
-import { collection, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
-import { Post } from 'features/Post/types/Post';
+import * as Sentry from '@sentry/react';
+import { db } from 'utils/firebase';
+import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
+import { type Post } from 'features/Post/types/Post';
 
-const addPost = async ({ details, category, location }: { details: Post, category: string, location: string }) => {
+const addPost = async (details: Post) => {
     try {
-        return await addDoc(collection(db, "posts"), {
+        return await addDoc(collection(db, 'posts'), {
             ...details,
             createdAt: new Date().getTime(),
             updatedAt: new Date().getTime(),
@@ -13,23 +13,13 @@ const addPost = async ({ details, category, location }: { details: Post, categor
     } catch (err) {
         Sentry.captureException(err);
         console.error(err);
-        throw new Error("Not allowed");
+        throw new Error('Not allowed');
     }
 };
 
-const updatePost = async ({
-    docId,
-    details,
-    category,
-    location
-}: {
-    docId: string;
-    details: Post;
-    category: string;
-    location: string;
-}) => {
+const updatePost = async ({ docId, details }: { docId: string; details: Post }) => {
     try {
-        const postRef = doc(db, "posts", docId);
+        const postRef = doc(db, 'posts', docId);
         const docSnap = await getDoc(postRef);
 
         if (docSnap.exists()) {
@@ -39,13 +29,13 @@ const updatePost = async ({
             });
 
             return docId;
-        } else {
-            return await addPost({ details, category, location });
         }
+
+        return await addPost(details);
     } catch (err) {
         Sentry.captureException(err);
         console.error(err);
-        throw new Error("Not allowed");
+        throw new Error('Not allowed');
     }
 };
 

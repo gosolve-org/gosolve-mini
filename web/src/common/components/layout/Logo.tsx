@@ -1,6 +1,6 @@
-import Image from "next/image";
+import Image from 'next/image';
 
-function Logo({ className }: { className: string }) {
+const Logo = ({ className }: { className: string }) => {
     return (
         <Image
             className={className}
@@ -11,6 +11,6 @@ function Logo({ className }: { className: string }) {
             height={37}
         />
     );
-}
+};
 
 export default Logo;

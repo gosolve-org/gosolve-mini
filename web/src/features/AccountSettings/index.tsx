@@ -1,42 +1,46 @@
-import { AnalyticsEventEnum } from "features/Analytics/AnalyticsEventEnum";
-import { updateUser } from "pages/api/user";
-import { toast } from "react-toastify";
-import * as Sentry from '@sentry/react'
-import { useState, useEffect, SyntheticEvent, FormEvent } from "react";
-import { useRouter } from "next/router";
-import { doc } from "firebase/firestore";
-import { updatePassword } from "@firebase/auth";
+import { AnalyticsEventEnum } from 'features/Analytics/AnalyticsEventEnum';
+import { updateUser } from 'pages/api/user';
+import { toast } from 'react-toastify';
+import * as Sentry from '@sentry/react';
+import { useState, useEffect, type SyntheticEvent, type FormEvent, useId } from 'react';
+import { useRouter } from 'next/router';
+import { doc } from 'firebase/firestore';
 
-import { db, useDocumentOnceWithDependencies } from "utils/firebase";
-import { useAuth } from "features/Auth/AuthContext";
-import { useAnalytics } from "features/Analytics/AnalyticsContext";
-import Link from "next/link";
-import { USER_VALIDATIONS } from "features/Auth/validationRules";
+import { db, useDocumentOnceWithDependencies } from 'utils/firebase';
+import { useAuth } from 'features/Auth/AuthContext';
+import { useAnalytics } from 'features/Analytics/AnalyticsContext';
+import Link from 'next/link';
+import { USER_VALIDATIONS } from 'features/Auth/validationRules';
 
-function AccountSettings() {
+const AccountSettings = () => {
     const { user, logout } = useAuth();
     const { logAnalyticsEvent } = useAnalytics();
     const router = useRouter();
 
-    const [userProfile] = useDocumentOnceWithDependencies(() => doc(db, `user`, user.uid), [ user?.uid ]);
+    const [userProfile] = useDocumentOnceWithDependencies(
+        () => doc(db, `user`, user!.uid),
+        [user?.uid],
+    );
 
-    const [name, setName] = useState<string>("");
-    const [username, setUsername] = useState<string>("");
-    const [birthYear, setBirthYear] = useState<number|null>(null);
-    const [password, setPassword] = useState<string>("");
+    const [name, setName] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
+    const [birthYear, setBirthYear] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const nameInputId = useId();
+    const usernameInputId = useId();
+    const birthYearInputId = useId();
 
     useEffect(() => {
         const userProfileData = userProfile?.data();
 
-        if (userProfileData?.name) setName(userProfileData.name);
-        if (userProfileData?.username) setUsername(userProfileData.username);
-        if (userProfileData?.birthYear) setBirthYear(userProfileData.birthYear);
+        if (userProfileData?.name != null) setName(userProfileData.name);
+        if (userProfileData?.username != null) setUsername(userProfileData.username);
+        if (userProfileData?.birthYear != null) setBirthYear(userProfileData.birthYear);
 
         setIsLoading(false);
     }, [userProfile]);
 
-    const handleSave = async (e: SyntheticEvent<HTMLFormElement>) => {
+    const handleSave = (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (isLoading) return;
@@ -52,64 +56,93 @@ function AccountSettings() {
             return true;
         };
 
-        if (!validate(new Date().getFullYear() - birthYear >= USER_VALIDATIONS.birthYearMinAge, `You need to be at least ${USER_VALIDATIONS.birthYearMinAge} years old to join our platform.`)) return;
-        if (!validate(birthYear >= USER_VALIDATIONS.birthYearMin, 'Please enter a valid birth year.')) return;
-        if (!validate(name.length >= USER_VALIDATIONS.nameMinLength, 'Please enter a valid name.')) return;
-        if (!validate(name.length <= USER_VALIDATIONS.nameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.nameMaxLength} characters.`)) return;
-        if (!validate(username.length >= USER_VALIDATIONS.usernameMinLength, `Your username needs to be at least ${USER_VALIDATIONS.usernameMinLength} characters.`)) return;
-        if (!validate(username.length <= USER_VALIDATIONS.usernameMaxLength, `Your username cannot exceed ${USER_VALIDATIONS.usernameMaxLength} characters.`)) return;
-        if (!validate(/^[a-zA-Z0-9\.\_\-]+$/.test(username), 'Your username can only contain letters, numbers, hyphens, underscores and periods.')) return;
+        if (
+            !validate(
+                birthYear != null &&
+                    new Date().getFullYear() - birthYear >= USER_VALIDATIONS.birthYearMinAge,
+                `You need to be at least ${USER_VALIDATIONS.birthYearMinAge} years old to join our platform.`,
+            )
+        ) {
+            return;
+        }
+        if (
+            !validate(
+                birthYear != null && birthYear >= USER_VALIDATIONS.birthYearMin,
+                'Please enter a valid birth year.',
+            )
+        ) {
+            return;
+        }
+        if (!validate(name.length >= USER_VALIDATIONS.nameMinLength, 'Please enter a valid name.'))
+            return;
+        if (
+            !validate(
+                name.length <= USER_VALIDATIONS.nameMaxLength,
+                `Your username cannot exceed ${USER_VALIDATIONS.nameMaxLength} characters.`,
+            )
+        ) {
+            return;
+        }
+        if (
+            !validate(
+                username.length >= USER_VALIDATIONS.usernameMinLength,
+                `Your username needs to be at least ${USER_VALIDATIONS.usernameMinLength} characters.`,
+            )
+        ) {
+            return;
+        }
+        if (
+            !validate(
+                username.length <= USER_VALIDATIONS.usernameMaxLength,
+                `Your username cannot exceed ${USER_VALIDATIONS.usernameMaxLength} characters.`,
+            )
+        ) {
+            return;
+        }
+        if (
+            !validate(
+                /^[a-zA-Z0-9._-]+$/.test(username),
+                'Your username can only contain letters, numbers, hyphens, underscores and periods.',
+            )
+        ) {
+            return;
+        }
 
-        await updateUser({
-            details: { name, username, birthYear },
-        })
-        .then(() => {
-            logAnalyticsEvent(AnalyticsEventEnum.ProfileUpdate);
-            toast.success('Saved!');
-        })
-        .catch(err => {
-            if (err.code === 'functions/invalid-argument') {
-                toast.error(err.message);
-            } else {
-                Sentry.captureException(err);
-                toast.error('Something went wrong');
-                console.error(err);
-            }
-        })
-        .finally(() => {
-            setIsLoading(false);
-        });
+        updateUser({ name, username, birthYear: birthYear as number, updatedAt: new Date() })
+            .then(() => {
+                logAnalyticsEvent(AnalyticsEventEnum.ProfileUpdate);
+                toast.success('Saved!');
+            })
+            .catch((err) => {
+                if (err.code === 'functions/invalid-argument') {
+                    toast.error(err.message);
+                } else {
+                    Sentry.captureException(err);
+                    toast.error('Something went wrong');
+                    console.error(err);
+                }
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
-    const handleNameChange = (e: FormEvent<HTMLInputElement>) =>
-        setName(e.currentTarget.value);
-
-    const handleUsernameChange = (e: FormEvent<HTMLInputElement>) =>
-        setUsername(e.currentTarget.value);
-
-    const handleBirthYearChange = (e: FormEvent<HTMLInputElement>) =>
-    {
-        if (!e.currentTarget.value) return;
+    const handleBirthYearChange = (e: FormEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value == null) return;
         setBirthYear(e.currentTarget.valueAsNumber);
-    }
-
-    const handlePasswordChange = (e: FormEvent<HTMLInputElement>) =>
-        setPassword(e.currentTarget.value);
-
-    const handleChangePassword = () => {
-        // TODO (only if auth method is email, NOT google) add modal, to retype password, reauthenticate, and call updatePassword(newPassword)
     };
 
-    const handleLogoutClick = async () => {
+    const handleLogoutClick = () => {
         setIsLoading(true);
         logAnalyticsEvent(AnalyticsEventEnum.Logout);
-        try {
-            await logout();
-            await router.push("/login");
-        } catch (err) {
-            setIsLoading(false);
-            throw err;
-        }
+        logout()
+            .then(async () => {
+                await router.push('/login');
+            })
+            .catch((err) => {
+                setIsLoading(false);
+                throw err;
+            });
     };
 
     return (
@@ -122,28 +155,25 @@ function AccountSettings() {
 
             <div className="mt-3 sm:mx-auto w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <form
-                        className="space-y-6"
-                        action="#"
-                        method="POST"
-                        onSubmit={handleSave}
-                    >
+                    <form className="space-y-6" action="#" method="POST" onSubmit={handleSave}>
                         <div>
                             <label
-                                htmlFor="name"
+                                htmlFor={nameInputId}
                                 className="block text-sm font-medium text-gray-700"
                             >
                                 Name
                             </label>
                             <div className="mt-1">
                                 <input
-                                    id="name"
+                                    id={nameInputId}
                                     name="name"
                                     type="name"
                                     autoComplete="name"
                                     required
                                     className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                    onChange={handleNameChange}
+                                    onChange={(e) => {
+                                        setName(e.currentTarget.value);
+                                    }}
                                     maxLength={USER_VALIDATIONS.nameMaxLength}
                                     disabled={isLoading}
                                     value={name}
@@ -153,20 +183,22 @@ function AccountSettings() {
 
                         <div>
                             <label
-                                htmlFor="username"
+                                htmlFor={usernameInputId}
                                 className="block text-sm font-medium text-gray-700"
                             >
                                 Username
                             </label>
                             <div className="mt-1">
                                 <input
-                                    id="username"
+                                    id={usernameInputId}
                                     name="username"
                                     type="username"
                                     autoComplete="current-username"
                                     required
                                     className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                    onChange={handleUsernameChange}
+                                    onChange={(e) => {
+                                        setUsername(e.currentTarget.value);
+                                    }}
                                     maxLength={USER_VALIDATIONS.usernameMaxLength}
                                     disabled={isLoading}
                                     value={username}
@@ -176,14 +208,14 @@ function AccountSettings() {
 
                         <div>
                             <label
-                                htmlFor="birthYear"
+                                htmlFor={birthYearInputId}
                                 className="block text-sm font-medium text-gray-700"
                             >
                                 Birth year
                             </label>
                             <div className="mt-1">
                                 <input
-                                    id="birthYear"
+                                    id={birthYearInputId}
                                     name="birthYear"
                                     type="number"
                                     required
@@ -191,7 +223,7 @@ function AccountSettings() {
                                     onChange={handleBirthYearChange}
                                     maxLength={4}
                                     disabled={isLoading}
-                                    value={birthYear?.toString() || ''}
+                                    value={birthYear?.toString() ?? ''}
                                 />
                             </div>
                         </div>
@@ -208,6 +240,7 @@ function AccountSettings() {
                     </form>
 
                     <button
+                        type="button"
                         disabled={isLoading}
                         onClick={handleLogoutClick}
                         className="mt-5 w-full flex justify-center items-center rounded-md border border-transparent bg-indigo-100 px-3 py-2 text-sm font-medium leading-4 text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -217,23 +250,21 @@ function AccountSettings() {
                 </div>
             </div>
 
-
             <div className="mt-3 sm:mx-auto w-full sm:max-w-md">
                 <div className="py-8 px-4 shadow sm:rounded-lg sm:px-10 text-sm font-normal text-gray-400">
-                    Check out
-                    goSolve&apos;s{" "}
-                    <Link href="/privacy" className="underline" target={"_blank"}>
+                    Check out goSolve&apos;s{' '}
+                    <Link href="/privacy" className="underline" target="_blank">
                         Privacy Policy
-                    </Link>
-                    {" "}and{" "}
-                    <Link href="/terms-and-conditions" className="underline" target={"_blank"}>
+                    </Link>{' '}
+                    and{' '}
+                    <Link href="/terms-and-conditions" className="underline" target="_blank">
                         Terms & Conditions
-                    </Link>
-                    {" "}here.
+                    </Link>{' '}
+                    here.
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default AccountSettings;

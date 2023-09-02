@@ -1,8 +1,8 @@
-import BasicHead from "common/components/layout/BasicHead";
-import Layout from "common/components/layout/Layout";
-import AccountSettings from "features/AccountSettings";
+import BasicHead from 'common/components/layout/BasicHead';
+import Layout from 'common/components/layout/Layout';
+import AccountSettings from 'features/AccountSettings';
 
-function SettingsPage() {
+const SettingsPage = () => {
     return (
         <>
             <BasicHead title="goSolve | Account settings" />
@@ -11,6 +11,6 @@ function SettingsPage() {
             </Layout>
         </>
     );
-}
+};
 
 export default SettingsPage;

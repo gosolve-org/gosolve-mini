@@ -1,9 +1,12 @@
-export interface AuthUser {
+interface AuthUser {
     uid: string;
-    email: string | null;
+    email: string;
     displayName: string | null;
     name: string | null;
     username: string | null;
     birthYear: number | null;
     photoURL: string | null;
-};
+    isOnboarded: boolean;
+}
+
+export default AuthUser;
